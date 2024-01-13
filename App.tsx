@@ -35,8 +35,6 @@ const App = () => {
 
   const [search, setSearch] = useState('');
 
-  
-
   const { t } = useTranslation(); 
   
   // used for localization of dates via toLocaleString(locale, options); in <SwiperFlatList> in DiveDetail. Returns ex. 'de-DE' instead of 'de_DE'
@@ -219,10 +217,10 @@ const App = () => {
             data={dives} 
             ListHeaderComponent={ 
               <SearchBar
-                placeholder="Search"
+                placeholder={t('search')}
                 //onChangeText={setSearch}
                 onSearchButtonPress={doSearch}
-                cancelButtonText='Reset'
+                cancelButtonText={t('reset')}
                 onCancelButtonPress={cancelSearch}
                 showsCancelButton={true}
                 autoCapitalize={'none'}
@@ -491,7 +489,7 @@ const App = () => {
           <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
         </View>  
         <View style={styles.centeredView}>
-          <Text style={{height: 50, textAlign:'center'}}>Loading your data from divelogs...</Text>     
+          <Text style={{height: 50, textAlign:'center'}}>{t('loading')}</Text>     
           <ActivityIndicator />
         </View>
       </>
@@ -509,7 +507,7 @@ const App = () => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Please log in to divelogs</Text>
+            <Text style={styles.modalText}>{t('login')}</Text>
             <TextInput placeholder="username" style={styles.logininputs} onChangeText={newText => setUsername(newText)} autoCapitalize="none"></TextInput>
             <TextInput placeholder="password" secureTextEntry={true} style={styles.logininputs} onChangeText={newText => setPassword(newText)}></TextInput>
             <Pressable

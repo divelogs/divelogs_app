@@ -6,5 +6,19 @@ export default {
     notes: "Notizen",
     dives: "Tauchgänge",
     certifications: "Brevets",
-    statistics: "Statistiken"
-};
+    statistics: "Statistiken",
+    loading: "Lade Deine Daten von divelogs...",
+    login: "Bitte logge Dich bei divelogs ein",
+    depths: "Tiefen",
+    durations: "Tauchdauer",
+    weekdays: "Wochentage",
+    months: "Monate",
+    years: "Jahre",
+    entryhour: "Einstiegsstunde",
+    meter: "Meter",
+    minutes: "Minuten",
+    year: "Jahr",
+    hour: "Stunde",
+    search: "Suche",
+    reset: "Alle"
+}

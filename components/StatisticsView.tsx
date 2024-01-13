@@ -84,18 +84,18 @@ export const StatisticsView = () => {
           <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
         </View> 
         <ScrollView style={{padding: 10}}>        
-            <Text>Tiefen:</Text>
-            <Statistic StatData={{values:depthStats, xname:"meter", yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>Tauchdauer:</Text>
-            <Statistic StatData={{values:durationStats, xname:"minuten", yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>Wochentage:</Text>
-            <Statistic StatData={{values:weekdayStats, xname:"meter", yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>Monate:</Text>
-            <Statistic StatData={{values:monthStats, xname:"meter", yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>Jahre:</Text>
-            <Statistic StatData={{values:yearStats, xname:"year", yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>Einstiegsstunde:</Text>
-            <Statistic StatData={{values:hourStats, xname:"hour", yname: t('dives'), width:width.width, height: width.width/1.9}}/>
+            <Text>{t('depths')}:</Text>
+            <Statistic StatData={{values:depthStats, xname:t('meter'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
+            <Text>{t('durations')}:</Text>
+            <Statistic StatData={{values:durationStats, xname:t('minutes'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
+            <Text>{t('weekdays')}:</Text>
+            <Statistic StatData={{values:weekdayStats, xname:t('meter'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
+            <Text>{t('months')}:</Text>
+            <Statistic StatData={{values:monthStats, xname:t('meter'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
+            <Text>{t('years')}:</Text>
+            <Statistic StatData={{values:yearStats, xname:t('year'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
+            <Text>{t('entryhour')}:</Text>
+            <Statistic StatData={{values:hourStats, xname:t('hour'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
             <Text></Text>
             <Text></Text>
             
