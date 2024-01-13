@@ -1,0 +1,13 @@
+{
+  "name": "divelogs",
+  "displayName": "divelogs",
+  "expo": {
+    "ios": {
+     "infoPlist": {
+       "UIUserInterfaceStyle": "Light"
+     }
+   }
+  }
+}
+
+

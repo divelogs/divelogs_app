@@ -1,0 +1,33 @@
+diff --git a/node_modules/react-native-sqlite-storage/react-native.config.js b/node_modules/react-native-sqlite-storage/react-native.config.js
+index dc150a9..054799a 100644
+--- a/node_modules/react-native-sqlite-storage/react-native.config.js
++++ b/node_modules/react-native-sqlite-storage/react-native.config.js
+@@ -1,9 +1,7 @@
+ module.exports = {
+ 	dependency: {
+ 		platforms: {
+-			ios: {
+-				project: './platforms/ios/SQLite.xcodeproj'
+-			},
++			ios: {},
+ 			android: {
+ 				sourceDir: './platforms/android'
+ 			},
+@@ -17,6 +15,16 @@ module.exports = {
+ 				  }
+ 				],
+ 			}
+-		}
++		},
++		"react-native-sqlite-storage": {
++			platforms: {
++			  android: {
++				sourceDir:
++				  "../node_modules/react-native-sqlite-storage/platforms/android-native",
++				packageImportPath: "import io.liteglue.SQLitePluginPackage;",
++				packageInstance: "new SQLitePluginPackage()"
++			  }
++			}
++		  }
+ 	}
+ }
