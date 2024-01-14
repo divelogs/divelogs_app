@@ -89,9 +89,9 @@ export const StatisticsView = () => {
             <Text>{t('durations')}:</Text>
             <Statistic StatData={{values:durationStats, xname:t('minutes'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
             <Text>{t('weekdays')}:</Text>
-            <Statistic StatData={{values:weekdayStats, xname:t('meter'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
+            <Statistic StatData={{values:weekdayStats, xname:t('weekday'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
             <Text>{t('months')}:</Text>
-            <Statistic StatData={{values:monthStats, xname:t('meter'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
+            <Statistic StatData={{values:monthStats, xname:t('month'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
             <Text>{t('years')}:</Text>
             <Statistic StatData={{values:yearStats, xname:t('year'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
             <Text>{t('entryhour')}:</Text>
