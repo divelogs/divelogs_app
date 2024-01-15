@@ -1,12 +1,12 @@
 /**
  * Divelogs App
 */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useLayoutEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
 import { DiveListItem } from './components/DiveListItem';
 import { Dive } from './models';
-import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications } from './services/db-service';
+import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, getDbVersion, updateDB } from './services/db-service';
 import { SvgXml } from 'react-native-svg';
 import { divelogs_logo } from './assets/svgs.js'
 //import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -18,7 +18,6 @@ import './translation'
 import { useTranslation } from 'react-i18next';
 import SearchBar from 'react-native-search-bar';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import RNFetchBlob from "rn-fetch-blob";
 
 const App = () => {
   const [isLoading, setLoading] = useState(false);
@@ -29,9 +28,9 @@ const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [dbversion, setDbVersion] = useState<number>(0);
 
-  const { config, fs } = RNFetchBlob;
-  const PictureDir = fs.dirs.DocumentDir;
+  const targetDbVersion = 2;
 
   const [search, setSearch] = useState('');
 
@@ -51,11 +50,26 @@ const App = () => {
     }
   }, []);
 
+  const checkDBVersion = useCallback(async () => {
+    try {
+      const db = await getDBConnection();
+      const dbversion = await getDbVersion(db);
+      if(dbversion<targetDbVersion) {
+        const res = await updateDB(); 
+      }
+      setDbVersion(dbversion);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
   const loadDataCallback = useCallback(async () => {
     try {
       const db = await getDBConnection();
+      // load dives
       const storedDives = await getDives(db,sort,search);
       setDives(storedDives);
+
     } catch (error) {
       console.error(error);
     }
@@ -175,6 +189,11 @@ const App = () => {
     getCredentials();
   }, [getCredentials]);
 
+  // This gets called before the component renders. In case DB Updates are needed
+  useLayoutEffect(() => {
+    checkDBVersion();
+  }, []);
+
   // Use this const as key of the SwiperFlatList to enforce re-render on orientation-change
   const [orientation, setOrientation] = useState('');
   useEffect(() => {
@@ -202,7 +221,7 @@ const App = () => {
                 accessibilityLabel="load from divelogs"
               />
           </View>
-          <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
+          <SvgXml style={styles.tinyLogo} xml={divelogs_logo} /><Text>{dbversion}</Text>
           <View style={{ width:35, position: 'absolute', right: 10, top:-5 }}>
             <Button
                 onPress={toggleSort}

@@ -2,6 +2,7 @@ import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite
 import { Dive, Certification, StatVal } from '../models';
 import RNFetchBlob from "rn-fetch-blob";
 import {  NativeModules, Platform } from 'react-native';
+import dbUpgrade from "./db-upgrade.json";
 
 enablePromise(true);
 
@@ -11,6 +12,73 @@ const PictureDir = fs.dirs.DocumentDir;
 export const getDBConnection = async () => {
   return openDatabase({ name: 'divelogs.db', createFromLocation : 1 });
 };
+
+export const updateDB = () => {
+  getDBConnection()
+    .then((instance) => {
+      instance.executeSql("SELECT version FROM version")
+        .then((results) => {
+          let version = results[0].rows.item(0)['version']
+          console.log('current version is ' + version);
+          if (version < dbUpgrade.version) {
+            //Call upgrade scripts
+            console.log('wanting version '+dbUpgrade.version);
+            upgradeFrom(instance, version);
+          }
+        })
+        .catch((error) => console.error(error));
+    })
+    .catch((error) => console.error(error));
+};
+
+export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
+  let statements:string[] = [];
+  let version = dbUpgrade.version - (dbUpgrade.version - previousVersion) + 1;
+  let length = Object.keys(dbUpgrade.upgrades).length;
+
+  for (let i = 0; i < length; i += 1) {
+    const foo:string = `to_v${version}`;
+    let upgrade = dbUpgrade.upgrades[foo];
+
+    if (upgrade) {
+      statements = [...statements, ...upgrade];
+    } else {
+      break;
+    }
+
+    version++;
+  } 
+
+  statements = [
+    ...statements,
+    ...["UPDATE version SET version = "+dbUpgrade.version],
+  ];
+
+  for (let stmt of statements) {
+    // Split all contained  queries into separate ones
+    let all = stmt.split(";");
+    for (let a of all) {
+      // if the statmenet length is longer than 10 characters
+      if (a.length > 10) writeStatement(db,a);
+    }
+  }
+
+  // return db
+  //   .sqlBatch(statements)
+  //   .then(() => console.log("Success!"))
+  //   .catch((error) => console.log("Error:", error));
+};
+
+export const writeStatement = async (db: SQLiteDatabase, query:string,): Promise<boolean> => {
+  try {
+    const results = await db.executeSql(query);
+    return true;
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to execute statement '+query);
+  }
+};
+
 
 export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
@@ -205,6 +273,16 @@ export const getBearerToken = async (db: SQLiteDatabase): Promise<string> => {
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Bearer Token');
+  }
+};
+
+export const getDbVersion = async (db: SQLiteDatabase): Promise<number> => {
+  try {
+    const results = await db.executeSql("SELECT version FROM version");
+    return parseInt(results[0].rows.item(0)['version']);
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get DB-Version');
   }
 };
 
@@ -431,15 +509,3 @@ const downloadImage = (image_URL:string) => {
   return imageName.replace("/","");
 };
 
-// export const saveTodoItems = async (db: SQLiteDatabase, todoItems: ToDoItem[]) => {
-//   const insertQuery =
-//     `INSERT OR REPLACE INTO ${tableName}(rowid, value) values` +
-//     todoItems.map(i => `(${i.id}, '${i.value}')`).join(',');
-
-//   return db.executeSql(insertQuery);
-// };
-
-// export const deleteTodoItem = async (db: SQLiteDatabase, id: number) => {
-//   const deleteQuery = `DELETE from ${tableName} where rowid = ${id}`;
-//   await db.executeSql(deleteQuery);
-// };

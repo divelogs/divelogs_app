@@ -79,7 +79,7 @@ export const StatisticsView = () => {
   });
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <View style={[styles.appTitleView]}>
           <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
         </View> 
