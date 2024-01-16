@@ -216,7 +216,7 @@ const App = () => {
                 accessibilityLabel="load from divelogs"
               />
           </View>
-          <SvgXml style={styles.tinyLogo} xml={divelogs_logo} /><Text>{dbversion}</Text>
+          <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
           <View style={{ width:35, position: 'absolute', right: 10, top:-5 }}>
             <Button
                 onPress={toggleSort}
