@@ -60,7 +60,6 @@ export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
     for (let a of all) {
       // if the statmenet length is longer than 10 characters
       if (a.length > 10) writeStatement(db,a);
-      console.log(a);
     }
   }
 };
