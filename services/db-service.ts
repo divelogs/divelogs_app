@@ -37,8 +37,8 @@ export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
   let length = Object.keys(dbUpgrade.upgrades).length;
 
   for (let i = 0; i < length; i += 1) {
-    const foo:string = `to_v${version}`;
-    let upgrade = dbUpgrade.upgrades[foo];
+    const toVersion:string = `to_v${version}`;
+    let upgrade = dbUpgrade.upgrades[toVersion];
 
     if (upgrade) {
       statements = [...statements, ...upgrade];
@@ -62,11 +62,6 @@ export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
       if (a.length > 10) writeStatement(db,a);
     }
   }
-
-  // return db
-  //   .sqlBatch(statements)
-  //   .then(() => console.log("Success!"))
-  //   .catch((error) => console.log("Error:", error));
 };
 
 export const writeStatement = async (db: SQLiteDatabase, query:string,): Promise<boolean> => {
