@@ -13,22 +13,25 @@ export const getDBConnection = async () => {
   return openDatabase({ name: 'divelogs.db', createFromLocation : 1 });
 };
 
-export const updateDB = () => {
-  getDBConnection()
-    .then((instance) => {
-      instance.executeSql("SELECT version FROM version")
-        .then((results) => {
-          let version = results[0].rows.item(0)['version']
-          console.log('current version is ' + version);
-          if (version < dbUpgrade.version) {
-            //Call upgrade scripts
-            console.log('wanting version '+dbUpgrade.version);
-            upgradeFrom(instance, version);
-          }
-        })
-        .catch((error) => console.error(error));
-    })
-    .catch((error) => console.error(error));
+export const updateDB = (): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    getDBConnection()
+      .then((instance) => {
+        instance.executeSql("SELECT version FROM version")
+          .then((results) => {
+            let version = results[0].rows.item(0)['version']
+            console.log('current DB version is ' + version);
+            if (version < dbUpgrade.version) {
+              //Call upgrade scripts
+              console.log('wanting DB version '+dbUpgrade.version);
+              let result = upgradeFrom(instance, version);
+              resolve(result);
+            }
+          })
+          .catch((error) => console.error(error));
+      })
+      .catch((error) => console.error(error));
+    });   
 };
 
 export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
@@ -41,7 +44,7 @@ export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
     let upgrade = dbUpgrade.upgrades[toVersion];
 
     if (upgrade) {
-      statements = [...statements, ...upgrade];
+      statements = [...statements, ...upgrade];      
     } else {
       break;
     }
@@ -62,6 +65,7 @@ export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
       if (a.length > 10) writeStatement(db,a);
     }
   }
+  return dbUpgrade.version;
 };
 
 export const writeStatement = async (db: SQLiteDatabase, query:string,): Promise<boolean> => {

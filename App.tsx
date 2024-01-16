@@ -30,8 +30,6 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [dbversion, setDbVersion] = useState<number>(0);
 
-  const targetDbVersion = 2;
-
   const [search, setSearch] = useState('');
 
   const { t } = useTranslation(); 
@@ -52,12 +50,9 @@ const App = () => {
 
   const checkDBVersion = useCallback(async () => {
     try {
-      const db = await getDBConnection();
-      const dbversion = await getDbVersion(db);
-      if(dbversion<targetDbVersion) {
-        const res = await updateDB(); 
-      }
-      setDbVersion(dbversion);
+        const res = await updateDB();
+        console.log('update returning '+res);
+        setDbVersion(res);
     } catch (error) {
       console.error(error);
     }
