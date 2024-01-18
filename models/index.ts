@@ -56,4 +56,17 @@ export type StatVal = {
   val: number
 };
 
+export type GearItemType = {
+  name: string;
+  geartype: string;
+  servicemonths: number;
+  servicedives: number;
+  last_servicedate: Date;
+  purchasedate: Date;
+  discarddate: Date;
+  divecount: number;
+  monthsleft: number;
+  divesleft: number;
+  type: number;
+};
 

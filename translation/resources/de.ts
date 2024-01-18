@@ -22,5 +22,6 @@ export default {
     year: "Jahr",
     hour: "Stunde",
     search: "Suche",
-    reset: "Alle"
+    reset: "Alle",
+    gearitems: "Ausrüstung"
 }

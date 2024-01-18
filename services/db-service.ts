@@ -1,10 +1,12 @@
 import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { Dive, Certification, StatVal } from '../models';
+import { Dive, Certification, StatVal, GearItemType } from '../models';
 import RNFetchBlob from "rn-fetch-blob";
 import {  NativeModules, Platform } from 'react-native';
 import dbUpgrade from "./db-upgrade.json";
 
 enablePromise(true);
+
+const dbupdates: { [key: string]: any } = dbUpgrade;
 
 const { config, fs } = RNFetchBlob;
 const PictureDir = fs.dirs.DocumentDir;
@@ -41,7 +43,7 @@ export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
 
   for (let i = 0; i < length; i += 1) {
     const toVersion:string = `to_v${version}`;
-    let upgrade = dbUpgrade.upgrades[toVersion];
+    let upgrade = dbupdates.upgrades[toVersion];
 
     if (upgrade) {
       statements = [...statements, ...upgrade];      
@@ -94,6 +96,51 @@ export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:stri
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Dives');
+  }
+};
+
+export const getGearItems = async (db: SQLiteDatabase): Promise<GearItemType[]> => {
+  try {
+    const GearItems: GearItemType[] = [];
+    const results = await db.executeSql(`SELECT name, servicemonths, servicedives, last_servicedate, type, purchasedate, discarddate, geartype, (
+      SELECT count(*) FROM dives WHERE 
+      (
+        gearitems LIKE gi.id || ',%' OR gearitems LIKE '%,' || gi.id || ',%' OR gearitems LIKE '%,' || gi.id
+      ) 
+    ) as divecount,
+    CASE 
+      WHEN servicemonths > 0 THEN 
+        CASE  
+          WHEN last_servicedate IS NOT NULL THEN servicemonths - FLOOR((julianday('now') - julianday(last_servicedate)) / 30.41)
+          ELSE servicemonths - FLOOR((julianday('now') - julianday(purchasedate)) / 30.41)
+        END
+      ELSE null
+    END as months_left,
+    CASE 
+      WHEN servicedives > 0 THEN 
+        CASE  
+          WHEN last_servicedate IS NOT NULL THEN servicedives - (SELECT count(*) FROM dives WHERE (
+            gearitems LIKE gi.id || ',%' OR gearitems LIKE '%,' || gi.id || ',%' OR gearitems LIKE '%,' || gi.id
+          ) AND divedate > last_servicedate)
+          ELSE servicedives - (SELECT count(*) FROM dives WHERE (
+            gearitems LIKE gi.id || ',%' OR gearitems LIKE '%,' || gi.id || ',%' OR gearitems LIKE '%,' || gi.id
+          ) AND divedate > purchasedate)		
+        END
+      ELSE null
+    END as dives_left
+    
+    FROM gearitems gi 
+    JOIN geartypes ON gi.type = geartypes.id 
+    ORDER BY sort`);
+    results.forEach((result: { rows: { length: number; item: (arg0: number) => GearItemType; }; }) => {
+      for (let index = 0; index < result.rows.length; index++) {
+        GearItems.push(result.rows.item(index));
+      }
+    });
+    return GearItems;
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get GearItems');
   }
 };
 
@@ -262,6 +309,57 @@ export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promi
   } catch (error) {
     console.error(error);
     throw Error('Failed to save Certifications');
+  }
+};
+
+export const saveGearItems = async (db: SQLiteDatabase, data:JSON): Promise<boolean> => {
+  const deleteQuery = `DELETE from gearitems`;
+  await db.executeSql(deleteQuery);
+ 
+  try {
+    Object.keys(data).forEach(function(key) {
+      const geardata = (<any>data)[key];
+
+      const insertQuery = `INSERT into gearitems
+      (
+          id,
+          type,
+          name,
+          standard,
+          purchasedate,
+          discarddate,
+          servicemonths,
+          servicedives,
+          last_servicedate,
+          sort
+      )
+      values(?,?,?,?,?,?,?,?,?,?)`;
+
+      const values = [
+        geardata.id,
+        geardata.geartype,
+        geardata.name,
+        geardata.standard,
+        geardata.purchasedate,
+        geardata.discarddate,
+        geardata.servicemonths,
+        geardata.servicedives,
+        geardata.last_servicedate,
+        geardata.sort
+      ]
+     
+      try {
+        return db.executeSql(insertQuery, values)
+      } catch (error) {
+        console.error(error)
+        throw Error("Failed to add gearitem with id "+geardata.id)
+      }
+    });
+    return true;
+
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to save Gearitems');
   }
 };
  

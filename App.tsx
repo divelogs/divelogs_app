@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
 import { DiveListItem } from './components/DiveListItem';
 import { Dive } from './models';
-import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, getDbVersion, updateDB } from './services/db-service';
+import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems } from './services/db-service';
 import { SvgXml } from 'react-native-svg';
 import { divelogs_logo } from './assets/svgs.js'
 //import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -14,6 +14,7 @@ import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import { DiveProfile } from './components/DiveProfile';
 import { StatisticsView } from './components/StatisticsView';
 import { Certifications } from './components/Certifications';
+import { GearView} from './components/GearItemsView';
 import './translation'
 import { useTranslation } from 'react-i18next';
 import SearchBar from 'react-native-search-bar';
@@ -51,7 +52,6 @@ const App = () => {
   const checkDBVersion = useCallback(async () => {
     try {
         const res = await updateDB();
-        console.log('update returning '+res);
         setDbVersion(res);
     } catch (error) {
       console.error(error);
@@ -118,6 +118,22 @@ const App = () => {
         } else {
           Alert.alert('status is ' + certs.status);
         }
+
+        const gearitemsJSON = await fetch('https://divelogs.de/api/gear/', {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+              Authorization: 'Bearer ' + bearer
+            }
+        });
+      
+        const gearitems = await gearitemsJSON.json();
+        if (gearitemsJSON.status == 200) {
+          await saveGearItems(db, gearitems);
+        } else {
+          Alert.alert('gearstatus is ' + gearitems.status);
+        }
+
       } else {
         // Bearer Token is missing or invalid => Login
         setModalVisible(true);
@@ -489,6 +505,27 @@ const App = () => {
             );
           }
         }} />
+        <Tab.Screen name="GearItems" component={GearView} options={{ 
+          title: t("gearitems"),
+          headerShown: false, 
+          tabBarActiveTintColor: '#FFFFFF', 
+          tabBarInactiveTintColor: '#FFFFFF',
+          tabBarLabelStyle: {fontSize: 14},
+          tabBarIcon: ({size,focused,color}) => {
+            return (
+              <Image
+                style={{ width: 30, height: 20, marginTop:3 }}
+                source={require('./assets/statistics.png')}
+              />
+            );
+          }
+        }} />
+
+
+
+
+
+
 
       </Tab.Navigator>
     );
