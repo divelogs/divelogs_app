@@ -105,7 +105,7 @@ export const getGearItems = async (db: SQLiteDatabase): Promise<GearItemType[]> 
     const results = await db.executeSql(`SELECT name, servicemonths, servicedives, last_servicedate, type, purchasedate, discarddate, geartype, (
       SELECT count(*) FROM dives WHERE 
       (
-        gearitems LIKE gi.id || ',%' OR gearitems LIKE '%,' || gi.id || ',%' OR gearitems LIKE '%,' || gi.id
+        gearitems LIKE gi.id || ',%' OR gearitems LIKE '%,' || gi.id || ',%' OR gearitems LIKE '%,' || gi.id OR gearitems = gi.id
       ) 
     ) as divecount,
     CASE 
@@ -115,23 +115,25 @@ export const getGearItems = async (db: SQLiteDatabase): Promise<GearItemType[]> 
           ELSE servicemonths - FLOOR((julianday('now') - julianday(purchasedate)) / 30.41)
         END
       ELSE null
-    END as months_left,
+    END as monthsleft,
     CASE 
       WHEN servicedives > 0 THEN 
         CASE  
           WHEN last_servicedate IS NOT NULL THEN servicedives - (SELECT count(*) FROM dives WHERE (
-            gearitems LIKE gi.id || ',%' OR gearitems LIKE '%,' || gi.id || ',%' OR gearitems LIKE '%,' || gi.id
+            gearitems LIKE gi.id || ',%' OR gearitems LIKE '%,' || gi.id || ',%' OR gearitems LIKE '%,' || gi.id OR gearitems = gi.id
           ) AND divedate > last_servicedate)
           ELSE servicedives - (SELECT count(*) FROM dives WHERE (
-            gearitems LIKE gi.id || ',%' OR gearitems LIKE '%,' || gi.id || ',%' OR gearitems LIKE '%,' || gi.id
+            gearitems LIKE gi.id || ',%' OR gearitems LIKE '%,' || gi.id || ',%' OR gearitems LIKE '%,' || gi.id OR gearitems = gi.id
           ) AND divedate > purchasedate)		
         END
       ELSE null
-    END as dives_left
+    END as divesleft
     
     FROM gearitems gi 
     JOIN geartypes ON gi.type = geartypes.id 
-    ORDER BY sort`);
+    ORDER BY sort
+    
+    `);
     results.forEach((result: { rows: { length: number; item: (arg0: number) => GearItemType; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
         GearItems.push(result.rows.item(index));

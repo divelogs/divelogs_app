@@ -8,7 +8,7 @@ import { DiveListItem } from './components/DiveListItem';
 import { Dive } from './models';
 import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems } from './services/db-service';
 import { SvgXml } from 'react-native-svg';
-import { divelogs_logo } from './assets/svgs.js'
+import { divelogs_logo, diveicon, certicon, staticon, gearicon } from './assets/svgs.js'
 //import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import { DiveProfile } from './components/DiveProfile';
@@ -461,10 +461,7 @@ const App = () => {
           tabBarLabelStyle: {fontSize: 14},
           tabBarIcon: ({size,focused,color}) => {
             return (
-              <Image
-                style={{ width: 40, height: 25.6 }}
-                source={require('./assets/diver.png')}
-              />
+              <SvgXml xml={diveicon} width="40" height="25"/>
             );
           }
         }} />
@@ -483,10 +480,7 @@ const App = () => {
           tabBarLabelStyle: {fontSize: 14},
           tabBarIcon: ({size,focused,color}) => {
             return (
-              <Image
-                style={{ width: 30, height: 20, marginTop:3 }}
-                source={require('./assets/certification.png')}
-              />
+              <SvgXml xml={certicon} width="40" height="25"/>
             );
           }
         }} />
@@ -498,10 +492,7 @@ const App = () => {
           tabBarLabelStyle: {fontSize: 14},
           tabBarIcon: ({size,focused,color}) => {
             return (
-              <Image
-                style={{ width: 30, height: 20, marginTop:3 }}
-                source={require('./assets/statistics.png')}
-              />
+              <SvgXml xml={staticon} width="40" height="25"/>
             );
           }
         }} />
@@ -513,10 +504,7 @@ const App = () => {
           tabBarLabelStyle: {fontSize: 14},
           tabBarIcon: ({size,focused,color}) => {
             return (
-              <Image
-                style={{ width: 30, height: 20, marginTop:3 }}
-                source={require('./assets/statistics.png')}
-              />
+              <SvgXml xml={gearicon} width="40" height="25"/>
             );
           }
         }} />
