@@ -23,5 +23,10 @@ export default {
     hour: "Stunde",
     search: "Suche",
     reset: "Alle",
-    gearitems: "Ausrüstung"
+    gearitems: "Ausrüstung",
+    purchasedate: "Anschaffung",
+    discarded: "Ausgesondert",
+    last_servicedate: "Letzter Service",
+    service_overdue: "Service überfällig",
+    next_service: "Nächster Service"
 }

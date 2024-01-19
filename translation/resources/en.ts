@@ -23,5 +23,10 @@ export default {
     hour: "Hour",
     search: "Search",
     reset: "All",
-    gearitems: "Gear"
+    gearitems: "Gear",
+    purchasedate: "Purchasedate",
+    discarded: "Discarded",
+    last_servicedate: "Last Servicedate",
+    service_overdue: "Service overdue",
+    next_service: "Next Service"
 };
