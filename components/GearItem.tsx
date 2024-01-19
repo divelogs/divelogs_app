@@ -1,11 +1,10 @@
 import React from 'react';
-import { StyleSheet,  Text,  View, NativeModules } from 'react-native';
+import { StyleSheet,  Text,  View, NativeModules, Dimensions } from 'react-native';
 import { GearItemType } from '../models';
 import GearImages from './GearImages'
 import { SvgXml } from 'react-native-svg';
 import '../translation'
 import { useTranslation } from 'react-i18next';
-import { Transaction } from 'react-native-sqlite-storage';
 
 const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
     NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
@@ -14,12 +13,13 @@ export const Gear: React.FC<{
   gi: GearItemType;
 }> = ({ gi }) => {
   
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
   var pd = new Date(gi.purchasedate);
   var dd = new Date(gi.discarddate);
   var ls = new Date(gi.last_servicedate);
-  
+
+
   return (
     <View style={{padding: 10}}>
         <View style={styles.gearblock}>
@@ -38,10 +38,10 @@ export const Gear: React.FC<{
     </View>
   );
 };
-
+const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     gearblock: {height: 106, borderBottomColor: '#c0c0c0', borderBottomWidth: 1},
-    texts: {left:110},
+    texts: {left:110, width: width-110},
     bold: {fontWeight:'500'},
     gearitem: { width:90, height: 90 },
     icon: {position: 'absolute', left: 10},
