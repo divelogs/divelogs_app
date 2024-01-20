@@ -8,7 +8,11 @@ import { divelogs_logo } from '../assets/svgs.js'
 import '../translation'
 import { useTranslation } from 'react-i18next';
 
-export const StatisticsView = () => {
+export const StatisticsView = ({ route, navigation }:any) => {
+
+    console.log(route.params);
+
+    const imperial = route.params.imperial;
     
     const [monthStats, setMonthStats] = useState<StatVal[]>([]);
     const [hourStats, setHourStats] = useState<StatVal[]>([]);
@@ -34,7 +38,7 @@ export const StatisticsView = () => {
         const results4 = await getWeekdayStats(db);
         setWeekdayStats(results4);
 
-        const results5 = await getDepthStats(db);
+        const results5 = await getDepthStats(db, imperial);
         setDepthStats(results5);
 
         const results6 = await getDurationStats(db);
@@ -85,7 +89,7 @@ export const StatisticsView = () => {
         </View> 
         <ScrollView style={{padding: 10}}>        
             <Text>{t('depths')}:</Text>
-            <Statistic StatData={{values:depthStats, xname:t('meter'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
+            <Statistic StatData={{values:depthStats, xname:(imperial ? t('feet') : t('meter')), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
             <Text>{t('durations')}:</Text>
             <Statistic StatData={{values:durationStats, xname:t('minutes'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
             <Text>{t('weekdays')}:</Text>

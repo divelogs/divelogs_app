@@ -2,15 +2,18 @@ import React from 'react';
 import {  Button,  StyleSheet,  Text,  View } from 'react-native';
 import { Dive } from '../models';
 import { DiveProfile } from './DiveProfile';
+import { renderdepth } from './functions.ts'
 
 export const DiveListItem: React.FC<{
-  Dive: Dive;
-}> = ({ Dive: {id, divesite, divedate, divenumber, divetime, maxdepth, location, sampledata, samplerate, duration} }) => {
+  Dive: Dive,
+  imperial: boolean
+}> = ({ Dive: {id, divesite, divedate, divenumber, divetime, maxdepth, location, sampledata, samplerate, duration} , imperial } ) => {
   var dd = new Date(Date.parse(divedate));
+
   return (
     <View style={styles.divelistcontainer}>
       <View style={styles.divelistnumbercontainer}>
-        <DiveProfile SampleData={{sampledata: sampledata, samplerate: samplerate, duration: duration, height: 60, width: 75, lines: false, forlist: true }} /> 
+        <DiveProfile SampleData={{sampledata: sampledata, samplerate: samplerate, duration: duration, height: 60, width: 75, lines: false, forlist: true }} imperial={imperial}/> 
         <Text style={styles.diveNumber}>{divenumber}</Text> 
       </View>
       <View style={styles.divelisttextcontainer}>
@@ -30,7 +33,7 @@ export const DiveListItem: React.FC<{
       </View>
       <View style={styles.divelistrightcontainer}>
         <Text style={styles.divelistDetailContainer}>
-          {maxdepth} m
+        {renderdepth(maxdepth, imperial)}
         </Text>
         <Text style={styles.divelistDetailContainer}>
           {Math.round(duration/60)} min

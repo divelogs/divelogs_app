@@ -19,6 +19,7 @@ import './translation'
 import { useTranslation } from 'react-i18next';
 import SearchBar from 'react-native-search-bar';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime } from './components/functions.ts'
 
 const App = () => {
   const [isLoading, setLoading] = useState(false);
@@ -126,6 +127,7 @@ const App = () => {
         if (certs.status == 200) {
           await saveCertifications(db, certjson.certifications);
           await saveSettings(db, certjson.imperial, certjson.startnumber);
+          setImperial(certjson.imperial);
 
         } else {
           Alert.alert('status is ' + certs.status);
@@ -256,7 +258,8 @@ const App = () => {
                 color="#FFFFFF"
                 accessibilityLabel="change sorting"
               />
-          </View>        
+          </View>    
+          <Text>{(imperial ? "imp" : "met")}</Text>    
         </View>        
         <View>
           <FlatList
@@ -283,7 +286,7 @@ const App = () => {
                   navigation.navigate('DiveDetail', {diveId: item.id});        
                   }                  
                 } >
-                <DiveListItem Dive={item} />
+                <DiveListItem Dive={item} imperial={imperial}/>
               </TouchableOpacity>
             )}
           />
@@ -347,18 +350,18 @@ const App = () => {
                   <Image style={divepagestyles.profileback} source={require('./assets/profile.png')} />
                   <Text style={{position: 'absolute', top:6, left:18}}>{item.divetime.substr(0,5)}</Text>
                   <Text style={{position: 'absolute', top:6, left:299}}>{makeendtime(item.divetime, item.duration)}</Text>
-                  <Text style={{position: 'absolute', top:80, left:18}}>{item.maxdepth} m</Text>
-                  <Text style={{position: 'absolute', top:104, left:18}}>{item.meandepth} m</Text>
-                  <Text style={{position: 'absolute', top:6, left:140}}>{rendertemp(item.airtemp)}</Text>
-                  <Text style={{position: 'absolute', top:51, left:140}}>{rendertemp(item.surfacetemp)}</Text>
-                  <Text style={{position: 'absolute', top:150, left:140}}>{rendertemp(item.depthtemp)}</Text>
+                  <Text style={{position: 'absolute', top:80, left:18}}>{renderdepth(item.maxdepth, imperial)} </Text>
+                  <Text style={{position: 'absolute', top:104, left:18}}>{renderdepth(item.meandepth, imperial)}</Text>
+                  <Text style={{position: 'absolute', top:6, left:140}}>{rendertemp(item.airtemp, imperial)}</Text>
+                  <Text style={{position: 'absolute', top:51, left:140}}>{rendertemp(item.surfacetemp, imperial)}</Text>
+                  <Text style={{position: 'absolute', top:150, left:140}}>{rendertemp(item.depthtemp, imperial)}</Text>
                   <Text style={{position: 'absolute', top:176, left:115}}>{secondstotime(item.duration)}</Text>
                 </View>
                 <View>
                 <View style={divepagestyles.fullwidthentry}><Text style={divepagestyles.desc}>{t("notes")}: </Text><Text>{item.notes}</Text></View>    
                 </View>
 
-                <DiveProfile SampleData={{sampledata: item.sampledata, samplerate: item.samplerate, duration: item.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} /> 
+                <DiveProfile SampleData={{sampledata: item.sampledata, samplerate: item.samplerate, duration: item.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} /> 
               </View>
               </ScrollView>
 
@@ -500,18 +503,21 @@ const App = () => {
             );
           }
         }} />
-        <Tab.Screen name="Statistics" component={StatisticsView} options={{ 
-          title: t("statistics"),
-          headerShown: false, 
-          tabBarActiveTintColor: '#FFFFFF', 
-          tabBarInactiveTintColor: '#FFFFFF',
-          tabBarLabelStyle: {fontSize: 14},
-          tabBarIcon: ({size,focused,color}) => {
-            return (
-              <SvgXml xml={staticon} width="40" height="25"/>
-            );
-          }
-        }} />
+        <Tab.Screen name="Statistics" 
+          component={StatisticsView} 
+          initialParams={{ imperial: imperial }}
+          options={{ 
+            title: t("statistics"),
+            headerShown: false, 
+            tabBarActiveTintColor: '#FFFFFF', 
+            tabBarInactiveTintColor: '#FFFFFF',
+            tabBarLabelStyle: {fontSize: 14},
+            tabBarIcon: ({size,focused,color}) => {
+              return (
+                <SvgXml xml={staticon} width="40" height="25"/>
+              );
+            }
+          }} />
         <Tab.Screen name="GearItems" component={GearView} options={{ 
           title: t("gearitems"),
           headerShown: false, 
@@ -524,13 +530,6 @@ const App = () => {
             );
           }
         }} />
-
-
-
-
-
-
-
       </Tab.Navigator>
     );
   }
@@ -642,26 +641,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const makeDateObj = (date:string) => {
-  return new Date(date);
-}
 
-const rendertemp = (temp:number) => {
-  if (temp==0 || temp==undefined || temp==null) return '';
-  else return temp+' °C'
-}
-
-const makeendtime = (timeString:string, seconds:number) => {
-  var d = new Date('1970-01-01T' + timeString );
-  d.setSeconds(d.getSeconds() + seconds);
-  return d.toTimeString().substring(0,5);
-}
-
-const secondstotime = (seconds:number) => {
-  var d = new Date('1970-01-01T00:00:00' );
-  d.setSeconds(d.getSeconds() + seconds);
-  return d.toTimeString().substring(0,8);
-}
 
 export default App; 
 

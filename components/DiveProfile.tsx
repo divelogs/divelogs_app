@@ -4,11 +4,12 @@ import { SvgXml } from 'react-native-svg';
 import { SampleData } from '../models';
 
 export const DiveProfile: React.FC<{
-    SampleData: SampleData;
-}> = ({ SampleData: {sampledata, samplerate, duration, width, height, lines = true, forlist = false} }) => {
+    SampleData: SampleData,
+	imperial: boolean
+}> = ({ SampleData: {sampledata, samplerate, duration, width, height, lines = true, forlist = false}, imperial }) => {
   var samples = (sampledata != null && sampledata.length > 5 ? sampledata.split(",") : []);
   if (samples.length > 0) {
-	var profileSVG = makeSVGprofile(samples, samplerate, duration, lines);
+	var profileSVG = makeSVGprofile(samples, samplerate, duration, lines, imperial);
 	return (
 		<View style={forlist ? styles.forlist : styles.flex}>
 			<SvgXml xml={profileSVG} width={width} height={height} />
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
 	}
   });
 
-function makeSVGprofile(samples: string | any[], rate: number, duration: number, lines = true)
+function makeSVGprofile(samples: string | any[], rate: number, duration: number, lines = true, imperial = false)
 {
 		var width = 700, height = 400, padleft = 25, loffset = 2;
 
@@ -88,6 +89,11 @@ function makeSVGprofile(samples: string | any[], rate: number, duration: number,
 
 	if (lines) {
 		// horizontal line every 10 meters
+		// more lines for imperial
+		if (imperial) {
+			tens = Math.floor((maxdepth/0.3048)/10)+1;
+			mult = mult*0.3048;
+		}
 		for (var w=0; w< tens+1; w++)
 		{
 			if (w == 0) var t = w*mult*10;
@@ -95,7 +101,7 @@ function makeSVGprofile(samples: string | any[], rate: number, duration: number,
 			var a = w*10;
 			if (t < (height*0.9)) ret += '<line x1="' + padleft + '" y1="' + t + '" x2="' + width + '" y2="' + t + '" style="stroke:#a8a8a8;stroke-width:.5" />';  
 			if (t < (height*0.9)) {
-				ret  += '<text x="' + loffset + '" y="' + t + '" fill="#a8a8a8" style="font-size: 10px;">' + a + 'm</text>';		
+				ret  += '<text x="' + loffset + '" y="' + t + '" fill="#a8a8a8" style="font-size: 10px;">' + a + ''+(imperial ? 'ft' : 'm')+'</text>';		
 			}
 		}
 

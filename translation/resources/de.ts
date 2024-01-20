@@ -18,6 +18,7 @@ export default {
     years: "Jahre",
     entryhour: "Einstiegsstunde",
     meter: "Meter",
+    feet: "Fuß",
     minutes: "Minuten",
     year: "Jahr",
     hour: "Stunde",

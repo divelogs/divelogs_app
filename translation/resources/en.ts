@@ -18,6 +18,7 @@ export default {
     years: "Years",
     entryhour: "Entry Hour",
     meter: "Meters",
+    feet: "Feet",
     minutes: "Minutes",
     year: "Year",
     hour: "Hour",

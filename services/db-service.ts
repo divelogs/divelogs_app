@@ -36,7 +36,6 @@ export const updateDB = (): Promise<number> => {
 };
 
 export const getImperial = (): Promise<boolean> => {
-  console.log('init');
   return new Promise((resolve, reject) => {
     getDBConnection()
       .then((instance) => {
@@ -168,13 +167,11 @@ export const getCertifications = async (db: SQLiteDatabase): Promise<Certificati
     const results = await db.executeSql("SELECT certifications.id, date as certdate, name, org, GROUP_CONCAT(certifications_files.filename) as scans_string FROM certifications LEFT JOIN certifications_files ON certifications.id = certifications_files.certification_id GROUP BY certifications.id ORDER BY date DESC");
     results.forEach((result: { rows: { length: number; item: (arg0: number) => Certification; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
-        console.log('adding cert with index ' + index);
         var cert = result.rows.item(index);
         cert.scans = (cert.scans_string != undefined ? cert.scans_string.split(",") : []);
         Certifications.push(result.rows.item(index));
       }
     });
-    console.log(Certifications);
     return Certifications;
   } catch (error) {
     console.error(error);
@@ -307,7 +304,6 @@ export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promi
       };
 
       const certid = await writeCertification();
-      console.log(certid);
 
       try {
         Object.keys(certificationsdata.scans).forEach(function(key) {
@@ -546,16 +542,24 @@ export const getWeekdayStats = async (db: SQLiteDatabase): Promise<StatVal[]> =>
   }
 };
 
-export const getDepthStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
+export const getDepthStats = async (db: SQLiteDatabase, imperial:boolean): Promise<StatVal[]> => {
   try {
     let data:StatVal[] = [];
-    const results = await db.executeSql(`SELECT count(1) as val , floor(maxdepth/5)*5 as bez FROM dives
-    GROUP BY floor(maxdepth/5)*5
-    ORDER BY floor(maxdepth/5)*5 ASC
-    `);
+    let results;
+    if (imperial) {
+      results = await db.executeSql(`SELECT count(1) as val , floor(maxdepth/0.3048/10)*10 as bez FROM dives
+      GROUP BY floor(maxdepth/0.3048/10)*10
+      ORDER BY floor(maxdepth/0.3048/10)*10 ASC`);
+    }
+    else {
+      results = await db.executeSql(`SELECT count(1) as val , floor(maxdepth/5)*5 as bez FROM dives
+      GROUP BY floor(maxdepth/5)*5
+      ORDER BY floor(maxdepth/5)*5 ASC`);
+    }
+    
     results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
-        result.rows.item(index).bez = result.rows.item(index).bez + '-' + (result.rows.item(index).bez + 5)
+        result.rows.item(index).bez = result.rows.item(index).bez + '-' + (result.rows.item(index).bez + (imperial ? 10 : 5))
         data.push(result.rows.item(index));
       }
     });
@@ -579,7 +583,6 @@ export const getDurationStats = async (db: SQLiteDatabase): Promise<StatVal[]> =
         data.push(result.rows.item(index));
       }
     });
-    console.log(data);
     return data;
   } catch (error) {
     console.error(error);
