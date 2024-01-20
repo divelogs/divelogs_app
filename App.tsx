@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
 import { DiveListItem } from './components/DiveListItem';
 import { Dive } from './models';
-import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems } from './services/db-service';
+import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, getImperial } from './services/db-service';
 import { SvgXml } from 'react-native-svg';
 import { divelogs_logo, diveicon, certicon, staticon, gearicon } from './assets/svgs.js'
 //import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -30,6 +30,7 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [dbversion, setDbVersion] = useState<number>(0);
+  const [imperial, setImperial] = useState<boolean>(false);
 
   const [search, setSearch] = useState('');
 
@@ -49,10 +50,19 @@ const App = () => {
     }
   }, []);
 
-  const checkDBVersion = useCallback(async () => {
+  const DBCheck = useCallback(async () => {
     try {
         const res = await updateDB();
         setDbVersion(res);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const ImperialCheck = useCallback(async () => {
+    try {
+        const imp = await getImperial();
+        setImperial(imp);
     } catch (error) {
       console.error(error);
     }
@@ -115,6 +125,8 @@ const App = () => {
         const certjson = await certs.json();
         if (certs.status == 200) {
           await saveCertifications(db, certjson.certifications);
+          await saveSettings(db, certjson.imperial, certjson.startnumber);
+
         } else {
           Alert.alert('status is ' + certs.status);
         }
@@ -202,8 +214,12 @@ const App = () => {
 
   // This gets called before the component renders. In case DB Updates are needed
   useLayoutEffect(() => {
-    checkDBVersion();
+    DBCheck();
+    ImperialCheck();
   }, []);
+
+
+
 
   // Use this const as key of the SwiperFlatList to enforce re-render on orientation-change
   const [orientation, setOrientation] = useState('');

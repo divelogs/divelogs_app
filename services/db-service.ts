@@ -22,13 +22,29 @@ export const updateDB = (): Promise<number> => {
         instance.executeSql("SELECT version FROM version")
           .then((results) => {
             let version = results[0].rows.item(0)['version']
-            console.log('current DB version is ' + version);
             if (version < dbUpgrade.version) {
               //Call upgrade scripts
               console.log('wanting DB version '+dbUpgrade.version);
               let result = upgradeFrom(instance, version);
               resolve(result);
             }
+          })
+          .catch((error) => console.error(error));
+      })
+      .catch((error) => console.error(error));
+    });   
+};
+
+export const getImperial = (): Promise<boolean> => {
+  console.log('init');
+  return new Promise((resolve, reject) => {
+    getDBConnection()
+      .then((instance) => {
+        instance.executeSql("SELECT imperial FROM settings")
+          .then((results) => {
+            let imperial = results[0].rows.item(0)['imperial'];
+            imperial = (imperial == "1" ? true : false);
+            resolve(imperial);
           })
           .catch((error) => console.error(error));
       })
@@ -166,6 +182,10 @@ export const getCertifications = async (db: SQLiteDatabase): Promise<Certificati
   }
 };
 
+export const saveSettings = async (db: SQLiteDatabase, imperial:boolean, startnumber:number): Promise<boolean> => {
+  await db.executeSql("UPDATE settings SET imperial='"+(imperial ? "1" : "0")+"', firstdive='"+startnumber+"'");
+  return true;
+};
 
 export const saveDives = async (db: SQLiteDatabase, data:JSON): Promise<boolean> => {
   const deleteQuery = `DELETE from dives`;
