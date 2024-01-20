@@ -10,8 +10,6 @@ import { useTranslation } from 'react-i18next';
 
 export const StatisticsView = ({ route, navigation }:any) => {
 
-    console.log(route.params);
-
     const imperial = route.params.imperial;
     
     const [monthStats, setMonthStats] = useState<StatVal[]>([]);

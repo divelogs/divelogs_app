@@ -160,7 +160,6 @@ const App = () => {
   };
 
   const doSearch = async (searchtext:string) => {
-    console.log('search with ' + searchtext);
     setSearch(searchtext);
     const db = await getDBConnection();
     const storedDives = await getDives(db,sort,searchtext);
@@ -258,8 +257,7 @@ const App = () => {
                 color="#FFFFFF"
                 accessibilityLabel="change sorting"
               />
-          </View>    
-          <Text>{(imperial ? "imp" : "met")}</Text>    
+          </View>      
         </View>        
         <View>
           <FlatList

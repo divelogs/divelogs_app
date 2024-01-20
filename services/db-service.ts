@@ -24,7 +24,7 @@ export const updateDB = (): Promise<number> => {
             let version = results[0].rows.item(0)['version']
             if (version < dbUpgrade.version) {
               //Call upgrade scripts
-              console.log('wanting DB version '+dbUpgrade.version);
+              console.log('need DB version '+dbUpgrade.version);
               let result = upgradeFrom(instance, version);
               resolve(result);
             }
@@ -626,7 +626,7 @@ const downloadImage = (image_URL:string) => {
       }
     })
     .catch((e) => {
-      console.log('The file  ERROR', e.message);
+      console.log('The file ERROR', e.message);
     }); 
   return imageName.replace("/","");
 };
