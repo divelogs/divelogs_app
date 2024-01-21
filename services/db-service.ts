@@ -355,49 +355,51 @@ export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promi
   }
 };
 
-export const saveGearItems = async (db: SQLiteDatabase, data:JSON): Promise<boolean> => {
+export const saveGearItems = async (db: SQLiteDatabase, data:JSON | null): Promise<boolean> => {
   const deleteQuery = `DELETE from gearitems`;
   await db.executeSql(deleteQuery);
  
   try {
-    Object.keys(data).forEach(function(key) {
-      const geardata = (<any>data)[key];
+    if (data != null) {
+      Object.keys(data).forEach(function(key) {
+        const geardata = (<any>data)[key];
 
-      const insertQuery = `INSERT into gearitems
-      (
-          id,
-          type,
-          name,
-          standard,
-          purchasedate,
-          discarddate,
-          servicemonths,
-          servicedives,
-          last_servicedate,
-          sort
-      )
-      values(?,?,?,?,?,?,?,?,?,?)`;
+        const insertQuery = `INSERT into gearitems
+        (
+            id,
+            type,
+            name,
+            standard,
+            purchasedate,
+            discarddate,
+            servicemonths,
+            servicedives,
+            last_servicedate,
+            sort
+        )
+        values(?,?,?,?,?,?,?,?,?,?)`;
 
-      const values = [
-        geardata.id,
-        geardata.geartype,
-        geardata.name,
-        geardata.standard,
-        geardata.purchasedate,
-        geardata.discarddate,
-        geardata.servicemonths,
-        geardata.servicedives,
-        geardata.last_servicedate,
-        geardata.sort
-      ]
-     
-      try {
-        return db.executeSql(insertQuery, values)
-      } catch (error) {
-        console.error(error)
-        throw Error("Failed to add gearitem with id "+geardata.id)
-      }
-    });
+        const values = [
+          geardata.id,
+          geardata.geartype,
+          geardata.name,
+          geardata.standard,
+          geardata.purchasedate,
+          geardata.discarddate,
+          geardata.servicemonths,
+          geardata.servicedives,
+          geardata.last_servicedate,
+          geardata.sort
+        ]
+      
+        try {
+          return db.executeSql(insertQuery, values)
+        } catch (error) {
+          console.error(error)
+          throw Error("Failed to add gearitem with id "+geardata.id)
+        }
+      });
+    }
     return true;
 
   } catch (error) {
