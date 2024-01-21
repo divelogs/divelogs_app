@@ -21,6 +21,9 @@ import SearchBar from 'react-native-search-bar';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime } from './components/functions.ts'
 
+import { Api } from './services/api-service'
+
+
 const App = () => {
   const [isLoading, setLoading] = useState(false);
   const [dives, setDives] = useState<Dive[]>([]);
@@ -99,60 +102,36 @@ const App = () => {
   };
 
   const loadDataFromAPI = async (bearer:string) => {
-    setLoading(true);
+    
     try {
-      if (typeof(bearer) != 'string') bearer = bearerToken;
-      const response = await fetch('https://divelogs.de/api/dives/', {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + bearer
-          }
-      });
-      const json = await response.json();
-      if (response.status == 200) {
-        const db = await getDBConnection();
-        await saveDives(db, json);
-        const storedDives = await getDives(db,sort,'');
-        setDives(storedDives); 
+      setLoading(true);
 
-        const certs = await fetch('https://divelogs.de/api/user/', {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-              Authorization: 'Bearer ' + bearer
-            }
-        });
-        
-        const certjson = await certs.json();
-        if (certs.status == 200) {
-          await saveCertifications(db, certjson.certifications);
-          await saveSettings(db, certjson.imperial, certjson.startnumber);
-          setImperial(certjson.imperial);
-
-        } else {
-          Alert.alert('status is ' + certs.status);
-        }
-
-        const gearitemsJSON = await fetch('https://divelogs.de/api/gear/', {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-              Authorization: 'Bearer ' + bearer
-            }
-        });
-      
-        const gearitems = await gearitemsJSON.json();
-        if (gearitemsJSON.status == 200) {
-          await saveGearItems(db, gearitems);
-        } else {
-          Alert.alert('gearstatus is ' + gearitems.status);
-        }
-
-      } else {
-        // Bearer Token is missing or invalid => Login
+      if (bearer == null){
         setModalVisible(true);
+        return;
       }
+
+      Api.setBearerToken(bearer)
+
+      const apiDives = await Api.getDives()
+
+      if (!apiDives || apiDives.length == 0) 
+        return;
+
+      const db = await getDBConnection();
+      await saveDives(db, apiDives);
+      const storedDives = await getDives(db,sort,'');
+      setDives(storedDives); 
+      
+      const userSettings = await Api.getUserSettings()
+      const certifications = await Api.getCertifications()
+      const gearitems = await Api.getGear()
+      
+      await saveCertifications(db, certifications);
+      await saveSettings(db, userSettings.imperial, userSettings.startnumber);
+      await saveGearItems(db, gearitems);
+      setImperial(userSettings.imperial);
+
     } catch (error) {
       console.error(error);
     } finally {
@@ -179,31 +158,22 @@ const App = () => {
   }
 
   const doLogin = async () => {
-    var data = new FormData()
-    data.append('user', username);
-    data.append('pass', password);
-    const response = await fetch('https://divelogs.de/api/login/', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + bearerToken
-          },
-          body: data
-    });
-    const json = await response.json();
-    if (response.status == 200) {
-      // get bearer token and store it
-      setbearerToken(json.bearer_token);
+
+    const loginResult = await Api.login(username, password)
+
+    if (loginResult.success)
+    {
+      setbearerToken(loginResult.bearerToken);
       const db = await getDBConnection();
-      const succ = await writeBearerToken(db,json.bearer_token);
-      if (succ) {
+      const succ = await writeBearerToken(db, loginResult.bearerToken);
+
+      if (succ){
         setModalVisible(false);
-        loadDataFromAPI(json.bearer_token);
-        return true;
+        loadDataFromAPI(loginResult.bearerToken);
       }
-    } else {
-      Alert.alert(json.error);
     }
+    else
+      Alert.alert(loginResult.error);
   }
 
   useEffect(() => {
