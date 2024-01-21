@@ -1,5 +1,5 @@
 import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { Dive, Certification, StatVal, GearItemType } from '../models';
+import { Dive, Certification, StatVal, GearItem, APIDive } from '../models';
 import RNFetchBlob from "rn-fetch-blob";
 import {  NativeModules, Platform } from 'react-native';
 import dbUpgrade from "./db-upgrade.json";
@@ -114,9 +114,9 @@ export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:stri
   }
 };
 
-export const getGearItems = async (db: SQLiteDatabase): Promise<GearItemType[]> => {
+export const getGearItems = async (db: SQLiteDatabase): Promise<GearItem[]> => {
   try {
-    const GearItems: GearItemType[] = [];
+    const GearItems: GearItem[] = [];
     const results = await db.executeSql(`SELECT name, servicemonths, servicedives, last_servicedate, type, purchasedate, discarddate, geartype, (
       SELECT count(*) FROM dives WHERE 
       (
@@ -149,7 +149,7 @@ export const getGearItems = async (db: SQLiteDatabase): Promise<GearItemType[]> 
     ORDER BY sort
     
     `);
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => GearItemType; }; }) => {
+    results.forEach((result: { rows: { length: number; item: (arg0: number) => GearItem; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
         GearItems.push(result.rows.item(index));
       }
@@ -184,13 +184,31 @@ export const saveSettings = async (db: SQLiteDatabase, imperial:boolean, startnu
   return true;
 };
 
-export const saveDives = async (db: SQLiteDatabase, data:JSON): Promise<boolean> => {
+const writeDataAndReturnId = (db: SQLiteDatabase, insertQuery:string, values:any[]) => {
+  return new Promise((resolve, reject) => {
+      db.transaction(tx => {
+          tx.executeSql(
+              insertQuery,
+              values,
+              (tx, results) => {
+                resolve(results.insertId);
+              }
+          );
+      });
+  });        
+};
+
+export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boolean> => {
   const deleteQuery = `DELETE from dives`;
   await db.executeSql(deleteQuery);
+
+  const deleteQuery2 = `DELETE from tanks`;
+  await db.executeSql(deleteQuery2);
  
   try {
-    Object.keys(data).forEach(function(key) {
-      const divedata = (<any>data)[key];
+    //Object.keys(data).forEach(function(key) {
+    for (const divedata of data) {
+      //const divedata = (<any>data)[key];
 
       const insertQuery = `INSERT into dives
       (
@@ -252,12 +270,19 @@ export const saveDives = async (db: SQLiteDatabase, data:JSON): Promise<boolean>
       ]
      
       try {
-        return db.executeSql(insertQuery, values)
+        const newdiveid = await writeDataAndReturnId(db, insertQuery, values);
+        // write the tanks
+        for( let tank of divedata.tanks) {
+          let tankquery = "INSERT INTO tanks (dive_id, tankindex, tank, tankname, vol, wp, start_pressure, end_pressure, o2, he, dbltank) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+          let tankvals = [newdiveid, tank.index, tank.tank, tank.tankname, tank.vol, tank.wp, tank.start_pressure, tank.end_pressure, tank.o2, tank.he, tank.dbltank];
+          db.executeSql(tankquery, tankvals);
+        }
+        
       } catch (error) {
         console.error(error)
         throw Error("Failed to add dive")
       }
-    });
+    };
     return true;
 
   } catch (error) {
