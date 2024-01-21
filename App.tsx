@@ -55,6 +55,7 @@ const App = () => {
     try {
         const res = await updateDB();
         setDbVersion(res);
+        ImperialCheck();
     } catch (error) {
       console.error(error);
     }
@@ -216,7 +217,6 @@ const App = () => {
   // This gets called before the component renders. In case DB Updates are needed
   useLayoutEffect(() => {
     DBCheck();
-    ImperialCheck();
   }, []);
 
 
