@@ -113,7 +113,7 @@ const App = () => {
 
       Api.setBearerToken(bearer)
 
-      const apiDives = await Api.getDives()
+      const apiDives: any = await Api.getDives()
 
       if (!apiDives || apiDives.length == 0) 
         return;
@@ -123,8 +123,8 @@ const App = () => {
       const storedDives = await getDives(db,sort,'');
       setDives(storedDives); 
       
-      const userSettings = await Api.getUserSettings()
-      const certifications = await Api.getCertifications()
+      const userSettings:any = await Api.getUserSettings()
+      const certifications:any = await Api.getCertifications()
       const gearitems = await Api.getGear()
       
       await saveCertifications(db, certifications);
