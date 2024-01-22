@@ -126,8 +126,8 @@ export const getGearItems = async (db: SQLiteDatabase): Promise<GearItem[]> => {
     CASE 
       WHEN servicemonths > 0 THEN 
         CASE  
-          WHEN last_servicedate IS NOT NULL THEN servicemonths - FLOOR((julianday('now') - julianday(last_servicedate)) / 30.41)
-          ELSE servicemonths - FLOOR((julianday('now') - julianday(purchasedate)) / 30.41)
+          WHEN last_servicedate IS NOT NULL THEN servicemonths - CAST((julianday('now') - julianday(last_servicedate)) / 30.41 as int)
+          ELSE servicemonths - CAST((julianday('now') - julianday(purchasedate)) / 30.41 as int)
         END
       ELSE null
     END as monthsleft,
@@ -574,14 +574,14 @@ export const getDepthStats = async (db: SQLiteDatabase, imperial:boolean): Promi
     let data:StatVal[] = [];
     let results;
     if (imperial) {
-      results = await db.executeSql(`SELECT count(1) as val , floor(maxdepth/0.3048/10)*10 as bez FROM dives
-      GROUP BY floor(maxdepth/0.3048/10)*10
-      ORDER BY floor(maxdepth/0.3048/10)*10 ASC`);
+      results = await db.executeSql(`SELECT count(1) as val , CAST(maxdepth/0.3048/10 as int)*10 as bez FROM dives
+      GROUP BY CAST(maxdepth/0.3048/10 as int)*10
+      ORDER BY CAST(maxdepth/0.3048/10 as int)*10 ASC`);
     }
     else {
-      results = await db.executeSql(`SELECT count(1) as val , floor(maxdepth/5)*5 as bez FROM dives
-      GROUP BY floor(maxdepth/5)*5
-      ORDER BY floor(maxdepth/5)*5 ASC`);
+      results = await db.executeSql(`SELECT count(1) as val , CAST (maxdepth/5 as int )*5 as bez FROM dives
+      GROUP BY CAST(maxdepth/5 as int)*5
+      ORDER BY CAST(maxdepth/5 as int) ASC`);
     }
     
     results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
@@ -600,9 +600,9 @@ export const getDepthStats = async (db: SQLiteDatabase, imperial:boolean): Promi
 export const getDurationStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
   try {
     let data:StatVal[] = [];
-    const results = await db.executeSql(`SELECT count(1) as val , floor((duration/60)/5)*5 as bez FROM dives
-    GROUP BY floor((duration/60)/5)*5
-    ORDER BY floor((duration/60)/5)*5 ASC
+    const results = await db.executeSql(`SELECT count(1) as val , CAST((duration/60)/5 as int)*5 as bez FROM dives
+    GROUP BY CAST((duration/60)/5 as int)*5
+    ORDER BY CAST((duration/60)/5 as int)*5 ASC
     `);
     results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {

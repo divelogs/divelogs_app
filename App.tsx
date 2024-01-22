@@ -115,6 +115,11 @@ const App = () => {
 
       const apiDives: any = await Api.getDives()
 
+      // null occurs when no data could be retrieved
+      if(apiDives == null) {
+        setModalVisible(true);
+      }
+
       if (!apiDives || apiDives.length == 0) 
         return;
 
