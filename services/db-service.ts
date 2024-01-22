@@ -1,5 +1,5 @@
 import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { Dive, Certification, StatVal, GearItemType } from '../models';
+import { Dive, Certification, StatVal, GearItem, APIDive } from '../models';
 import RNFetchBlob from "rn-fetch-blob";
 import {  NativeModules, Platform } from 'react-native';
 import dbUpgrade from "./db-upgrade.json";
@@ -114,9 +114,9 @@ export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:stri
   }
 };
 
-export const getGearItems = async (db: SQLiteDatabase): Promise<GearItemType[]> => {
+export const getGearItems = async (db: SQLiteDatabase): Promise<GearItem[]> => {
   try {
-    const GearItems: GearItemType[] = [];
+    const GearItems: GearItem[] = [];
     const results = await db.executeSql(`SELECT name, servicemonths, servicedives, last_servicedate, type, purchasedate, discarddate, geartype, (
       SELECT count(*) FROM dives WHERE 
       (
@@ -126,8 +126,8 @@ export const getGearItems = async (db: SQLiteDatabase): Promise<GearItemType[]> 
     CASE 
       WHEN servicemonths > 0 THEN 
         CASE  
-          WHEN last_servicedate IS NOT NULL THEN servicemonths - FLOOR((julianday('now') - julianday(last_servicedate)) / 30.41)
-          ELSE servicemonths - FLOOR((julianday('now') - julianday(purchasedate)) / 30.41)
+          WHEN last_servicedate IS NOT NULL THEN servicemonths - CAST((julianday('now') - julianday(last_servicedate)) / 30.41 as int)
+          ELSE servicemonths - CAST((julianday('now') - julianday(purchasedate)) / 30.41 as int)
         END
       ELSE null
     END as monthsleft,
@@ -149,7 +149,7 @@ export const getGearItems = async (db: SQLiteDatabase): Promise<GearItemType[]> 
     ORDER BY sort
     
     `);
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => GearItemType; }; }) => {
+    results.forEach((result: { rows: { length: number; item: (arg0: number) => GearItem; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
         GearItems.push(result.rows.item(index));
       }
@@ -184,13 +184,31 @@ export const saveSettings = async (db: SQLiteDatabase, imperial:boolean, startnu
   return true;
 };
 
-export const saveDives = async (db: SQLiteDatabase, data:JSON): Promise<boolean> => {
+const writeDataAndReturnId = (db: SQLiteDatabase, insertQuery:string, values:any[]) => {
+  return new Promise((resolve, reject) => {
+      db.transaction(tx => {
+          tx.executeSql(
+              insertQuery,
+              values,
+              (tx, results) => {
+                resolve(results.insertId);
+              }
+          );
+      });
+  });        
+};
+
+export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boolean> => {
   const deleteQuery = `DELETE from dives`;
   await db.executeSql(deleteQuery);
+
+  const deleteQuery2 = `DELETE from tanks`;
+  await db.executeSql(deleteQuery2);
  
   try {
-    Object.keys(data).forEach(function(key) {
-      const divedata = (<any>data)[key];
+    //Object.keys(data).forEach(function(key) {
+    for (const divedata of data) {
+      //const divedata = (<any>data)[key];
 
       const insertQuery = `INSERT into dives
       (
@@ -252,12 +270,19 @@ export const saveDives = async (db: SQLiteDatabase, data:JSON): Promise<boolean>
       ]
      
       try {
-        return db.executeSql(insertQuery, values)
+        const newdiveid = await writeDataAndReturnId(db, insertQuery, values);
+        // write the tanks
+        for( let tank of divedata.tanks) {
+          let tankquery = "INSERT INTO tanks (dive_id, `index`, tank, tankname, vol, wp, start_pressure, end_pressure, o2, he, dbltank) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+          let tankvals = [newdiveid, tank.index, tank.tank, tank.tankname, tank.vol, tank.wp, tank.start_pressure, tank.end_pressure, tank.o2, tank.he, tank.dbltank];
+          db.executeSql(tankquery, tankvals);
+        }
+        
       } catch (error) {
         console.error(error)
         throw Error("Failed to add dive")
       }
-    });
+    };
     return true;
 
   } catch (error) {
@@ -330,49 +355,51 @@ export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promi
   }
 };
 
-export const saveGearItems = async (db: SQLiteDatabase, data:JSON): Promise<boolean> => {
+export const saveGearItems = async (db: SQLiteDatabase, data:JSON | null): Promise<boolean> => {
   const deleteQuery = `DELETE from gearitems`;
   await db.executeSql(deleteQuery);
  
   try {
-    Object.keys(data).forEach(function(key) {
-      const geardata = (<any>data)[key];
+    if (data != null) {
+      Object.keys(data).forEach(function(key) {
+        const geardata = (<any>data)[key];
 
-      const insertQuery = `INSERT into gearitems
-      (
-          id,
-          type,
-          name,
-          standard,
-          purchasedate,
-          discarddate,
-          servicemonths,
-          servicedives,
-          last_servicedate,
-          sort
-      )
-      values(?,?,?,?,?,?,?,?,?,?)`;
+        const insertQuery = `INSERT into gearitems
+        (
+            id,
+            type,
+            name,
+            standard,
+            purchasedate,
+            discarddate,
+            servicemonths,
+            servicedives,
+            last_servicedate,
+            sort
+        )
+        values(?,?,?,?,?,?,?,?,?,?)`;
 
-      const values = [
-        geardata.id,
-        geardata.geartype,
-        geardata.name,
-        geardata.standard,
-        geardata.purchasedate,
-        geardata.discarddate,
-        geardata.servicemonths,
-        geardata.servicedives,
-        geardata.last_servicedate,
-        geardata.sort
-      ]
-     
-      try {
-        return db.executeSql(insertQuery, values)
-      } catch (error) {
-        console.error(error)
-        throw Error("Failed to add gearitem with id "+geardata.id)
-      }
-    });
+        const values = [
+          geardata.id,
+          geardata.geartype,
+          geardata.name,
+          geardata.standard,
+          geardata.purchasedate,
+          geardata.discarddate,
+          geardata.servicemonths,
+          geardata.servicedives,
+          geardata.last_servicedate,
+          geardata.sort
+        ]
+      
+        try {
+          return db.executeSql(insertQuery, values)
+        } catch (error) {
+          console.error(error)
+          throw Error("Failed to add gearitem with id "+geardata.id)
+        }
+      });
+    }
     return true;
 
   } catch (error) {
@@ -547,14 +574,14 @@ export const getDepthStats = async (db: SQLiteDatabase, imperial:boolean): Promi
     let data:StatVal[] = [];
     let results;
     if (imperial) {
-      results = await db.executeSql(`SELECT count(1) as val , floor(maxdepth/0.3048/10)*10 as bez FROM dives
-      GROUP BY floor(maxdepth/0.3048/10)*10
-      ORDER BY floor(maxdepth/0.3048/10)*10 ASC`);
+      results = await db.executeSql(`SELECT count(1) as val , CAST(maxdepth/0.3048/10 as int)*10 as bez FROM dives
+      GROUP BY CAST(maxdepth/0.3048/10 as int)*10
+      ORDER BY CAST(maxdepth/0.3048/10 as int)*10 ASC`);
     }
     else {
-      results = await db.executeSql(`SELECT count(1) as val , floor(maxdepth/5)*5 as bez FROM dives
-      GROUP BY floor(maxdepth/5)*5
-      ORDER BY floor(maxdepth/5)*5 ASC`);
+      results = await db.executeSql(`SELECT count(1) as val , CAST (maxdepth/5 as int )*5 as bez FROM dives
+      GROUP BY CAST(maxdepth/5 as int)*5
+      ORDER BY CAST(maxdepth/5 as int) ASC`);
     }
     
     results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
@@ -573,9 +600,9 @@ export const getDepthStats = async (db: SQLiteDatabase, imperial:boolean): Promi
 export const getDurationStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
   try {
     let data:StatVal[] = [];
-    const results = await db.executeSql(`SELECT count(1) as val , floor((duration/60)/5)*5 as bez FROM dives
-    GROUP BY floor((duration/60)/5)*5
-    ORDER BY floor((duration/60)/5)*5 ASC
+    const results = await db.executeSql(`SELECT count(1) as val , CAST((duration/60)/5 as int)*5 as bez FROM dives
+    GROUP BY CAST((duration/60)/5 as int)*5
+    ORDER BY CAST((duration/60)/5 as int)*5 ASC
     `);
     results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {

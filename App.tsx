@@ -62,6 +62,7 @@ const App = () => {
     try {
         const res = await updateDB();
         setDbVersion(res);
+        ImperialCheck();
     } catch (error) {
       console.error(error);
     }
@@ -99,7 +100,12 @@ const App = () => {
 
       Api.setBearerToken(bearerToken)
 
-      const apiDives = await Api.getDives()
+      const apiDives: any = await Api.getDives()
+
+      // null occurs when no data could be retrieved
+      if(apiDives == null) {
+        setModalVisible(true);
+      }
 
       if (!apiDives || apiDives.length == 0) 
         return;
@@ -109,8 +115,8 @@ const App = () => {
       const storedDives = await getDives(db,sort,'');
       setDives(storedDives); 
       
-      const userSettings = await Api.getUserSettings()
-      const certifications = await Api.getCertifications()
+      const userSettings:any = await Api.getUserSettings()
+      const certifications:any = await Api.getCertifications()
       const gearitems = await Api.getGear()
       
       await saveCertifications(db, certifications);
@@ -155,7 +161,6 @@ const App = () => {
   // This gets called before the component renders. In case DB Updates are needed
   useLayoutEffect(() => {
     DBCheck();
-    ImperialCheck();
   }, []);
 
 
@@ -295,4 +300,3 @@ const App = () => {
 };
 
 export default App; 
-

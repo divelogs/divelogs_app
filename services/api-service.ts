@@ -5,11 +5,16 @@ export type LoginResult = {
   error: string;
 };
 
+export type UserSettings = {
+  imperial: boolean;
+  startnumber: number;
+};
+
 
 const apiUrl = "https://divelogs.de/api/"
 const clientString = "Divelogs App v.0"
 
-var bearerToken = null;
+var bearerToken: string | null = null;
 
 const setBearerToken = (bearer:string) => {
   bearerToken = bearer
@@ -18,7 +23,7 @@ const setBearerToken = (bearer:string) => {
 const getUrl = (endpoint:string) : string => 
 apiUrl + endpoint
 
-const getDataFromApi = async (endpoint:string, method?: string) : Promise<JSON> => {
+const getDataFromApi = async (endpoint:string, method?: string) : Promise<JSON | null> => {
 
 	const url = getUrl(endpoint);
 	const result = await fetch(url, {
@@ -32,7 +37,7 @@ const getDataFromApi = async (endpoint:string, method?: string) : Promise<JSON> 
 
   if (result.status == 200) {
     const json = await result.json();
-    console.log(url, json)
+    //console.log(url, json)
     return json
   } else {
     console.log(endpoint + ' is ' + result.status);
@@ -40,21 +45,21 @@ const getDataFromApi = async (endpoint:string, method?: string) : Promise<JSON> 
   }  	
 }
 
-const getGear = async () : Promise<JSON> => 
-getDataFromApi("gear")
+const getGear = async () : Promise<JSON | null> => 
+  getDataFromApi("gear")
 
-const getCertifications = async () : Promise<JSON> => 
+const getCertifications = async () : Promise<JSON | null> => 
 {
-	var userdata = await getDataFromApi("user")
+	var userdata:any = await getDataFromApi("user")
 	if (userdata != null){
 		return userdata.certifications
 	}
 	return null
 }
 
-const getUserSettings = async () : Promise<JSON> => 
+const getUserSettings = async () : Promise<UserSettings | null> => 
 {
-	var userdata = await getDataFromApi("user")
+	var userdata:any = await getDataFromApi("user")
 	if (userdata != null)
 		return { 
 			imperial: userdata.imperial,
@@ -63,7 +68,7 @@ const getUserSettings = async () : Promise<JSON> =>
   return null
 }
 
-const getDives = async() : Promise<JSON> =>
+const getDives = async() : Promise<JSON | null> =>
   getDataFromApi("dives")
 
 const login = async (username:string, password:string ) : Promise<LoginResult> => {
@@ -71,7 +76,8 @@ const login = async (username:string, password:string ) : Promise<LoginResult> =
   data.append('user', username);
   data.append('pass', password);
 
-  const loginoutcome: LoginResult = { success: false};
+  const loginoutcome: LoginResult = { success: false, bearerToken: '', error: ''};
+  console.log(loginoutcome);
 
   try{
     const url = getUrl("login")

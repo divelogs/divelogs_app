@@ -1,3 +1,5 @@
+import { Float } from "react-native/Libraries/Types/CodegenTypes";
+
 export type SampleData = {
   sampledata: string;
   samplerate: number;
@@ -34,6 +36,45 @@ export type Dive = {
   modified: Date;
 };
 
+export type APIDive = {
+  divenumber: number;
+  date: Date;
+  time: string;
+  duration: number;
+  surface_interval: number;
+  maxdepth: Float;
+  meandepth: Float;
+  location: string;
+  divesite: string;
+  weather: string;
+  visibility: string;
+  airtemp: Float;
+  depthtemp: Float;
+  surfacetemp: Float;
+  buddy: string;
+  boat: string;
+  weights: string;
+  notes: string;
+  gearitems: GearItem[];
+  samplerate: number;
+  sampledata: string[];
+  tanks: Tank[];
+}
+
+export type Tank = {
+  id: number;
+  index: number;
+  tank: string;
+  tankname: string ;
+  vol: Float;
+  wp: number;
+  start_pressure: number;
+  end_pressure: number;
+  o2: Float;
+  he: Float;
+  dbltank: boolean;
+}
+
 export type Certification = {
   id: number;
   certdate: string;
@@ -56,7 +97,8 @@ export type StatVal = {
   val: number
 };
 
-export type GearItemType = {
+export type GearItem = {
+  id: number;
   name: string;
   geartype: string;
   servicemonths: number;
