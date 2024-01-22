@@ -121,3 +121,5 @@ function makeSVGprofile(samples: string | any[], rate: number, duration: number,
 	ret += '</svg>';
 	return ret;
 }
+
+export default DiveProfile

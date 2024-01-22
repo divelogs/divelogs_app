@@ -22,7 +22,7 @@ import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime } from
 
 import { Api } from './services/api-service'
 import Dives from './components/dives'
-//import DiveDetail from './components/divedetail'
+import DiveDetail from './components/divedetail'
 import { DiveProfile } from './components/dives/DiveProfile';
 
 import styles from './stylesheets/styles'
@@ -40,6 +40,7 @@ const App = () => {
   const [imperial, setImperial] = useState<boolean>(false);
 
   const [search, setSearch] = useState('');
+  
 
   const { t } = useTranslation(); 
   
@@ -158,8 +159,6 @@ const App = () => {
   }, []);
 
 
-
-
   // Use this const as key of the SwiperFlatList to enforce re-render on orientation-change
   const [orientation, setOrientation] = useState('');
   useEffect(() => {
@@ -172,184 +171,15 @@ const App = () => {
     })
   }, []);
 
-  const swiperRef = useRef<any>({});
-
-  const [ddstate, setDdstate] = useState<number>();
-
-
-  const DiveDetail = ({navigation, route}:any) => {
-
-    const dives = route.params.dives
-    let diveindex = dives.findIndex(obj => obj.id === route.params.diveId);
-
-    return (
-      <>
-        <StatusBar key={ddstate} backgroundColor={'#3fb9f2'} />
-         <View style={[styles.appTitleView]}>
-         <View style={{ width:50, position: 'absolute', left: 0, top: -5 }}>
-             <Button
-                 title="←"
-                 color={'white'}                
-                 onPress={() =>
-                   navigation.navigate('Dives')
-                 }
-               />
-           </View>
-           <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />             
-         </View>
-         <View style={divepagestyles.container} >
-          <SwiperFlatList  ref={swiperRef} key={orientation} index={diveindex} renderAll={false} data={dives}
-            renderItem={({ item }) => (             
-            <ScrollView>
-              <View style={[divepagestyles.bg, divepagestyles.child]}>                
-                <View style={divepagestyles.numberdatebox}>
-                  <View style={divepagestyles.numberbox}>
-                    <Text style={divepagestyles.white}>{item.divenumber}</Text>
-                  </View>
-                  <Text style={divepagestyles.datetext1}>{makeDateObj(item.divedate).toLocaleString(locale, {weekday: 'long'})}</Text>
-                  <Text style={divepagestyles.datetext2}>{makeDateObj(item.divedate).toLocaleString(locale, {day: 'numeric', month: 'long'})}</Text>
-                  <Text style={divepagestyles.datetext3}>{makeDateObj(item.divedate).toLocaleString(locale, {year: 'numeric'})}</Text>
-                </View>
-                <View style={divepagestyles.locationbox}>
-                  <View style={divepagestyles.entry}>
-                    <Text style={divepagestyles.desc}>{t("location")}: </Text>
-                    <Text style={divepagestyles.text}>{item.location}</Text>
-                  </View>
-                  <View style={divepagestyles.entry}>
-                      <Text style={divepagestyles.desc}>{t("divesite")}: </Text>
-                      <Text style={divepagestyles.text}>{item.divesite}</Text>
-                  </View>
-                  <View style={divepagestyles.entry}>
-                    <Text style={divepagestyles.desc}>{t("buddy")}: </Text>
-                    <Text style={divepagestyles.text}>{item.buddy}</Text>
-                  </View>
-                  <View style={divepagestyles.entry}>
-                    <Text style={divepagestyles.desc}>{t("boat")}: </Text>
-                    <Text style={divepagestyles.text}>{item.boat}</Text>
-                  </View>
-                </View>
-                <View style={divepagestyles.profileblock} >
-                  <Image style={divepagestyles.profileback} source={require('./assets/profile.png')} />
-                  <Text style={{position: 'absolute', top:6, left:18}}>{item.divetime.substr(0,5)}</Text>
-                  <Text style={{position: 'absolute', top:6, left:299}}>{makeendtime(item.divetime, item.duration)}</Text>
-                  <Text style={{position: 'absolute', top:80, left:18}}>{renderdepth(item.maxdepth, imperial)} </Text>
-                  <Text style={{position: 'absolute', top:104, left:18}}>{renderdepth(item.meandepth, imperial)}</Text>
-                  <Text style={{position: 'absolute', top:6, left:140}}>{rendertemp(item.airtemp, imperial)}</Text>
-                  <Text style={{position: 'absolute', top:51, left:140}}>{rendertemp(item.surfacetemp, imperial)}</Text>
-                  <Text style={{position: 'absolute', top:150, left:140}}>{rendertemp(item.depthtemp, imperial)}</Text>
-                  <Text style={{position: 'absolute', top:176, left:115}}>{secondstotime(item.duration)}</Text>
-                </View>
-                <View>
-                <View style={divepagestyles.fullwidthentry}><Text style={divepagestyles.desc}>{t("notes")}: </Text><Text>{item.notes}</Text></View>    
-                </View>
-
-                <DiveProfile SampleData={{sampledata: item.sampledata, samplerate: item.samplerate, duration: item.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} /> 
-              </View>
-              </ScrollView>
-
-            )} />
-    
-        </View>         
-      </>
-    )
-  };
 
   const { width } = Dimensions.get('window');
 
-  const divepagestyles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: 'white' },
-    child: { width: width, justifyContent: 'center', padding: 5 },
-    profileblock: {
-      width:350,
-      height:200,
-      marginLeft:5,
-      marginTop:20,
-      marginBottom: 20,
-    },
-    profileitem: {
-      position: 'absolute'
-    },
-    profileback: {
-      width:350,
-      height:200
-    },
-    bg: {
-      backgroundColor: '#FFFFFF'
-    },
-    locationbox: {
-      width: width-190
-    },
-    numberdatebox: {
-      borderRadius: 5,
-      backgroundColor: '#eaf3f7',
-      position: 'absolute',
-      right: 10,
-      top: 10,
-      height: 60,
-      width: 170,
-      justifyContent: 'center',
-      textAlign: 'center',
-      paddingRight: 50
-    },
-
-    entry: {
-      marginTop: 5,
-      marginBottom: 5,
-      paddingLeft: 5,
-      flexDirection: 'row',
-      flex: 1,
-    },
-    desc: {
-      color: '#39ade2',     
-    },
-    text: {
-      flexWrap: 'wrap',
-      flexShrink: 1,
-    },
-    fullwidthentry: {
-      marginTop: 10,
-      paddingLeft: 5,
-      paddingRight: 10,
-      width: width-10
-    },
-    datetext1: {
-      textAlign: 'center',
-      color: '#39ade2'
-    },
-    datetext2: {
-      textAlign: 'center',
-      color: '#000000'
-    },
-    datetext3: {
-      textAlign: 'center',
-      color: '#39ade2',
-      fontSize: 17,
-      fontWeight: '500'
-    },
-    numberbox : {
-      borderRadius: 4,
-      backgroundColor: '#39ade2',
-      position: 'absolute',
-      right: 3,
-      top: 3,
-      height: 54,
-      width: 50,
-      justifyContent: 'center',
-      textAlign: 'center'
-    },
-    white: {
-      width: 50,
-      color: '#FFFFFF',
-      justifyContent: 'center',
-      textAlign: 'center',
-      fontSize: 18
-    }
-  });
 
   //const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
 
   const DivesTab = ({navigation}:any) => <Dives navigation={navigation} refreshApiData={loadDataFromAPI}/>
+  const DiveDetailTab = ({navigation, route}:any) => <DiveDetail navigation={navigation} route={route} imperial={imperial}/>
 
   const BottomNavigation = ()=> {
     return (
@@ -368,7 +198,7 @@ const App = () => {
             );
           }
         }} />
-        <Tab.Screen name="DiveDetail" component={DiveDetail} options={{ 
+        <Tab.Screen name="DiveDetail" component={DiveDetailTab} options={{ 
           tabBarButton: () => null, // hide from TabBar
           headerShown: false,
           tabBarActiveTintColor: '#FFFFFF', 

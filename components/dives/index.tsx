@@ -13,7 +13,6 @@ import { divelogs_logo } from '../../assets/svgs.js'
 
 import DivesList from './DivesList';
 
-
 import styles from '../../stylesheets/styles'
 
 const AllDivesView = ({navigation, refreshApiData}:any) => {
@@ -64,7 +63,6 @@ const AllDivesView = ({navigation, refreshApiData}:any) => {
   }
 
   const selectDive = (dive:Dive) => {
-    console.log(dive)
     navigation.navigate('DiveDetail', {diveId: dive.id, dives: dives});
   } 
 
