@@ -16,7 +16,7 @@ import DivesList from './DivesList';
 
 import styles from '../../stylesheets/styles'
 
-const AllDivesView = ({navigation}:any) => {
+const AllDivesView = ({navigation, refreshApiData}:any) => {
 
   const { t } = useTranslation(); 
 
@@ -76,7 +76,7 @@ const AllDivesView = ({navigation}:any) => {
       <View style={[styles.appTitleView]}>
         <View style={{ width:35, position: 'absolute', left: 10, top:-5 }}>
           <Button 
-              onPress={loadData}
+              onPress={refreshApiData}
               title='↺'
               color="#FFFFFF"
               accessibilityLabel="load from divelogs"

@@ -349,12 +349,14 @@ const App = () => {
   //const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
 
+  const DivesTab = ({navigation}:any) => <Dives navigation={navigation} refreshApiData={loadDataFromAPI}/>
+
   const BottomNavigation = ()=> {
     return (
       <Tab.Navigator screenOptions={{
         tabBarStyle: { backgroundColor: '#3fb9f2'}
       }}>
-        <Tab.Screen name="Dives" component={Dives} options={{ 
+        <Tab.Screen name="Dives" component={DivesTab} options={{ 
           title: t("dives"),
           headerShown: false, 
           tabBarActiveTintColor: '#FFFFFF', 
