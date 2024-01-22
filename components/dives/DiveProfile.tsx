@@ -20,7 +20,7 @@ export const DiveProfile: React.FC<{
 		<View>
 			<Image
 				style={styles.tinyprofile}
-				source={require('../assets/profileplaceholder.png')}
+				source={require('../../assets/profileplaceholder.png')}
 			/>
 		</View>
 	)

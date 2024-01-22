@@ -1,8 +1,8 @@
 import React from 'react';
 import {  Button,  StyleSheet,  Text,  View } from 'react-native';
-import { Dive } from '../models';
+import { Dive } from '../../models';
 import { DiveProfile } from './DiveProfile';
-import { renderdepth } from './functions.ts'
+import { renderdepth } from '../functions.ts'
 
 export const DiveListItem: React.FC<{
   Dive: Dive,

@@ -4,14 +4,13 @@
 import React, { useCallback, useEffect, useRef, useState, useLayoutEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
-import { DiveListItem } from './components/DiveListItem';
+
 import { Dive } from './models';
 import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, getImperial } from './services/db-service';
 import { SvgXml } from 'react-native-svg';
 import { divelogs_logo, diveicon, certicon, staticon, gearicon } from './assets/svgs.js'
 //import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
-import { DiveProfile } from './components/DiveProfile';
 import { StatisticsView } from './components/StatisticsView';
 import { Certifications } from './components/Certifications';
 import { GearView} from './components/GearItemsView';
@@ -22,7 +21,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime } from './components/functions.ts'
 
 import { Api } from './services/api-service'
+import Dives from './components/dives'
+//import DiveDetail from './components/divedetail'
+import { DiveProfile } from './components/dives/DiveProfile';
 
+import styles from './stylesheets/styles'
 
 const App = () => {
   const [isLoading, setLoading] = useState(false);
@@ -74,43 +77,26 @@ const App = () => {
 
   const loadDataCallback = useCallback(async () => {
     try {
-      const db = await getDBConnection();
-      // load dives
-      const storedDives = await getDives(db,sort,search);
-      setDives(storedDives);
+
 
     } catch (error) {
       console.error(error);
     }
   }, []);
 
-  const toggleSort = async () => {
-    if (sort == `DESC`) {
-      setSort('ASC');  
-      setSortindicator('↓');   
-      const db = await getDBConnection();
-      const storedDives = await getDives(db,'ASC', search);
-      setDives(storedDives); 
-    } else {
-      setSort('DESC');
-      setSortindicator('↑'); 
-      const db = await getDBConnection();
-      const storedDives = await getDives(db,'DESC', search);
-      setDives(storedDives); 
-    }   
-  };
 
-  const loadDataFromAPI = async (bearer:string) => {
+
+  const loadDataFromAPI = async () => {
     
     try {
       setLoading(true);
 
-      if (bearer == null){
+      if (bearerToken == null){
         setModalVisible(true);
         return;
       }
 
-      Api.setBearerToken(bearer)
+      Api.setBearerToken(bearerToken)
 
       const apiDives = await Api.getDives()
 
@@ -137,24 +123,6 @@ const App = () => {
       setLoading(false);
     }
   };
-
-  const doSearch = async (searchtext:string) => {
-    setSearch(searchtext);
-    const db = await getDBConnection();
-    const storedDives = await getDives(db,sort,searchtext);
-    setDives(storedDives);
-  }
-
-  const cancelSearch = async () => {
-    setSearch('');
-    try {
-      const db = await getDBConnection();
-      const storedDives = await getDives(db,sort,'');
-      setDives(storedDives);
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   const doLogin = async () => {
 
@@ -205,69 +173,15 @@ const App = () => {
   }, []);
 
   const swiperRef = useRef<any>({});
-  
-  const DiveList = ({navigation}:any) => {
-    return (
-      <View style={{flex:1, paddingBottom: 50, backgroundColor: '#FFFFFF'}}>
-      <View style={styles.safeArea}>
-        <View style={[styles.appTitleView]}>
-          <View style={{ width:35, position: 'absolute', left: 10, top:-5 }}>
-            <Button 
-                onPress={() => {loadDataFromAPI(bearerToken)}}
-                title='↺'
-                color="#FFFFFF"
-                accessibilityLabel="load from divelogs"
-              />
-          </View>
-          <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
-          <View style={{ width:35, position: 'absolute', right: 10, top:-5 }}>
-            <Button
-                onPress={toggleSort}
-                title={sortindicator}
-                color="#FFFFFF"
-                accessibilityLabel="change sorting"
-              />
-          </View>      
-        </View>        
-        <View>
-          <FlatList
-            data={dives} 
-            ListHeaderComponent={ 
-              <SearchBar
-                placeholder={t('search')}
-                //onChangeText={setSearch}
-                onSearchButtonPress={doSearch}
-                cancelButtonText={t('reset')}
-                onCancelButtonPress={cancelSearch}
-                showsCancelButton={true}
-                autoCapitalize={'none'}
-                text={search}
-              /> 
-            }
-            renderItem={({item}) => (
-              <TouchableOpacity key={item.id} onPress={() => {
-                  let diveindex = dives.findIndex(obj => obj.id === item.id);
-                  setDdstate(diveindex);
-                  // setTimeout(()=>{
-                  //     swiperRef.current.scrollToIndex({index: diveindex});
-                  // }, 1);
-                  navigation.navigate('DiveDetail', {diveId: item.id});        
-                  }                  
-                } >
-                <DiveListItem Dive={item} imperial={imperial}/>
-              </TouchableOpacity>
-            )}
-          />
-        </View>         
-      </View>
-      </View>
-    );
-  };
 
   const [ddstate, setDdstate] = useState<number>();
 
+
   const DiveDetail = ({navigation, route}:any) => {
+
+    const dives = route.params.dives
     let diveindex = dives.findIndex(obj => obj.id === route.params.diveId);
+
     return (
       <>
         <StatusBar key={ddstate} backgroundColor={'#3fb9f2'} />
@@ -440,7 +354,7 @@ const App = () => {
       <Tab.Navigator screenOptions={{
         tabBarStyle: { backgroundColor: '#3fb9f2'}
       }}>
-        <Tab.Screen name="Dives" component={DiveList} options={{ 
+        <Tab.Screen name="Dives" component={Dives} options={{ 
           title: t("dives"),
           headerShown: false, 
           tabBarActiveTintColor: '#FFFFFF', 
@@ -547,69 +461,6 @@ const App = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  logininputs: {
-    width:200,
-    height:30,
-    fontSize:16,
-    borderRadius: 5,
-    borderWidth:1,
-    borderColor: '#000000',
-    marginBottom:5
-  }, 
-  button: {
-    borderRadius: 5,
-    backgroundColor: '#3fb9f2',
-    padding: 10,
-    elevation: 2,
-  },  
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  tinyLogo: {
-    width:150,
-    height:34
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#FFFFFF'
-  },
-  appTitleView: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#3fb9f2'
-  }
-});
-
-
 
 export default App; 
 
