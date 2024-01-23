@@ -33,19 +33,6 @@ const DiveSwipe = ({navigation, route, imperial}:any) => {
 
   return (
     <>
-      <StatusBar backgroundColor={'#3fb9f2'} />
-       <View style={[styles.appTitleView]}>
-       <View style={{ width:50, position: 'absolute', left: 0, top: -5 }}>
-           <Button
-               title="←"
-               color={'white'}                
-               onPress={() =>
-                 navigation.navigate('Dives')
-               }
-             />
-         </View>
-         <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />             
-       </View>
        <View style={divepagestyles.container} key={diveindex}>
         <SwiperFlatList  ref={swiperRef} key={orientation} index={diveindex} renderAll={false} data={dives}
           renderItem={({ item }) => (             
