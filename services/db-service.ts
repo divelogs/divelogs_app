@@ -273,8 +273,8 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
         const newdiveid = await writeDataAndReturnId(db, insertQuery, values);
         // write the tanks
         for( let tank of divedata.tanks) {
-          let tankquery = "INSERT INTO tanks (dive_id, `index`, tank, tankname, vol, wp, start_pressure, end_pressure, o2, he, dbltank) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-          let tankvals = [newdiveid, tank.index, tank.tank, tank.tankname, tank.vol, tank.wp, tank.start_pressure, tank.end_pressure, tank.o2, tank.he, tank.dbltank];
+          let tankquery = "INSERT INTO tanks (dive_id, tank, tankname, vol, wp, start_pressure, end_pressure, o2, he, dbltank) VALUES (?,?,?,?,?,?,?,?,?,?)";
+          let tankvals = [newdiveid, tank.tank, tank.tankname, tank.vol, tank.wp, tank.start_pressure, tank.end_pressure, tank.o2, tank.he, tank.dbltank];
           db.executeSql(tankquery, tankvals);
         }
         
@@ -288,7 +288,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
   } catch (error) {
     console.error(error);
     throw Error('Failed to save Dives');
-  }
+  } 
 };
 
 export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promise<boolean> => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { SampleData } from '../models';
+import { SampleData } from '../../models';
 
 export const DiveProfile: React.FC<{
     SampleData: SampleData,

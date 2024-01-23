@@ -1,7 +1,7 @@
 
-import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
+import { Button, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import SearchBar from 'react-native-search-bar'; 
+import { Dive } from '../../models';
 
 import '../../translation'
 import { useTranslation } from 'react-i18next';

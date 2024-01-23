@@ -17,7 +17,7 @@ const DiveSwipe = ({navigation, route, imperial}:any) => {
   const [orientation, setOrientation] = useState('');
 
   const dives = route.params.dives
-  const diveindex = dives.findIndex(obj => obj.id === route.params.diveId);
+  const diveindex = dives.findIndex((obj: { id: any; }) => obj.id === route.params.diveId);
 
   const swiperRef = useRef<any>({});
 

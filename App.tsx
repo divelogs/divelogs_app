@@ -1,29 +1,25 @@
 /**
  * Divelogs App
 */
-import React, { useCallback, useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
+import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules } from 'react-native';
 
 import { Dive } from './models';
 import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, getImperial } from './services/db-service';
 import { SvgXml } from 'react-native-svg';
 import { divelogs_logo, diveicon, certicon, staticon, gearicon } from './assets/svgs.js'
-//import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import { StatisticsView } from './components/StatisticsView';
 import { Certifications } from './components/Certifications';
 import { GearView} from './components/GearItemsView';
 import './translation'
 import { useTranslation } from 'react-i18next';
-import SearchBar from 'react-native-search-bar';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime } from './components/functions.ts'
 
 import { Api } from './services/api-service'
 import Dives from './components/dives'
 import DiveDetail from './components/divedetail'
-import { DiveProfile } from './components/dives/DiveProfile';
+
 
 import styles from './stylesheets/styles'
 
@@ -143,7 +139,7 @@ const App = () => {
 
       if (succ){
         setModalVisible(false);
-        loadDataFromAPI(loginResult.bearerToken);
+        loadDataFromAPI();
       }
     }
     else
