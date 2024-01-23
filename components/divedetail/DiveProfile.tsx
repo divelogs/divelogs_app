@@ -20,7 +20,7 @@ export const DiveProfile: React.FC<{
 		<View>
 			<Image
 				style={styles.tinyprofile}
-				source={require('../assets/profileplaceholder.png')}
+				source={require('../../assets/profileplaceholder.png')}
 			/>
 		</View>
 	)
@@ -121,3 +121,5 @@ function makeSVGprofile(samples: string | any[], rate: number, duration: number,
 	ret += '</svg>';
 	return ret;
 }
+
+export default DiveProfile

@@ -4,14 +4,13 @@
 import React, { useCallback, useEffect, useRef, useState, useLayoutEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
-import { DiveListItem } from './components/DiveListItem';
+
 import { Dive } from './models';
 import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, getImperial } from './services/db-service';
 import { SvgXml } from 'react-native-svg';
 import { divelogs_logo, diveicon, certicon, staticon, gearicon } from './assets/svgs.js'
 //import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
-import { DiveProfile } from './components/DiveProfile';
 import { StatisticsView } from './components/StatisticsView';
 import { Certifications } from './components/Certifications';
 import { GearView} from './components/GearItemsView';
@@ -22,7 +21,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime } from './components/functions.ts'
 
 import { Api } from './services/api-service'
+import Dives from './components/dives'
+import DiveDetail from './components/divedetail'
+import { DiveProfile } from './components/dives/DiveProfile';
 
+import styles from './stylesheets/styles'
 
 const App = () => {
   const [isLoading, setLoading] = useState(false);
@@ -37,6 +40,7 @@ const App = () => {
   const [imperial, setImperial] = useState<boolean>(false);
 
   const [search, setSearch] = useState('');
+  
 
   const { t } = useTranslation(); 
   
@@ -75,43 +79,26 @@ const App = () => {
 
   const loadDataCallback = useCallback(async () => {
     try {
-      const db = await getDBConnection();
-      // load dives
-      const storedDives = await getDives(db,sort,search);
-      setDives(storedDives);
+
 
     } catch (error) {
       console.error(error);
     }
   }, []);
 
-  const toggleSort = async () => {
-    if (sort == `DESC`) {
-      setSort('ASC');  
-      setSortindicator('↓');   
-      const db = await getDBConnection();
-      const storedDives = await getDives(db,'ASC', search);
-      setDives(storedDives); 
-    } else {
-      setSort('DESC');
-      setSortindicator('↑'); 
-      const db = await getDBConnection();
-      const storedDives = await getDives(db,'DESC', search);
-      setDives(storedDives); 
-    }   
-  };
 
-  const loadDataFromAPI = async (bearer:string) => {
+
+  const loadDataFromAPI = async () => {
     
     try {
       setLoading(true);
 
-      if (bearer == null){
+      if (bearerToken == null){
         setModalVisible(true);
         return;
       }
 
-      Api.setBearerToken(bearer)
+      Api.setBearerToken(bearerToken)
 
       const apiDives: any = await Api.getDives()
 
@@ -143,24 +130,6 @@ const App = () => {
       setLoading(false);
     }
   };
-
-  const doSearch = async (searchtext:string) => {
-    setSearch(searchtext);
-    const db = await getDBConnection();
-    const storedDives = await getDives(db,sort,searchtext);
-    setDives(storedDives);
-  }
-
-  const cancelSearch = async () => {
-    setSearch('');
-    try {
-      const db = await getDBConnection();
-      const storedDives = await getDives(db,sort,'');
-      setDives(storedDives);
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   const doLogin = async () => {
 
@@ -195,8 +164,6 @@ const App = () => {
   }, []);
 
 
-
-
   // Use this const as key of the SwiperFlatList to enforce re-render on orientation-change
   const [orientation, setOrientation] = useState('');
   useEffect(() => {
@@ -209,243 +176,22 @@ const App = () => {
     })
   }, []);
 
-  const swiperRef = useRef<any>({});
-  
-  const DiveList = ({navigation}:any) => {
-    return (
-      <View style={{flex:1, paddingBottom: 50, backgroundColor: '#FFFFFF'}}>
-      <View style={styles.safeArea}>
-        <View style={[styles.appTitleView]}>
-          <View style={{ width:35, position: 'absolute', left: 10, top:-5 }}>
-            <Button 
-                onPress={() => {loadDataFromAPI(bearerToken)}}
-                title='↺'
-                color="#FFFFFF"
-                accessibilityLabel="load from divelogs"
-              />
-          </View>
-          <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
-          <View style={{ width:35, position: 'absolute', right: 10, top:-5 }}>
-            <Button
-                onPress={toggleSort}
-                title={sortindicator}
-                color="#FFFFFF"
-                accessibilityLabel="change sorting"
-              />
-          </View>      
-        </View>        
-        <View>
-          <FlatList
-            data={dives} 
-            ListHeaderComponent={ 
-              <SearchBar
-                placeholder={t('search')}
-                //onChangeText={setSearch}
-                onSearchButtonPress={doSearch}
-                cancelButtonText={t('reset')}
-                onCancelButtonPress={cancelSearch}
-                showsCancelButton={true}
-                autoCapitalize={'none'}
-                text={search}
-              /> 
-            }
-            renderItem={({item}) => (
-              <TouchableOpacity key={item.id} onPress={() => {
-                  let diveindex = dives.findIndex(obj => obj.id === item.id);
-                  setDdstate(diveindex);
-                  // setTimeout(()=>{
-                  //     swiperRef.current.scrollToIndex({index: diveindex});
-                  // }, 1);
-                  navigation.navigate('DiveDetail', {diveId: item.id});        
-                  }                  
-                } >
-                <DiveListItem Dive={item} imperial={imperial}/>
-              </TouchableOpacity>
-            )}
-          />
-        </View>         
-      </View>
-      </View>
-    );
-  };
-
-  const [ddstate, setDdstate] = useState<number>();
-
-  const DiveDetail = ({navigation, route}:any) => {
-    let diveindex = dives.findIndex(obj => obj.id === route.params.diveId);
-    return (
-      <>
-        <StatusBar key={ddstate} backgroundColor={'#3fb9f2'} />
-         <View style={[styles.appTitleView]}>
-         <View style={{ width:50, position: 'absolute', left: 0, top: -5 }}>
-             <Button
-                 title="←"
-                 color={'white'}                
-                 onPress={() =>
-                   navigation.navigate('Dives')
-                 }
-               />
-           </View>
-           <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />             
-         </View>
-         <View style={divepagestyles.container} >
-          <SwiperFlatList  ref={swiperRef} key={orientation} index={diveindex} renderAll={false} data={dives}
-            renderItem={({ item }) => (             
-            <ScrollView>
-              <View style={[divepagestyles.bg, divepagestyles.child]}>                
-                <View style={divepagestyles.numberdatebox}>
-                  <View style={divepagestyles.numberbox}>
-                    <Text style={divepagestyles.white}>{item.divenumber}</Text>
-                  </View>
-                  <Text style={divepagestyles.datetext1}>{makeDateObj(item.divedate).toLocaleString(locale, {weekday: 'long'})}</Text>
-                  <Text style={divepagestyles.datetext2}>{makeDateObj(item.divedate).toLocaleString(locale, {day: 'numeric', month: 'long'})}</Text>
-                  <Text style={divepagestyles.datetext3}>{makeDateObj(item.divedate).toLocaleString(locale, {year: 'numeric'})}</Text>
-                </View>
-                <View style={divepagestyles.locationbox}>
-                  <View style={divepagestyles.entry}>
-                    <Text style={divepagestyles.desc}>{t("location")}: </Text>
-                    <Text style={divepagestyles.text}>{item.location}</Text>
-                  </View>
-                  <View style={divepagestyles.entry}>
-                      <Text style={divepagestyles.desc}>{t("divesite")}: </Text>
-                      <Text style={divepagestyles.text}>{item.divesite}</Text>
-                  </View>
-                  <View style={divepagestyles.entry}>
-                    <Text style={divepagestyles.desc}>{t("buddy")}: </Text>
-                    <Text style={divepagestyles.text}>{item.buddy}</Text>
-                  </View>
-                  <View style={divepagestyles.entry}>
-                    <Text style={divepagestyles.desc}>{t("boat")}: </Text>
-                    <Text style={divepagestyles.text}>{item.boat}</Text>
-                  </View>
-                </View>
-                <View style={divepagestyles.profileblock} >
-                  <Image style={divepagestyles.profileback} source={require('./assets/profile.png')} />
-                  <Text style={{position: 'absolute', top:6, left:18}}>{item.divetime.substr(0,5)}</Text>
-                  <Text style={{position: 'absolute', top:6, left:299}}>{makeendtime(item.divetime, item.duration)}</Text>
-                  <Text style={{position: 'absolute', top:80, left:18}}>{renderdepth(item.maxdepth, imperial)} </Text>
-                  <Text style={{position: 'absolute', top:104, left:18}}>{renderdepth(item.meandepth, imperial)}</Text>
-                  <Text style={{position: 'absolute', top:6, left:140}}>{rendertemp(item.airtemp, imperial)}</Text>
-                  <Text style={{position: 'absolute', top:51, left:140}}>{rendertemp(item.surfacetemp, imperial)}</Text>
-                  <Text style={{position: 'absolute', top:150, left:140}}>{rendertemp(item.depthtemp, imperial)}</Text>
-                  <Text style={{position: 'absolute', top:176, left:115}}>{secondstotime(item.duration)}</Text>
-                </View>
-                <View>
-                <View style={divepagestyles.fullwidthentry}><Text style={divepagestyles.desc}>{t("notes")}: </Text><Text>{item.notes}</Text></View>    
-                </View>
-
-                <DiveProfile SampleData={{sampledata: item.sampledata, samplerate: item.samplerate, duration: item.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} /> 
-              </View>
-              </ScrollView>
-
-            )} />
-    
-        </View>         
-      </>
-    )
-  };
 
   const { width } = Dimensions.get('window');
 
-  const divepagestyles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: 'white' },
-    child: { width: width, justifyContent: 'center', padding: 5 },
-    profileblock: {
-      width:350,
-      height:200,
-      marginLeft:5,
-      marginTop:20,
-      marginBottom: 20,
-    },
-    profileitem: {
-      position: 'absolute'
-    },
-    profileback: {
-      width:350,
-      height:200
-    },
-    bg: {
-      backgroundColor: '#FFFFFF'
-    },
-    locationbox: {
-      width: width-190
-    },
-    numberdatebox: {
-      borderRadius: 5,
-      backgroundColor: '#eaf3f7',
-      position: 'absolute',
-      right: 10,
-      top: 10,
-      height: 60,
-      width: 170,
-      justifyContent: 'center',
-      textAlign: 'center',
-      paddingRight: 50
-    },
-
-    entry: {
-      marginTop: 5,
-      marginBottom: 5,
-      paddingLeft: 5,
-      flexDirection: 'row',
-      flex: 1,
-    },
-    desc: {
-      color: '#39ade2',     
-    },
-    text: {
-      flexWrap: 'wrap',
-      flexShrink: 1,
-    },
-    fullwidthentry: {
-      marginTop: 10,
-      paddingLeft: 5,
-      paddingRight: 10,
-      width: width-10
-    },
-    datetext1: {
-      textAlign: 'center',
-      color: '#39ade2'
-    },
-    datetext2: {
-      textAlign: 'center',
-      color: '#000000'
-    },
-    datetext3: {
-      textAlign: 'center',
-      color: '#39ade2',
-      fontSize: 17,
-      fontWeight: '500'
-    },
-    numberbox : {
-      borderRadius: 4,
-      backgroundColor: '#39ade2',
-      position: 'absolute',
-      right: 3,
-      top: 3,
-      height: 54,
-      width: 50,
-      justifyContent: 'center',
-      textAlign: 'center'
-    },
-    white: {
-      width: 50,
-      color: '#FFFFFF',
-      justifyContent: 'center',
-      textAlign: 'center',
-      fontSize: 18
-    }
-  });
 
   //const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
+
+  const DivesTab = ({navigation}:any) => <Dives navigation={navigation} refreshApiData={loadDataFromAPI}/>
+  const DiveDetailTab = ({navigation, route}:any) => <DiveDetail navigation={navigation} route={route} imperial={imperial}/>
 
   const BottomNavigation = ()=> {
     return (
       <Tab.Navigator screenOptions={{
         tabBarStyle: { backgroundColor: '#3fb9f2'}
       }}>
-        <Tab.Screen name="Dives" component={DiveList} options={{ 
+        <Tab.Screen name="Dives" component={DivesTab} options={{ 
           title: t("dives"),
           headerShown: false, 
           tabBarActiveTintColor: '#FFFFFF', 
@@ -457,7 +203,7 @@ const App = () => {
             );
           }
         }} />
-        <Tab.Screen name="DiveDetail" component={DiveDetail} options={{ 
+        <Tab.Screen name="DiveDetail" component={DiveDetailTab} options={{ 
           tabBarButton: () => null, // hide from TabBar
           headerShown: false,
           tabBarActiveTintColor: '#FFFFFF', 
@@ -553,66 +299,4 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  logininputs: {
-    width:200,
-    height:30,
-    fontSize:16,
-    borderRadius: 5,
-    borderWidth:1,
-    borderColor: '#000000',
-    marginBottom:5
-  }, 
-  button: {
-    borderRadius: 5,
-    backgroundColor: '#3fb9f2',
-    padding: 10,
-    elevation: 2,
-  },  
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  tinyLogo: {
-    width:150,
-    height:34
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#FFFFFF'
-  },
-  appTitleView: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#3fb9f2'
-  }
-});
-
 export default App; 
-
