@@ -1,5 +1,5 @@
 
-import { Button, View } from 'react-native';
+import { Button, View, Modal, Pressable, Text } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { Dive } from '../../models';
 
@@ -12,6 +12,7 @@ import { getDBConnection, getDives, getImperial } from '../../services/db-servic
 import { divelogs_logo } from '../../assets/svgs.js'
 
 import DivesList from './DivesList';
+import { AggregatedViews, AggregationView } from './Aggregation'
 
 import styles from '../../stylesheets/styles'
 
@@ -19,10 +20,17 @@ const AllDivesView = ({navigation, refreshApiData}:any) => {
 
   const { t } = useTranslation(); 
 
+  const [showAggregationModal, setShowAggregationModal] = useState<boolean>(false);
   const [dives, setDives] = useState<Dive[]>([]);
   const [sort, setSort] = useState<string>('DESC');
   const [search, setSearch] = useState<string>('');
   const [imperial, setImperial] = useState<boolean>(false);
+
+  const [view, setView] = useState<AggregationView>(AggregatedViews[0])
+
+
+  const grouping = [t("full list"), t("by months"), t("by partner"), t("by location"), t("by site"), t("by depth")]
+
 
   useEffect(() => {
 
@@ -66,6 +74,11 @@ const AllDivesView = ({navigation, refreshApiData}:any) => {
     navigation.navigate('DiveDetail', {diveId: dive.id, dives: dives});
   } 
 
+  const selectView = (view:AggregationView) => {
+    setShowAggregationModal(false)
+    setView(view)
+  }
+
   const sortindicator = (sort == "DESC") ? '↓' : '↑'
 
   return (
@@ -81,6 +94,16 @@ const AllDivesView = ({navigation, refreshApiData}:any) => {
             />
         </View>
         <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
+
+        <View style={{ width:35, position: 'absolute', right: 40, top:-5 }}>
+          <Button
+              onPress={() => setShowAggregationModal(!showAggregationModal)}
+              title="🐝"
+              color="#FFFFFF"
+              accessibilityLabel="grouping"
+            />
+        </View>    
+
         <View style={{ width:35, position: 'absolute', right: 10, top:-5 }}>
           <Button
               onPress={toggleSort}
@@ -89,9 +112,31 @@ const AllDivesView = ({navigation, refreshApiData}:any) => {
               accessibilityLabel="change sorting"
             />
         </View>      
-      </View>        
-      <DivesList navigation={navigation} selectDive={selectDive} dives={dives} doSearch={doSearch} imperial={imperial}/>
+      </View>
+      {(!view.component ? 
+          <DivesList navigation={navigation} selectDive={selectDive} dives={dives} doSearch={doSearch} imperial={imperial}/> :
+          <view.component navigation={navigation} view={view} imperial={imperial}/> )}
+      
     </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showAggregationModal}
+        onRequestClose={() => setShowAggregationModal(!showAggregationModal)}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            {AggregatedViews.map((group, key) => (
+            <Pressable style={{marginBottom: 20}}
+              key={key} onPress={() => selectView(group)}>
+              <Text>{group.name}</Text>
+            </Pressable>  
+            ))}
+          </View>
+        </View>
+      </Modal> 
+
+
     </View>
   );
 };
