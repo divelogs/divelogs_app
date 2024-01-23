@@ -23,6 +23,81 @@ import DiveDetail from './components/divedetail'
 
 import styles from './stylesheets/styles'
 
+const BottomNavigation = ({imperial, loadDataFromAPI}:any)=> {
+  //const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
+  const { t } = useTranslation(); 
+
+  return (
+    <Tab.Navigator screenOptions={{
+      tabBarStyle: { backgroundColor: '#3fb9f2'}
+    }}>
+      <Tab.Screen name="Dives" options={{ 
+        title: t("dives"),
+        headerShown: false, 
+        tabBarActiveTintColor: '#FFFFFF', 
+        tabBarInactiveTintColor: '#FFFFFF',
+        tabBarLabelStyle: {fontSize: 14},
+        tabBarIcon: ({size,focused,color}) => {
+          return (
+            <SvgXml xml={diveicon} width="40" height="25"/>
+          );
+        }
+      }}>
+        {(props) => <Dives {...props} refreshApiData={loadDataFromAPI}/>}
+      </Tab.Screen>
+      <Tab.Screen name="DiveDetail" options={{ 
+        tabBarButton: () => null, // hide from TabBar
+        headerShown: false,
+        tabBarActiveTintColor: '#FFFFFF', 
+        tabBarInactiveTintColor: '#FFFFFF',
+        tabBarLabelStyle: {fontSize: 14}
+      }}>
+        {(props) => <DiveDetail {...props} imperial={imperial}/>}
+      </Tab.Screen>
+      <Tab.Screen name="Certifications" component={Certifications} options={{ 
+        title: t("certifications"),
+        headerShown: false, 
+        tabBarActiveTintColor: '#FFFFFF', 
+        tabBarInactiveTintColor: '#FFFFFF',
+        tabBarLabelStyle: {fontSize: 14},
+        tabBarIcon: ({size,focused,color}) => {
+          return (
+            <SvgXml xml={certicon} width="40" height="25"/>
+          );
+        }
+      }} />
+      <Tab.Screen name="Statistics" 
+        component={StatisticsView} 
+        initialParams={{ imperial: imperial }}
+        options={{ 
+          title: t("statistics"),
+          headerShown: false, 
+          tabBarActiveTintColor: '#FFFFFF', 
+          tabBarInactiveTintColor: '#FFFFFF',
+          tabBarLabelStyle: {fontSize: 14},
+          tabBarIcon: ({size,focused,color}) => {
+            return (
+              <SvgXml xml={staticon} width="40" height="25"/>
+            );
+          }
+        }} />
+      <Tab.Screen name="GearItems" component={GearView} options={{ 
+        title: t("gearitems"),
+        headerShown: false, 
+        tabBarActiveTintColor: '#FFFFFF', 
+        tabBarInactiveTintColor: '#FFFFFF',
+        tabBarLabelStyle: {fontSize: 14},
+        tabBarIcon: ({size,focused,color}) => {
+          return (
+            <SvgXml xml={gearicon} width="40" height="25"/>
+          );
+        }
+      }} />
+    </Tab.Navigator>
+  );
+}
+
 const App = () => {
   const [isLoading, setLoading] = useState(false);
   const [dives, setDives] = useState<Dive[]>([]);
@@ -81,8 +156,6 @@ const App = () => {
       console.error(error);
     }
   }, []);
-
-
 
   const loadDataFromAPI = async () => {
     
@@ -175,84 +248,8 @@ const App = () => {
 
   const { width } = Dimensions.get('window');
 
-
-  //const Stack = createNativeStackNavigator();
-  const Tab = createBottomTabNavigator();
-
-  const DivesTab = ({navigation}:any) => <Dives navigation={navigation} refreshApiData={loadDataFromAPI}/>
-  const DiveDetailTab = ({navigation, route}:any) => <DiveDetail navigation={navigation} route={route} imperial={imperial}/>
-
-  const BottomNavigation = ()=> {
-    return (
-      <Tab.Navigator screenOptions={{
-        tabBarStyle: { backgroundColor: '#3fb9f2'}
-      }}>
-        <Tab.Screen name="Dives" component={DivesTab} options={{ 
-          title: t("dives"),
-          headerShown: false, 
-          tabBarActiveTintColor: '#FFFFFF', 
-          tabBarInactiveTintColor: '#FFFFFF',
-          tabBarLabelStyle: {fontSize: 14},
-          tabBarIcon: ({size,focused,color}) => {
-            return (
-              <SvgXml xml={diveicon} width="40" height="25"/>
-            );
-          }
-        }} />
-        <Tab.Screen name="DiveDetail" component={DiveDetailTab} options={{ 
-          tabBarButton: () => null, // hide from TabBar
-          headerShown: false,
-          tabBarActiveTintColor: '#FFFFFF', 
-          tabBarInactiveTintColor: '#FFFFFF',
-          tabBarLabelStyle: {fontSize: 14}
-        }} />
-        <Tab.Screen name="Certifications" component={Certifications} options={{ 
-          title: t("certifications"),
-          headerShown: false, 
-          tabBarActiveTintColor: '#FFFFFF', 
-          tabBarInactiveTintColor: '#FFFFFF',
-          tabBarLabelStyle: {fontSize: 14},
-          tabBarIcon: ({size,focused,color}) => {
-            return (
-              <SvgXml xml={certicon} width="40" height="25"/>
-            );
-          }
-        }} />
-        <Tab.Screen name="Statistics" 
-          component={StatisticsView} 
-          initialParams={{ imperial: imperial }}
-          options={{ 
-            title: t("statistics"),
-            headerShown: false, 
-            tabBarActiveTintColor: '#FFFFFF', 
-            tabBarInactiveTintColor: '#FFFFFF',
-            tabBarLabelStyle: {fontSize: 14},
-            tabBarIcon: ({size,focused,color}) => {
-              return (
-                <SvgXml xml={staticon} width="40" height="25"/>
-              );
-            }
-          }} />
-        <Tab.Screen name="GearItems" component={GearView} options={{ 
-          title: t("gearitems"),
-          headerShown: false, 
-          tabBarActiveTintColor: '#FFFFFF', 
-          tabBarInactiveTintColor: '#FFFFFF',
-          tabBarLabelStyle: {fontSize: 14},
-          tabBarIcon: ({size,focused,color}) => {
-            return (
-              <SvgXml xml={gearicon} width="40" height="25"/>
-            );
-          }
-        }} />
-      </Tab.Navigator>
-    );
-  }
-
-  return (
-    <>
-    {isLoading ? (
-      <>        
+  if (isLoading)
+    return (<>        
         <SafeAreaView style={{ flex:0, backgroundColor: '#3fb9f2', height:30 }} />
         <View style={[styles.appTitleView]}>
           <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
@@ -261,12 +258,14 @@ const App = () => {
           <Text style={{height: 50, textAlign:'center'}}>{t('loading')}</Text>     
           <ActivityIndicator />
         </View>
-      </>
-    ) : (
-    <>
+      </>)
+
+  return (
     <NavigationContainer>       
       <SafeAreaView style={{ flex:0, backgroundColor: '#3fb9f2', height:30 }} />
-      <BottomNavigation />
+
+      <BottomNavigation imperial={imperial} loadDataFromAPI={loadDataFromAPI} />
+      
       <Modal
         animationType="slide"
         transparent={true}
@@ -288,10 +287,6 @@ const App = () => {
         </View>
       </Modal>       
     </NavigationContainer>
-    
-    </>
-    )}
-    </>
   );
 };
 
