@@ -48,6 +48,7 @@ const AllDivesView = ({navigation, refreshApiData}:any) => {
     } catch (error) {
       console.error(error);
     }
+    return []
   }
 
   const toggleSort = () => {

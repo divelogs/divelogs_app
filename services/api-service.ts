@@ -24,7 +24,7 @@ const getUrl = (endpoint:string) : string =>
 apiUrl + endpoint
 
 const getDataFromApi = async (endpoint:string, method?: string) : Promise<JSON | null> => {
-
+console.log('Bearertoken in api getter' + bearerToken);
 	const url = getUrl(endpoint);
 	const result = await fetch(url, {
     method: method ?? 'GET',
@@ -77,7 +77,7 @@ const login = async (username:string, password:string ) : Promise<LoginResult> =
   data.append('pass', password);
 
   const loginoutcome: LoginResult = { success: false, bearerToken: '', error: ''};
-  console.log(loginoutcome);
+  //console.log(loginoutcome);
 
   try{
     const url = getUrl("login")

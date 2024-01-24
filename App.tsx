@@ -103,14 +103,14 @@ const App = () => {
   const [dives, setDives] = useState<Dive[]>([]);
   const [sort, setSort] = useState('DESC');
   const [bearerToken, setbearerToken] = useState('');
-  const [sortindicator, setSortindicator] = useState('↑');
+//  const [sortindicator, setSortindicator] = useState('↑');
   const [modalVisible, setModalVisible] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [dbversion, setDbVersion] = useState<number>(0);
   const [imperial, setImperial] = useState<boolean>(false);
 
-  const [search, setSearch] = useState('');
+//
   
 
   const { t } = useTranslation(); 
@@ -157,26 +157,32 @@ const App = () => {
     }
   }, []);
 
-  const loadDataFromAPI = async () => {
-    
+  const loadDataFromAPI = async (bt:string = '') => {
+    if (typeof bt === 'string') {    
+      setbearerToken(bt);
+      Api.setBearerToken(bt)
+    } else {
+      Api.setBearerToken(bearerToken);
+    }
+    console.log('übertgebener BT: '+ bt);
     try {
       setLoading(true);
 
       if (bearerToken == null){
+        console.log('fuckin bearerToken is null' );
         setModalVisible(true);
         return;
-      }
-
-      Api.setBearerToken(bearerToken)
+      }     
 
       const apiDives: any = await Api.getDives()
 
-      // null occurs when no data could be retrieved
+      // null occurs when no data could be retrieved from the API
       if(apiDives == null) {
+        console.log('apiDives is null');
         setModalVisible(true);
       }
 
-      if (!apiDives || apiDives.length == 0) 
+      if (!apiDives || apiDives.length == 0 || apiDives == null) 
         return;
 
       const db = await getDBConnection();
@@ -207,12 +213,16 @@ const App = () => {
     if (loginResult.success)
     {
       setbearerToken(loginResult.bearerToken);
+      Api.setBearerToken(loginResult.bearerToken);
       const db = await getDBConnection();
       const succ = await writeBearerToken(db, loginResult.bearerToken);
 
-      if (succ){
+      if (succ) {
         setModalVisible(false);
-        loadDataFromAPI();
+        console.log(loginResult);
+        console.log(loginResult.bearerToken);
+
+        loadDataFromAPI(loginResult.bearerToken);
       }
     }
     else
