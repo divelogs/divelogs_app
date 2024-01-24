@@ -16,19 +16,20 @@ import { AggregationView } from './Aggregation'
 
 import styles from '../../stylesheets/styles'
 
-const AllDivesView = ({navigation, route, refreshApiData}:any) => {
+const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
 
   const { t } = useTranslation(); 
 
   const [showAggregationModal, setShowAggregationModal] = useState<boolean>(false);
   const [dives, setDives] = useState<Dive[]>([]);
-  const [sort, setSort] = useState<string>('DESC');
   const [search, setSearch] = useState<string>('');
   const [imperial, setImperial] = useState<boolean>(false);
 
   const [view, setView] = useState<AggregationView|null>(null)
 
   useEffect(() => {
+    if (!!route.params?.filter?.label)
+      navigation.setOptions({title: route.params?.filter?.label});
 
     (async () => {
       const dives = await loadData()
@@ -74,21 +75,12 @@ console.log(route.params)
         }
         return await getFilteredDives(db,column,value,sort,search)
       }
-
       return await getDives(db,sort,search);
     } catch (error) {
       console.error(error);
       return []
     }
   }
-
-  const toggleSort = () => {
-    if (sort == `DESC`) {
-      setSort('ASC');
-    } else {
-      setSort('DESC');
-    }   
-  };
 
   const doSearch = (searchtext:string) => {
     setSearch(searchtext)

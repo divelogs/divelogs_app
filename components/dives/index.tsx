@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { NavigationContainer } from '@react-navigation/native';
 
-
 import { Button, View, Modal, Pressable, Text } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { Dive } from '../../models';
@@ -29,12 +28,15 @@ import DiveDetail from '../divedetail'
 
 const DivesNavigation = ({navigation, refreshApiData}:any) => {
 
-  //const sortindicator = (sort == "DESC") ? '↓' : '↑'
-
+  const [sort, setSort] = useState<string>("DESC")
 
   const imperial = false
 
   const Stack = createNativeStackNavigator();
+
+  const toggleSort = () => setSort((sort == "DESC") ? "ASC" : "DESC")
+
+  const sortindicator = (sort == "DESC") ? '↓' : '↑'
 
   return (
     <View style={{flex:1, backgroundColor: '#FFFFFF'}}>
@@ -58,8 +60,8 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
               accessibilityLabel="grouped view"
               color="#fff"/>
               <Button
-              onPress={() => console.log('This is a button!')}
-              title="↓"
+              onPress={toggleSort}
+              title={sortindicator}
               accessibilityLabel="change sorting"
               color="#fff"/>              
             </>
@@ -74,12 +76,12 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
             </>
           ),          
         }}>
-          {(props) => <AllDives {...props} refreshApiData={refreshApiData}/>}
+          {(props) => <AllDives {...props} sort={sort} refreshApiData={refreshApiData}/>}
         </Stack.Screen>
 
         <Stack.Screen name="FilteredDives" options={{ 
-          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
           headerShown: true,
+          title: "",
           headerRight: () => (
             <>
               <Button
@@ -88,19 +90,20 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
                 accessibilityLabel="grouped view"
                 color="#fff"/>
               <Button
-                onPress={() => console.log('This is a button!')}
-                title="↓"
+                onPress={toggleSort}
+                title={sortindicator}
                 accessibilityLabel="change sorting"
                 color="#fff"/>              
             </>
           ),         
         }}>
-          {(props) => <AllDives {...props} refreshApiData={refreshApiData}/>}
+          {(props) => <AllDives {...props} sort={sort} refreshApiData={refreshApiData}/>}
         </Stack.Screen>
 
         <Stack.Screen name="DiveDetail" options={{ 
           headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
-          headerShown: true          
+          headerShown: true,
+          headerBackTitleVisible: false       
         }}>
           {(props) => <DiveDetail {...props} imperial={imperial}/>}
         </Stack.Screen>
@@ -124,8 +127,8 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
               accessibilityLabel="grouped view"
               color="#fff"/>
               <Button
-              onPress={() => console.log('This is a button!')}
-              title="↓"
+              onPress={toggleSort}
+              title={sortindicator}
               accessibilityLabel="change sorting"
               color="#fff"/>              
             </>

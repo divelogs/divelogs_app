@@ -5,8 +5,11 @@ import React, { useState, useEffect } from 'react';
 import { SvgXml } from 'react-native-svg';
 import { divelogs_logo } from '../../assets/svgs.js'
 
-import { getDBConnection } from '../../services/db-service';
+import { getDBConnection, getImperial } from '../../services/db-service';
 import { getMonthStats, getHourStats, getYearStats, getSingleColumnStats, getDepthStats, getDurationStats } from '../../services/db-aggregation-service';
+
+import '../../translation'
+import { useTranslation } from 'react-i18next';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatData, StatVal } from '../../models';
@@ -17,18 +20,11 @@ export type AggregationView = {
   provide: any;
 };
 
-const StatRow = ({item}:any) => (<View
-      style={[
-        {
-          flex:1,
-          padding:10,
-          flexDirection: 'row',
-        },
-      ]}>
-      <Text style={{flex: 3}}>{item.bez.length > 0 ? item.bez : "?"}</Text>
-      <Text style={{flex: 1, textAlign:"right"}}>{item.val}</Text>
+const StatRow = ({item, label}:any) => (<View
+      style={styles.statRowStyle}>
+      <Text style={styles.statRowText}>{label?.length > 0 ? label : "?"}</Text>
+      <Text style={{flex: 1, textAlign:"right"}}>{item.val} &gt;</Text>
     </View>)
-
 
 export const SubView = ({navigation, route}:any) => {
   console.log(route)
@@ -49,10 +45,10 @@ export const SubView = ({navigation, route}:any) => {
 
 export const AggregationView = ({navigation, route, view, imperial}:any) => {
 
+  const { t } = useTranslation();
   const [stats, setStats] = useState<StatVal[]>([])
 
   const name = route.view.name
-  console.log(route)
 
   useEffect(() => {
 
@@ -60,9 +56,11 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
       const statistics = await loadData()
       setStats(statistics)
     })()
+
+    navigation.setOptions({title: route.view.name})
+
     return () => { console.log("unmount") }
   }, [view]);
-
 
   const loadData = async () : Promise<StatVal[]> => {
     try {
@@ -82,25 +80,69 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
     }
   }
 
-  const selectStat = (item:StatVal) => {
-    navigation.navigate('FilteredDives', { filter: item, view: route.view})
+  const selectStat = (item:StatVal, label:string) => {
+    navigation.navigate('FilteredDives', { filter: {...item, label: label}, view: route.view})
+  }
+
+  const makeLabel = (item:StatVal, type:string) : string => {
+    let label:string = "";
+    
+    switch (type){
+      case "byMonth":
+        const [year, month] = item.bez.split("-")
+        return t("month"+month) + " " + year
+
+      case "byDepth":
+        const [left, right] = item.bez.split("-")
+        const unit = imperial ? "feet" : "meter"
+  
+        if (left == "0")
+          return `< ${right} ${t(unit)}`
+        return `${left} - ${right} ${t(unit)}`
+
+      case "byDuration":
+        const [from, until] = item.bez.split("-")
+        if (from == "0")
+          return `< ${until} ${t("Minutes")}`
+        return `${from} - ${until} ${t("Minutes")}`
+     
+      default:
+        return item.bez
+    }
   }
 
   return <View style={{flex: 1}}>
           <FlatList
-            ListHeaderComponent={() => <Text>{name}</Text>}
+            ListHeaderComponent={() => <Text style={styles.listHeader}>{name}</Text>}
             data={stats} 
-            renderItem={({item}) => (
-              <TouchableOpacity onPress={() => selectStat(item)} >
-                <StatRow item={item} />
+            renderItem={({item}) => {
+              const label = makeLabel(item,route.view.aggregation)
+              return (<TouchableOpacity onPress={() => selectStat(item, label)} >
+                <StatRow label={label} item={item}/>
               </TouchableOpacity>
-            )}
+            )}}
           />
         </View>    
 }
 
 
 const styles = StyleSheet.create({
+  listHeader: {
+    fontSize: 30,
+    textTransform: 'uppercase',
+    fontWeight: '900',
+    marginTop: -6,
+    color: '#3eb8f1'
+  },
+  statRowStyle: {
+    flex:1,
+    padding:10,
+    flexDirection: 'row',
+  },
+  statRowText: {
+    flex: 3,
+    fontSize: 18,
+  },
   tinyLogo: {
     width:150,
     height:34
@@ -116,7 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     backgroundColor: '#3fb9f2'
-  }
+  },
 });
 
 

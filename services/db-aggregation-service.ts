@@ -77,6 +77,19 @@ export const getHourStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
   }
 };
 
+export const getDiveCount = async (db: SQLiteDatabase): Promise<number> => {
+  try {
+    const results = await db.executeSql(`SELECT count(1) as val FROM dives`);
+    if (results[0].rows.length == 0)
+      return 0
+    return results[0].rows.item(0).val;
+
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get Single Column Stats Stats');
+  }
+};
+
 export const getSingleColumnStats = async (db: SQLiteDatabase, column: string): Promise<StatVal[]> => {
   try {
     let data:StatVal[] = [];

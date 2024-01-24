@@ -29,5 +29,18 @@ export default {
     discarded: "Ausgesondert",
     last_servicedate: "Letzter Service",
     service_overdue: "Service überfällig",
-    next_service: "Nächster Service"
+    next_service: "Nächster Service",
+
+    month01: "Januar",
+    month02: "Februar",
+    month03: "März",
+    month04: "April",
+    month05: "Mai",
+    month06: "Juni",
+    month07: "Juli",
+    month08: "August",
+    month09: "September",
+    month10: "Oktober",
+    month11: "November",
+    month12: "Dezember",    
 }

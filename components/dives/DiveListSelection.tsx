@@ -1,88 +1,134 @@
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 
-import { Button, View, Modal, Pressable, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
 
-//   const grouping = [t("full list"), t("by months"), t("by partner"), t("by location"), t("by site"), t("by depth")]
+import { getDBConnection } from '../../services/db-service';
+import { getDiveCount } from '../../services/db-aggregation-service'
 
-const ListItem = ({name}:any) => {
-  return <View
-      style={[
+import { Button, View, Modal, Pressable, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
+
+const ListItem = ({name, label}:any) => {
+  return <View style={[
         {
           flex:1,
-          padding:10,
+          padding:13,
+          paddingLeft: 30,
           flexDirection:'row',
-        },]}><Text style={[{fontSize: 20, fontWeight: 'bold'}]}>{name}</Text></View>
+        },]}>
+          <Text style={[{fontSize: 20}]}>{name}</Text>
+          {label ? <Text style={[{fontSize: 20, paddingHorizontal: 5, marginLeft: 20, borderRadius: 7, borderColor: "#3d3de3", color: "#3d3de3", borderWidth: 1 }]}>{label}</Text> : null }
+        </View>
 }
 
 const DiveListSelection = ({navigation}:any) => {
   const { t } = useTranslation();
 
-  const views = [{
-      name: "All Dives",
-      location: "AllDives"
-    },
+  const [diveCount, setDiveCount] = useState<number|null>(null)
+
+  useEffect(() => {
+    (async () => {
+      const db = await getDBConnection()
+      const number = await getDiveCount(db)
+      setDiveCount(number)
+    })()
+    return () => {  }
+  }, []);
+
+  const views:any = [
     {
-      name: "By Year",
-      location: "AggregatedView",
-      aggregation: "byYear",
-      column: `strftime("%Y",divedate)`
-    },
+      section: "1",
+      data: [
+        {
+          name: t("All Dives"),
+          location: "AllDives",
+          label: diveCount
+        }
+      ]
+    }
+    ,
     {
-      name: "By Months",
-      location: "AggregatedView",
-      aggregation: "byMonth",
-      column: `strftime("%Y-%m",divedate)`
-    },
-    {
-      name: "By Partner",
-      location: "AggregatedView",
-      aggregation: "byPartner",
-      column: `buddy`
-    },
-    {
-      name: "By Location",
-      location: "AggregatedView",
-      aggregation: "byLocation",
-      column: `location`
-    },
-    {
-      name: "By Site",
-      location: "AggregatedView",
-      aggregation: "bySite",
-      column: `divesite`
-    },
-    {
-      name: "By Boat",
-      location: "AggregatedView",
-      aggregation: "byBoat",
-      column: `boat`
-    },                   
-    {
-      name: "By Depth",
-      location: "AggregatedView",
-      aggregation: "byDepth"
-    },
-    {
-      name: "By Duration",
-      location: "AggregatedView",
-      aggregation: "byDuration"
+      section: "2",
+      data: [
+        {
+          name: t("By Year"),
+          location: "AggregatedView",
+          aggregation: "byYear",
+          column: `strftime("%Y",divedate)`
+        },
+        {
+          name: t("By Months"),
+          location: "AggregatedView",
+          aggregation: "byMonth",
+          column: `strftime("%Y-%m",divedate)`
+        },
+        {
+          name: t("By Partner"),
+          location: "AggregatedView",
+          aggregation: "byPartner",
+          column: `buddy`
+        },
+        {
+          name: t("By Location"),
+          location: "AggregatedView",
+          aggregation: "byLocation",
+          column: `location`
+        },
+        {
+          name: t("By Site"),
+          location: "AggregatedView",
+          aggregation: "bySite",
+          column: `divesite`
+        },
+        {
+          name: t("By Boat"),
+          location: "AggregatedView",
+          aggregation: "byBoat",
+          column: `boat`
+        },                   
+        {
+          name: t("By Depth"),
+          location: "AggregatedView",
+          aggregation: "byDepth"
+        },
+        {
+          name: t("By Duration"),
+          location: "AggregatedView",
+          aggregation: "byDuration"
+        }
+      ]
     }
   ]
 
+  const navigate = (item:any) => {
+    
+  }
 
+  if (!diveCount) return;
 
   return <View style={{flex:1}}>
-          <FlatList
-            ListHeaderComponent={() => <Text>Image?</Text>}
-            data={views} 
-            renderItem={({item}) => (
-              <TouchableOpacity onPress={() => navigation.reset({index: 0, routes: [{ name: item.location, view: item }]}) } >
-                <ListItem name={t(item.name)}/>
-              </TouchableOpacity>
-            )}
-          />
+            <SectionList
+              sections={views}
+              keyExtractor={(item, index) => item.location + index}
+              renderItem={({item}) => (
+                <TouchableOpacity onPress={() => navigation.reset({index: 0, routes: [{ name: item.location, view: item }]}) } >
+                  <ListItem {...item}/>
+                </TouchableOpacity>
+              )}
+              renderSectionHeader={({section: {section}}) => (
+                <View style={{height: 10 }}></View>
+              )}
+            />
         </View>   
 }
 
 export default DiveListSelection
+
+
+/*
+          <SectionList
+            ListHeaderComponent={() => <Text>Image?</Text>}
+            data={views} 
+
+          />
+*/
