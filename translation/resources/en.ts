@@ -29,5 +29,13 @@ export default {
     discarded: "Discarded",
     last_servicedate: "Last Servicedate",
     service_overdue: "Service overdue",
-    next_service: "Next Service"
+    next_service: "Next Service",
+    start_pressure: "Start Press.",
+    end_pressure: "End Press.",
+    tank: "Tank",
+    vol: "Vol",
+    wp: "WP",
+    o2: "o2",
+    he: "he",
+    sac: "SAC"
 };

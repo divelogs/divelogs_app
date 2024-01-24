@@ -7,10 +7,41 @@ export const rendertemp = (temp:number, imp:boolean) => {
     if (temp != 0) return ( Math.round( (9/5)*temp+32 ) ) + ' °F'; 
     else return ""; 
   } else {
-    if (temp==0 || temp==undefined || temp==null) return '';
+    if (temp==0 || temp==undefined || temp==null) return '';
     else return temp+' °C'
   } 
 }
+
+export const renderpressure = (pressure:number, imp:boolean) => {
+  if (imp) {
+    if (pressure != 0) return ( Math.round( pressure/0.0689 ) ) + ' PSI'; 
+    else return ""; 
+  } else {
+    if (pressure==0 || pressure==undefined || pressure==null) return '';
+    else return  Math.round(pressure)+' Bar'
+  } 
+}
+
+function psi2bar(psi:number)
+{
+  return Math.round(psi*0.0689);
+}
+
+export const liter2cuft = (liter:number, wp:number = 0, imp:boolean) => {
+    if (imp) {
+      if (wp != 0)
+      {
+          // wohl PSI...
+          if (wp > 301) wp = psi2bar(wp);
+          return Math.round(liter/28.3168*wp) + ' cuft';
+      }
+      return Math.round(liter*7) + ' cuft';
+    } else {
+      return liter + ' l'
+    }
+    
+}
+
 
 export const renderdepth = (depth:number, imp:boolean) => {
   if (imp) {

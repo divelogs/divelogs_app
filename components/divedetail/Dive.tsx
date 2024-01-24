@@ -1,6 +1,4 @@
-
-
-import { Image, View, ScrollView, Text, Dimensions, NativeModules } from 'react-native';
+import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList } from 'react-native';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 
@@ -8,6 +6,8 @@ import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime } from
 import divepagestyles from './styles'
 
 import DiveProfile from './DiveProfile'
+import { TankView } from './TankView'
+import { Tank } from '../../models'
 
 const DiveDetail = ({navigation, dive, imperial}:any) => {
 
@@ -16,6 +16,12 @@ const DiveDetail = ({navigation, dive, imperial}:any) => {
                NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
 
   const { width } = Dimensions.get('window');
+
+  //dive.tanks = JSON.parse(dive.tanks.replace(/\\"/g, '"'));
+
+  let tanks = JSON.parse(dive.tanks);
+
+  let sac = calculate_sac(tanks, imperial, dive.duration, dive.meandepth);
 
   return (<ScrollView>
       <View style={[divepagestyles.bg, divepagestyles.child]}>                
@@ -55,14 +61,37 @@ const DiveDetail = ({navigation, dive, imperial}:any) => {
           <Text style={{position: 'absolute', top:51, left:140}}>{rendertemp(dive.surfacetemp, imperial)}</Text>
           <Text style={{position: 'absolute', top:150, left:140}}>{rendertemp(dive.depthtemp, imperial)}</Text>
           <Text style={{position: 'absolute', top:176, left:115}}>{secondstotime(dive.duration)}</Text>
+          <Text style={{position: 'absolute', top:175, left:250}}>{t('sac')}: {(sac ? sac : '-')}</Text>
         </View>
         <View>
+        <FlatList
+            data={tanks} 
+            renderItem={({item}) => (
+              <TankView Tank={item} imperial={imperial}/>
+            )}
+          />
         <View style={divepagestyles.fullwidthentry}><Text style={divepagestyles.desc}>{t("notes")}: </Text><Text>{dive.notes}</Text></View>    
         </View>
-        
+
         <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} /> 
       </View>
     </ScrollView>)
   }
 
 export default DiveDetail
+
+function calculate_sac (tanks:Tank[], imp:boolean, duration:number, meandepth:number) {
+  let literused = 0;
+  for (let tank of tanks) {
+    literused += (tank.start_pressure - tank.end_pressure)*tank.vol;
+    if (tank.dbltank) literused += (tank.start_pressure - tank.end_pressure)*tank.vol;
+  } 
+  // if no liters can be calculated or no meandepth, there is not enough data
+  if (literused == 0) return false;
+  if (meandepth == 0) return false;
+  let sac = (literused / ((meandepth / 10) + 1) / (duration/60));
+  let ret;
+  if (imp) ret = Math.round(sac/28.3168*100)/100 + ' cuft/min';
+  else ret = Math.round(sac*10)/10 + ' l/min';
+  return ret;
+} 

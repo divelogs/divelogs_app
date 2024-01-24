@@ -29,5 +29,13 @@ export default {
     discarded: "Ausgesondert",
     last_servicedate: "Letzter Service",
     service_overdue: "Service überfällig",
-    next_service: "Nächster Service"
+    next_service: "Nächster Service",
+    start_pressure: "Startdruck",
+    end_pressure: "Enddruck",
+    tank: "Flasche",
+    vol: "Vol",
+    wp: "Arb.Druck",
+    o2: "o2",
+    he: "he",
+    sac: "AMV"
 }
