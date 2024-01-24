@@ -25,11 +25,16 @@
     }
     const cancelSearch = () => startSearch('')
 
+    const changeSearch = (searchFor:string) => {
+      if (searchFor.length == 0 && searchText.length != 0)
+        cancelSearch('')
+    }
+
     const Filter = () => {
       if (!!doSearch)
         return <SearchBar
                 placeholder={t('search')}
-                //onChangeText={setSearch}
+                onChangeText={changeSearch}
                 onSearchButtonPress={startSearch}
                 cancelButtonText={t('reset')}
                 onCancelButtonPress={cancelSearch}
@@ -39,10 +44,9 @@
               /> 
       return null
     }
-
-
+    
     return (      
-        <View>
+        <View style={{flex: 1}}>
           <FlatList
             data={dives} 
             ListHeaderComponent={ 

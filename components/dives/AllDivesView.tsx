@@ -12,7 +12,7 @@ import { getDBConnection, getDives, getFilteredDives, getImperial } from '../../
 import { divelogs_logo } from '../../assets/svgs.js'
 
 import DivesList from './DivesList';
-import { AggregatedViews, AggregationView } from './Aggregation'
+import { AggregationView } from './Aggregation'
 
 import styles from '../../stylesheets/styles'
 
@@ -26,8 +26,8 @@ const AllDivesView = ({navigation, route, refreshApiData}:any) => {
   const [search, setSearch] = useState<string>('');
   const [imperial, setImperial] = useState<boolean>(false);
 
-  const [view, setView] = useState<AggregationView>(AggregatedViews[0])
-console.log(route)
+  const [view, setView] = useState<AggregationView|null>(null)
+
   useEffect(() => {
 
     (async () => {
@@ -50,12 +50,13 @@ console.log(route)
       const db = await getDBConnection();
 
       if (!!route.params?.filter){
-        return await getFilteredDives(db,sort,route.params.filter.bez)
+        return await getFilteredDives(db,route.params.view.column,route.params.filter.bez,sort,search)
       }
 
       return await getDives(db,sort,search);
     } catch (error) {
       console.error(error);
+      return []
     }
   }
 

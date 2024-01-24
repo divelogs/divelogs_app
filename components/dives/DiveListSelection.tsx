@@ -5,7 +5,7 @@ import { Button, View, Modal, Pressable, Text, FlatList, TouchableOpacity, Style
 
 //   const grouping = [t("full list"), t("by months"), t("by partner"), t("by location"), t("by site"), t("by depth")]
 
-const ListItem = ({name}) => {
+const ListItem = ({name}:any) => {
   return <View
       style={[
         {
@@ -15,33 +15,69 @@ const ListItem = ({name}) => {
         },]}><Text style={[{fontSize: 20, fontWeight: 'bold'}]}>{name}</Text></View>
 }
 
-const DiveListSelection = ({navigation}) => {
+const DiveListSelection = ({navigation}:any) => {
   const { t } = useTranslation();
 
   const views = [{
-    name: "All Dives",
-    location: "AllDives"
-  },
-  {
-    name: "By Year",
-    location: "AggregatedView",
-    aggregation: "byYear"
-  },
-  {
-    name: "By Depth",
-    location: "AggregatedView",
-    aggregation: "byDepth"
-  }
+      name: "All Dives",
+      location: "AllDives"
+    },
+    {
+      name: "By Year",
+      location: "AggregatedView",
+      aggregation: "byYear",
+      column: `strftime("%Y",divedate)`
+    },
+    {
+      name: "By Months",
+      location: "AggregatedView",
+      aggregation: "byMonth",
+      column: `strftime("%Y-%m",divedate)`
+    },
+    {
+      name: "By Partner",
+      location: "AggregatedView",
+      aggregation: "byPartner",
+      column: `buddy`
+    },
+    {
+      name: "By Location",
+      location: "AggregatedView",
+      aggregation: "byLocation",
+      column: `location`
+    },
+    {
+      name: "By Site",
+      location: "AggregatedView",
+      aggregation: "bySite",
+      column: `divesite`
+    },
+    {
+      name: "By Boat",
+      location: "AggregatedView",
+      aggregation: "byBoat",
+      column: `boat`
+    },                   
+    {
+      name: "By Depth",
+      location: "AggregatedView",
+      aggregation: "byDepth"
+    },
+    {
+      name: "By Duration",
+      location: "AggregatedView",
+      aggregation: "byDuration"
+    }
   ]
 
 
 
-  return <View>
+  return <View style={{flex:1}}>
           <FlatList
             ListHeaderComponent={() => <Text>Image?</Text>}
             data={views} 
-            renderItem={({item, key}) => (
-              <TouchableOpacity key={key} onPress={() => navigation.reset({index: 0, routes: [{ name: item.location, view: item }]}) } >
+            renderItem={({item}) => (
+              <TouchableOpacity onPress={() => navigation.reset({index: 0, routes: [{ name: item.location, view: item }]}) } >
                 <ListItem name={t(item.name)}/>
               </TouchableOpacity>
             )}

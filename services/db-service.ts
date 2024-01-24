@@ -95,12 +95,18 @@ export const writeStatement = async (db: SQLiteDatabase, query:string,): Promise
   }
 };
 
+const getWhere = (searchPhrase:string) : string => {
+  if (searchPhrase?.length == 0) return "" 
+  
+  searchPhrase = searchPhrase.replace("'", "\'");
+  return " location LIKE '%"+searchPhrase+"%' OR divesite LIKE '%"+searchPhrase+"%'  OR boat LIKE '%"+searchPhrase+"%'  OR notes LIKE '%"+searchPhrase+"%'  OR buddy LIKE '%"+searchPhrase+"%'"
+} 
 
 export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
     const Dives: Dive[] = [];
-    searchPhrase = searchPhrase.replace("'", "\'");
-    const where = (searchPhrase.length > 0 ? "WHERE location LIKE '%"+searchPhrase+"%' OR divesite LIKE '%"+searchPhrase+"%'  OR boat LIKE '%"+searchPhrase+"%'  OR notes LIKE '%"+searchPhrase+"%'  OR buddy LIKE '%"+searchPhrase+"%'" : "");
+
+    const where = (searchPhrase.length > 0 ? "WHERE " + getWhere(searchPhrase) : "");
     const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
     results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
@@ -114,11 +120,12 @@ export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:stri
   }
 };
 
-export const getFilteredDives = async (db: SQLiteDatabase, dir:string, searchPhrase:string): Promise<Dive[]> => {
+export const getFilteredDives = async (db: SQLiteDatabase, column: string, filter:string, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
     const Dives: Dive[] = [];
 
-    const where = "WHERE divedate BETWEEN '"+searchPhrase+"-01-01' AND '"+searchPhrase+1+"-01-01'";
+    const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
+    const where = "WHERE "+column.replace("'", "\'")+"= '"+filter.replace("'", "\'")+"'" + search
     const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
     results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {

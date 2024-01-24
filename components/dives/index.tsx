@@ -2,8 +2,6 @@
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
 
@@ -20,7 +18,7 @@ import { getDBConnection, getDives, getImperial } from '../../services/db-servic
 import { divelogs_logo } from '../../assets/svgs.js'
 
 import DivesList from './DivesList';
-import { AggregatedViews, AggregationView } from './Aggregation'
+import { AggregationView } from './Aggregation'
 
 import DiveListSelection from './DiveListSelection'
 
@@ -60,7 +58,7 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
               accessibilityLabel="grouped view"
               color="#fff"/>
               <Button
-              onPress={() => alert('This is a button!')}
+              onPress={() => console.log('This is a button!')}
               title="↓"
               accessibilityLabel="change sorting"
               color="#fff"/>              
@@ -90,7 +88,7 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
                 accessibilityLabel="grouped view"
                 color="#fff"/>
               <Button
-                onPress={() => alert('This is a button!')}
+                onPress={() => console.log('This is a button!')}
                 title="↓"
                 accessibilityLabel="change sorting"
                 color="#fff"/>              
@@ -126,7 +124,7 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
               accessibilityLabel="grouped view"
               color="#fff"/>
               <Button
-              onPress={() => alert('This is a button!')}
+              onPress={() => console.log('This is a button!')}
               title="↓"
               accessibilityLabel="change sorting"
               color="#fff"/>              

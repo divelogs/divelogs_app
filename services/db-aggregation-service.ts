@@ -1,5 +1,7 @@
+import { SQLiteDatabase } from 'react-native-sqlite-storage';
 import {  NativeModules, Platform } from 'react-native';
 import { StatVal } from '../models';
+
 
 export const getMonthStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
   try {
@@ -75,13 +77,14 @@ export const getHourStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
   }
 };
 
-export const getYearStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
+export const getSingleColumnStats = async (db: SQLiteDatabase, column: string): Promise<StatVal[]> => {
   try {
     let data:StatVal[] = [];
-    const results = await db.executeSql(`SELECT count(1) as val , strftime("%Y",divedate) as bez FROM dives
-    GROUP BY strftime("%Y",divedate)
-    ORDER BY strftime("%Y",divedate) ASC
+    const results = await db.executeSql(`SELECT count(1) as val , `+column+` as bez FROM dives
+    GROUP BY `+column+`
+    ORDER BY `+column+` ASC
     `);
+
     results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
         data.push(result.rows.item(index));
@@ -90,9 +93,11 @@ export const getYearStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
     return data;
   } catch (error) {
     console.error(error);
-    throw Error('Failed to get MontStats');
+    throw Error('Failed to get Single Column Stats Stats');
   }
 };
+
+export const getYearStats = async (db: SQLiteDatabase): Promise<StatVal[]> => getSingleColumnStats(db, `strftime("%Y",divedate)`)
 
 const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
   NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");

@@ -6,27 +6,18 @@ import { SvgXml } from 'react-native-svg';
 import { divelogs_logo } from '../../assets/svgs.js'
 
 import { getDBConnection } from '../../services/db-service';
-import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats, getFilteredDives } from '../../services/db-aggregation-service';
+import { getMonthStats, getHourStats, getYearStats, getSingleColumnStats, getDepthStats, getDurationStats } from '../../services/db-aggregation-service';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StatData, StatVal } from '../../models';
 
 export type AggregationView = {
-  name: boolean;
+  name: string;
   component: any; 
   provide: any;
 };
 
-export const AggregatedViews:AggregationView[] = [
-  { name: "full list" },
-  { name: "by months", provide: getMonthStats, component: (props) => (<AggregationView {...props} />) },
-  { name: "by years", provide: getYearStats, component: (props) => (<AggregationView {...props} />) },
-  //{ name: "by partner", component: (props) => (<AggregationView {...props} />) },
-  //{ name: "by location", component: (props) => (<AggregationView {...props} />) },
-  //{ name: "by site", component: (props) => (<AggregationView {...props} />) },
-  //{ name: "by depth", component: (props) => (<AggregationView {...props} />) },
-]
-
-const StatRow = ({item}) => (<View
+const StatRow = ({item}:any) => (<View
       style={[
         {
           flex:1,
@@ -34,12 +25,12 @@ const StatRow = ({item}) => (<View
           flexDirection: 'row',
         },
       ]}>
-      <Text style={{flex: 3}}>{item.bez}</Text>
+      <Text style={{flex: 3}}>{item.bez.length > 0 ? item.bez : "?"}</Text>
       <Text style={{flex: 1, textAlign:"right"}}>{item.val}</Text>
     </View>)
 
 
-export const SubView = ({navigation, route}) => {
+export const SubView = ({navigation, route}:any) => {
   console.log(route)
   return <View style={[styles.appTitleView]}>
         <View style={{ width:70, position: 'absolute', left: 10, top:-5 }}>
@@ -56,7 +47,7 @@ export const SubView = ({navigation, route}) => {
 }
 
 
-export const AggregationView = ({navigation, route, view, imperial}) => {
+export const AggregationView = ({navigation, route, view, imperial}:any) => {
 
   const [stats, setStats] = useState<StatVal[]>([])
 
@@ -78,24 +69,29 @@ export const AggregationView = ({navigation, route, view, imperial}) => {
       const db = await getDBConnection();
 
       switch (route.view.aggregation){
+        case "byDepth":
+          return await getDepthStats(db, imperial)
+        case "byDuration":
+          return await getDurationStats(db)     
         default:
-          return await getYearStats(db)
+          return await getSingleColumnStats(db, route.view.column)
       }
     } catch (error) {
       console.error(error);
+      return []
     }
   }
 
-  const selectStat = (item) => {
+  const selectStat = (item:StatVal) => {
     navigation.navigate('FilteredDives', { filter: item, view: route.view})
   }
 
-  return <View>
+  return <View style={{flex: 1}}>
           <FlatList
             ListHeaderComponent={() => <Text>{name}</Text>}
             data={stats} 
-            renderItem={({item, key}) => (
-              <TouchableOpacity key={key} onPress={() => selectStat(item)} >
+            renderItem={({item}) => (
+              <TouchableOpacity onPress={() => selectStat(item)} >
                 <StatRow item={item} />
               </TouchableOpacity>
             )}
