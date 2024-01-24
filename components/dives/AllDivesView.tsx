@@ -25,8 +25,6 @@ const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
   const [search, setSearch] = useState<string>('');
   const [imperial, setImperial] = useState<boolean>(false);
 
-  const [view, setView] = useState<AggregationView|null>(null)
-
   useEffect(() => {
     if (!!route.params?.filter?.label)
       navigation.setOptions({title: route.params?.filter?.label});
@@ -89,11 +87,6 @@ console.log(route.params)
   const selectDive = (dive:Dive) => {
     navigation.navigate('DiveDetail', {dive: dive, diveId: dive.id, dives: dives});
   } 
-
-  const selectView = (view:AggregationView) => {
-    setShowAggregationModal(false)
-    setView(view)
-  }
 
   const sortindicator = (sort == "DESC") ? '↓' : '↑'
   return (

@@ -11,6 +11,7 @@
   import { divelogs_logo } from '../../assets/svgs.js'
 
   import { DiveListItem } from './DiveListItem';
+  import DiveListFooterStats from './DiveListFooter';
 
 
   import styles from '../../stylesheets/styles'
@@ -84,6 +85,9 @@
               <TouchableOpacity key={item.id} onPress={() => selectDive(item)} >
                 <DiveListItem Dive={item} imperial={imperial}/>
               </TouchableOpacity>
+            )}
+            ListFooterComponent={({item}) => (
+              <DiveListFooterStats {...item} dives={dives} imperial={imperial} />
             )}
           />
         </View>         

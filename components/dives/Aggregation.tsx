@@ -2,46 +2,20 @@
 import { Button, View, Modal, Pressable, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 
 import React, { useState, useEffect } from 'react';
-import { SvgXml } from 'react-native-svg';
-import { divelogs_logo } from '../../assets/svgs.js'
 
 import { getDBConnection, getImperial } from '../../services/db-service';
-import { getMonthStats, getHourStats, getYearStats, getSingleColumnStats, getDepthStats, getDurationStats } from '../../services/db-aggregation-service';
+import { getSingleColumnStats, getDepthStats, getDurationStats } from '../../services/db-aggregation-service';
 
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatData, StatVal } from '../../models';
-
-export type AggregationView = {
-  name: string;
-  component: any; 
-  provide: any;
-};
+import { StatVal } from '../../models';
 
 const StatRow = ({item, label}:any) => (<View
       style={styles.statRowStyle}>
       <Text style={styles.statRowText}>{label?.length > 0 ? label : "?"}</Text>
       <Text style={{flex: 1, textAlign:"right"}}>{item.val} &gt;</Text>
     </View>)
-
-export const SubView = ({navigation, route}:any) => {
-  console.log(route)
-  return <View style={[styles.appTitleView]}>
-        <View style={{ width:70, position: 'absolute', left: 10, top:-5 }}>
-          <Button
-            title="←"
-            color={'white'}                
-            onPress={() =>
-              navigation.navigate('Aggregation')
-            }
-          />
-        </View>
-        <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />               
-      </View>  
-}
-
 
 export const AggregationView = ({navigation, route, view, imperial}:any) => {
 
