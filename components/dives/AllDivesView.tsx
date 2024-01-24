@@ -7,7 +7,7 @@ import '../../translation'
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 
-import { getDBConnection, getDives, getImperial } from '../../services/db-service';
+import { getDBConnection, getDives, getFilteredDives, getImperial } from '../../services/db-service';
 
 import { divelogs_logo } from '../../assets/svgs.js'
 
@@ -16,7 +16,7 @@ import { AggregatedViews, AggregationView } from './Aggregation'
 
 import styles from '../../stylesheets/styles'
 
-const AllDivesView = ({navigation, refreshApiData}:any) => {
+const AllDivesView = ({navigation, route, refreshApiData}:any) => {
 
   const { t } = useTranslation(); 
 
@@ -27,11 +27,7 @@ const AllDivesView = ({navigation, refreshApiData}:any) => {
   const [imperial, setImperial] = useState<boolean>(false);
 
   const [view, setView] = useState<AggregationView>(AggregatedViews[0])
-
-
-  const grouping = [t("full list"), t("by months"), t("by partner"), t("by location"), t("by site"), t("by depth")]
-
-
+console.log(route)
   useEffect(() => {
 
     (async () => {
@@ -52,6 +48,11 @@ const AllDivesView = ({navigation, refreshApiData}:any) => {
   const loadData = async () : Promise<Dive[]> => {
     try {
       const db = await getDBConnection();
+
+      if (!!route.params?.filter){
+        return await getFilteredDives(db,sort,route.params.filter.bez)
+      }
+
       return await getDives(db,sort,search);
     } catch (error) {
       console.error(error);

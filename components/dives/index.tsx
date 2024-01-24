@@ -3,6 +3,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+
+
 import { Button, View, Modal, Pressable, Text } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { Dive } from '../../models';
@@ -17,6 +21,8 @@ import { divelogs_logo } from '../../assets/svgs.js'
 
 import DivesList from './DivesList';
 import { AggregatedViews, AggregationView } from './Aggregation'
+
+import DiveListSelection from './DiveListSelection'
 
 import styles from '../../stylesheets/styles'
 
@@ -49,7 +55,7 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           headerRight: () => (
             <>
               <Button
-              onPress={() => navigation.reset({index: 0, routes: [{ name: 'AggregatedDives'}]})}
+              onPress={() => navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}
               title="🐝"
               accessibilityLabel="grouped view"
               color="#fff"/>
@@ -73,6 +79,27 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           {(props) => <AllDives {...props} refreshApiData={refreshApiData}/>}
         </Stack.Screen>
 
+        <Stack.Screen name="FilteredDives" options={{ 
+          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
+          headerShown: true,
+          headerRight: () => (
+            <>
+              <Button
+                onPress={() => navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}
+                title="🐝"
+                accessibilityLabel="grouped view"
+                color="#fff"/>
+              <Button
+                onPress={() => alert('This is a button!')}
+                title="↓"
+                accessibilityLabel="change sorting"
+                color="#fff"/>              
+            </>
+          ),         
+        }}>
+          {(props) => <AllDives {...props} refreshApiData={refreshApiData}/>}
+        </Stack.Screen>
+
         <Stack.Screen name="DiveDetail" options={{ 
           headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
           headerShown: true          
@@ -80,32 +107,34 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           {(props) => <DiveDetail {...props} imperial={imperial}/>}
         </Stack.Screen>
 
-
-
-        <Stack.Screen name="AggregatedDives" options={{ 
+        <Stack.Screen name="DiveListSelection" options={{ 
           headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
           headerShown: true,
-          animation: "none",
+          animation: "none"
+        }}>
+          {(props) => <DiveListSelection {...props}/>}
+        </Stack.Screen>
+
+        <Stack.Screen name="AggregatedView" options={{ 
+          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
+          headerShown: true,
           headerRight: () => (
             <>
               <Button
-              onPress={() => navigation.reset({index: 0, routes: [{ name: 'AllDives'}]})}
+              onPress={() => navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}
               title="🐝"
               accessibilityLabel="grouped view"
-              color="#fff"/>         
+              color="#fff"/>
+              <Button
+              onPress={() => alert('This is a button!')}
+              title="↓"
+              accessibilityLabel="change sorting"
+              color="#fff"/>              
             </>
           ),
         }}>
-          {(props) => <><Text>sd</Text>
-
-              <Button
-              onPress={() => navigation.navigate('Certifications')}
-              title="🐝"
-              accessibilityLabel="grouped view"
-              color="#fff"/>    
-
-          </>}
-        </Stack.Screen>
+          {(props) => <AggregationView {...props}/>}
+        </Stack.Screen>        
       </Stack.Navigator>   
     </View>
   );

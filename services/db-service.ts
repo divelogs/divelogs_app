@@ -114,6 +114,24 @@ export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:stri
   }
 };
 
+export const getFilteredDives = async (db: SQLiteDatabase, dir:string, searchPhrase:string): Promise<Dive[]> => {
+  try {
+    const Dives: Dive[] = [];
+
+    const where = "WHERE divedate BETWEEN '"+searchPhrase+"-01-01' AND '"+searchPhrase+1+"-01-01'";
+    const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
+    results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
+      for (let index = 0; index < result.rows.length; index++) {
+        Dives.push(result.rows.item(index));
+      }
+    });
+    return Dives;
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get Dives');
+  }
+};
+
 export const getGearItems = async (db: SQLiteDatabase): Promise<GearItem[]> => {
   try {
     const GearItems: GearItem[] = [];

@@ -6,7 +6,7 @@ import { SvgXml } from 'react-native-svg';
 import { divelogs_logo } from '../../assets/svgs.js'
 
 import { getDBConnection } from '../../services/db-service';
-import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats } from '../../services/db-aggregation-service';
+import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats, getFilteredDives } from '../../services/db-aggregation-service';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -55,34 +55,13 @@ export const SubView = ({navigation, route}) => {
       </View>  
 }
 
-export const AggregationView = ({navigation, view, imperial}) => { 
 
-  const Stack = createNativeStackNavigator();
-
-  return (
-    <View style={{ flex: 1 }}>
-        <Stack.Navigator>
-        <Stack.Screen name="Aggregation" options={{ 
-          headerShown: false          
-        }}>
-          {(props) => <AggregationViewSub {...props} view={view}/>}
-        </Stack.Screen>
-        <Stack.Screen name="AggregatedDives" options={{ 
-          headerShown: false          
-        }}>
-          {(props) => <SubView {...props}/>}
-        </Stack.Screen>
-      </Stack.Navigator>    
-    </View>
-  );
-
-}
-
-
-
-export const AggregationViewSub = ({navigation, view, imperial}) => {
+export const AggregationView = ({navigation, route, view, imperial}) => {
 
   const [stats, setStats] = useState<StatVal[]>([])
+
+  const name = route.view.name
+  console.log(route)
 
   useEffect(() => {
 
@@ -97,22 +76,23 @@ export const AggregationViewSub = ({navigation, view, imperial}) => {
   const loadData = async () : Promise<StatVal[]> => {
     try {
       const db = await getDBConnection();
-      console.log(view.provide)
-      return await view.provide(db);
+
+      switch (route.view.aggregation){
+        default:
+          return await getYearStats(db)
+      }
     } catch (error) {
       console.error(error);
     }
   }
 
   const selectStat = (item) => {
-    navigation.navigate('AggregatedDives', {item: item})
+    navigation.navigate('FilteredDives', { filter: item, view: route.view})
   }
-
-  console.log(stats)
 
   return <View>
           <FlatList
-            ListHeaderComponent={() => <Text>{view.name}</Text>}
+            ListHeaderComponent={() => <Text>{name}</Text>}
             data={stats} 
             renderItem={({item, key}) => (
               <TouchableOpacity key={key} onPress={() => selectStat(item)} >
