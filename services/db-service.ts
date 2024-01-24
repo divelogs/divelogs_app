@@ -257,9 +257,10 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
           notes,
           gearitems,
           samplerate,
-          sampledata
+          sampledata,
+          tanks
       )
-      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       //const profiledatastring = divedata.sampledata.join(",");
 
@@ -291,10 +292,14 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
         divedata.notes,
         (gi.length > 0 ? gi.join(",") : null),
         divedata.samplerate,
-        (divedata.sampledata != null ? divedata.sampledata.join(",") : '')
+        (divedata.sampledata != null ? divedata.sampledata.join(",") : ''),
+        JSON.stringify(divedata.tanks)
       ]
      
       try {
+        db.executeSql(insertQuery, values);
+
+        /* tanks are now JSON Object in table dives
         const newdiveid = await writeDataAndReturnId(db, insertQuery, values);
         // write the tanks
         for( let tank of divedata.tanks) {
@@ -302,6 +307,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
           let tankvals = [newdiveid, tank.tank, tank.tankname, tank.vol, tank.wp, tank.start_pressure, tank.end_pressure, tank.o2, tank.he, tank.dbltank];
           db.executeSql(tankquery, tankvals);
         }
+        */
         
       } catch (error) {
         console.error(error)

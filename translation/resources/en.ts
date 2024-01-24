@@ -31,6 +31,15 @@ export default {
     service_overdue: "Service overdue",
     next_service: "Next Service",
 
+    start_pressure: "Start Press.",
+    end_pressure: "End Press.",
+    tank: "Tank",
+    vol: "Vol",
+    wp: "WP",
+    o2: "o2",
+    he: "he",
+    sac: "SAC",
+
     month01: "January",
     month02: "February",
     month03: "March",
@@ -44,5 +53,3 @@ export default {
     month11: "November",
     month12: "December",
 };
-
-

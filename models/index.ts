@@ -34,6 +34,7 @@ export type Dive = {
   sampledata: string;
   created: Date;
   modified: Date;
+  tanks: string | JSON;
 };
 
 export type APIDive = {

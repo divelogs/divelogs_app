@@ -30,6 +30,15 @@ export default {
     last_servicedate: "Letzter Service",
     service_overdue: "Service überfällig",
     next_service: "Nächster Service",
+ 
+    start_pressure: "Startdruck",
+    end_pressure: "Enddruck",
+    tank: "Flasche",
+    vol: "Vol",
+    wp: "Arb.Druck",
+    o2: "o2",
+    he: "he",
+    sac: "AMV",
 
     month01: "Januar",
     month02: "Februar",
@@ -42,5 +51,5 @@ export default {
     month09: "September",
     month10: "Oktober",
     month11: "November",
-    month12: "Dezember",    
+    month12: "Dezember",
 }
