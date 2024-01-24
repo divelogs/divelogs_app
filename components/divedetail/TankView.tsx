@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet,  Text,  View, Dimensions } from 'react-native';
 import { Tank } from '../../models';
-import { renderpressure, liter2cuft } from '../functions.ts'
+import { renderpressure, rendervolume } from '../functions.ts'
 import { singletank, doubletank } from '../../assets/svgs.js'
 import { SvgXml } from 'react-native-svg';
 import '../../translation'
@@ -20,7 +20,7 @@ export const TankView: React.FC<{
         <View style={styles.texts}>
             <View style={styles.textblock}>
                 <Text style={styles.desc}>{t('tank')}: </Text><Text>{tank}  </Text>
-                <Text style={styles.desc}>{t('vol')}: </Text><Text>{(dbltank ? "2x" : "")}{liter2cuft(vol, wp, imperial)}  </Text>
+                <Text style={styles.desc}>{t('vol')}: </Text><Text>{(dbltank ? "2x" : "")}{rendervolume(vol, wp, imperial)}  </Text>
                 {wp > 0 && <><Text style={styles.desc}>{t('wp')}: </Text><Text>{renderpressure(wp, imperial)}  </Text></>}
             </View>
             <View style={styles.textblock}>

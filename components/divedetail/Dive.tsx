@@ -17,11 +17,9 @@ const DiveDetail = ({navigation, dive, imperial}:any) => {
 
   const { width } = Dimensions.get('window');
 
-  //dive.tanks = JSON.parse(dive.tanks.replace(/\\"/g, '"'));
+  let tanks = (dive.tanks != null ? JSON.parse(dive.tanks) : []);
 
-  let tanks = JSON.parse(dive.tanks);
-
-  let sac = calculate_sac(tanks, imperial, dive.duration, dive.meandepth);
+  let sac = (dive.tanks != null ? calculate_sac(tanks, imperial, dive.duration, dive.meandepth) : false);
 
   return (<ScrollView>
       <View style={[divepagestyles.bg, divepagestyles.child]}>                

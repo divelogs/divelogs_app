@@ -27,7 +27,7 @@ function psi2bar(psi:number)
   return Math.round(psi*0.0689);
 }
 
-export const liter2cuft = (liter:number, wp:number = 0, imp:boolean) => {
+export const rendervolume = (liter:number, wp:number = 0, imp:boolean) => {
     if (imp) {
       if (wp != 0)
       {
