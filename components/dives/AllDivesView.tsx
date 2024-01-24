@@ -49,8 +49,30 @@ const AllDivesView = ({navigation, route, refreshApiData}:any) => {
     try {
       const db = await getDBConnection();
 
+console.log(route.params)
+
       if (!!route.params?.filter){
-        return await getFilteredDives(db,route.params.view.column,route.params.filter.bez,sort,search)
+        let column:string;
+        let value:string;
+        switch (route.params.view.aggregation)
+        {
+          case "byDepth":
+            value = route.params.filter.bez.replace(/\-.+/, "")
+            if (imperial)
+              column = "CAST(CAST(maxdepth/0.3048/10 as int)*10 as string)"
+            else
+              column = "CAST(CAST(maxdepth/5 as int)*5 as string)"
+            break
+          case "byDuration":
+            value = route.params.filter.bez.replace(/\-.+/, "")
+            column = "CAST(CAST((duration/60)/5 as string)*5 as string)"
+            break
+          default:
+            value = route.params.filter.bez
+            column = route.params.view.column
+            break
+        }
+        return await getFilteredDives(db,column,value,sort,search)
       }
 
       return await getDives(db,sort,search);
