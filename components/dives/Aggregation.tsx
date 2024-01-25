@@ -14,7 +14,7 @@ import { StatVal } from '../../models';
 const StatRow = ({item, label}:any) => (<View
       style={styles.statRowStyle}>
       <Text style={styles.statRowText}>{label?.length > 0 ? label : "?"}</Text>
-      <Text style={styles.countlabel}>{item.val}</Text>
+      <View style={styles.countlabel}><Text style={styles.countlabeltext}>{item.val}</Text></View>
     </View>) 
 
 export const AggregationView = ({navigation, route, view, imperial}:any) => {
@@ -112,14 +112,24 @@ const styles = StyleSheet.create({
     color: '#3eb8f1'
   },
   countlabel: {
-    fontSize: 20, 
+    
     paddingHorizontal: 5, 
     marginLeft: 20, 
-    borderRadius: 7, 
-    borderColor: "#3d3de3", 
-    color: "#3d3de3", 
+    borderRadius: 10, 
+    borderColor: "#3fb9f2", 
+    paddingTop:1,
+
+    backgroundColor: '#3fb9f2',
     borderWidth: 1,
-    textAlign:"right"
+    minWidth:40,
+    
+    
+  },
+  countlabeltext: {
+    fontSize: 14, 
+    fontWeight: '700',
+    color: "#FFFFFF", 
+    textAlign:"center"
   },
   statRowStyle: {
     flex:1,

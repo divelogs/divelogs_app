@@ -93,8 +93,7 @@ const styles = StyleSheet.create({
         marginTop: 15,
         padding: 5,
         paddingBottom: 40,
-        borderTopWidth: .3,
-        borderColor: "#888",
+       
     },
     footerDives: {
         textAlign: "center",
