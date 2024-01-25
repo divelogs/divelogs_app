@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules } from 'react-native';
 
 import { Dive } from './models';
-import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, getImperial } from './services/db-service';
+import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, saveStatistics, getImperial } from './services/db-service';
 import { SvgXml } from 'react-native-svg';
 import { divelogs_logo, diveicon, certicon, staticon, gearicon } from './assets/svgs.js'
 import { StatisticsView } from './components/StatisticsView';
@@ -162,6 +162,8 @@ const App = () => {
         return;
       }     
 
+      console.log("-->" + bearerToken)
+
       const apiDives: any = await Api.getDives()
 
       // null occurs when no data could be retrieved from the API
@@ -176,6 +178,9 @@ const App = () => {
       const db = await getDBConnection();
       await saveDives(db, apiDives);
       const storedDives = await getDives(db,sort,'');
+
+      await saveStatistics(db, storedDives);
+
       setDives(storedDives); 
       
       const userSettings:any = await Api.getUserSettings()

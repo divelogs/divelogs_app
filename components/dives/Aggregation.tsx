@@ -4,7 +4,7 @@ import { Button, View, Modal, Pressable, Text, FlatList, TouchableOpacity, Style
 import React, { useState, useEffect } from 'react';
 
 import { getDBConnection, getImperial } from '../../services/db-service';
-import { getSingleColumnStats, getDepthStats, getDurationStats } from '../../services/db-aggregation-service';
+import { getSingleColumnStats, getDepthStats, getDurationStats, getPrecalcedStats } from '../../services/db-aggregation-service';
 
 import '../../translation'
 import { useTranslation } from 'react-i18next';
@@ -44,7 +44,10 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
         case "byDepth":
           return await getDepthStats(db, imperial)
         case "byDuration":
-          return await getDurationStats(db)     
+          return await getDurationStats(db)
+        case "byPartner":
+        case "byDiveGroup":
+          return await getPrecalcedStats(db, route.view.column)
         default:
           return await getSingleColumnStats(db, route.view.column)
       }
@@ -80,6 +83,13 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
           return `< ${until} ${t("minutes")}`
         return `${from} - ${until} ${t("minutes")}`
      
+      case "byDiveGroup":
+        const search = item.bez;
+        const lastIndex = search.lastIndexOf(',');
+        if (lastIndex < 0)
+          return search;
+        return search.slice(0, lastIndex) + " " + ('and') + search.slice(lastIndex + 1);
+
       default:
         return item.bez
     }

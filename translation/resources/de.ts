@@ -34,6 +34,7 @@ export default {
     max_duration: "Maximale Dauer",
     min_temp: "Minimale Temp.",
     avg_duration: "∅ Dauer",
+    sum_duration: "∑ Dauer",
  
     start_pressure: "Startdruck",
     end_pressure: "Enddruck",
@@ -63,9 +64,12 @@ export default {
     byYear: "Nach Jahren",
     byMonth: "Nach Monaten",
     byPartner: "Nach Tauchpartnern",
+    byDiveGroup: "Nach Tauchgruppe",
     byLocation: "Nach Orten",
     bySite: "Nach Tauchplätzen",
     byBoat: "Nach Schiffen",
     byDepth: "Nach Tiefen",
     byDuration: "Nach Tauchdauer",
+
+    and: "und",
 }

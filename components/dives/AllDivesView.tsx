@@ -7,7 +7,7 @@ import '../../translation'
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 
-import { getDBConnection, getDives, getFilteredDives, getImperial } from '../../services/db-service';
+import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getImperial } from '../../services/db-service';
 
 import { divelogs_logo } from '../../assets/svgs.js'
 
@@ -66,6 +66,9 @@ console.log(route.params)
             value = route.params.filter.bez.replace(/\-.+/, "")
             column = "CAST(CAST((duration/60)/5 as string)*5 as string)"
             break
+          case "byPartner":
+          case "byDiveGroup":
+            return await getFilteredDivesByPrecalcedStatistics(db, route.params.view.column, route.params.filter.bez, sort, search);
           default:
             value = route.params.filter.bez
             column = route.params.view.column

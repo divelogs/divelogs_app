@@ -41,66 +41,71 @@ const DiveListSelection = ({navigation}:any) => {
     {
       section: "1",
       data: [
-        {
-          name: t("allDives"),
-          location: "AllDives",
-          label: diveCount
-        }
+      {
+        name: t("allDives"),
+        location: "AllDives",
+        label: diveCount
+      }
       ]
     }
     ,
     {
       section: "2",
       data: [
-        {
-          name: t("byYear"),
-          location: "AggregatedView",
-          aggregation: "byYear",
-          column: `strftime("%Y",divedate)`
-        },
-        {
-          name: t("byMonth"),
-          location: "AggregatedView",
-          aggregation: "byMonth",
-          column: `strftime("%Y-%m",divedate)`
-        },
-        {
-          name: t("byPartner"),
-          location: "AggregatedView",
-          aggregation: "byPartner",
-          column: `buddy`
-        },
-        {
-          name: t("byLocation"),
-          location: "AggregatedView",
-          aggregation: "byLocation",
-          column: `location`
-        },
-        {
-          name: t("bySite"),
-          location: "AggregatedView",
-          aggregation: "bySite",
-          column: `divesite`
-        },
-        {
-          name: t("byBoat"),
-          location: "AggregatedView",
-          aggregation: "byBoat",
-          column: `boat`
-        },                   
-        {
-          name: t("byDepth"),
-          location: "AggregatedView",
-          aggregation: "byDepth"
-        },
-        {
-          name: t("byDuration"),
-          location: "AggregatedView",
-          aggregation: "byDuration"
-        }
+      {
+        name: t("byYear"),
+        location: "AggregatedView",
+        aggregation: "byYear",
+        column: `strftime("%Y",divedate)`
+      },
+      {
+        name: t("byMonth"),
+        location: "AggregatedView",
+        aggregation: "byMonth",
+        column: `strftime("%Y-%m",divedate)`
+      },
+      {
+        name: t("byPartner"),
+        location: "AggregatedView",
+        aggregation: "byPartner",
+        column: `buddy`
+      },
+      {
+        name: t("byDiveGroup"),
+        location: "AggregatedView",
+        aggregation: "byDiveGroup",
+        column: `buddyflock`
+      },
+      {
+        name: t("byLocation"),
+        location: "AggregatedView",
+        aggregation: "byLocation",
+        column: `location`
+      },
+      {
+        name: t("bySite"),
+        location: "AggregatedView",
+        aggregation: "bySite",
+        column: `divesite`
+      },
+      {
+        name: t("byBoat"),
+        location: "AggregatedView",
+        aggregation: "byBoat",
+        column: `boat`
+      },                   
+      {
+        name: t("byDepth"),
+        location: "AggregatedView",
+        aggregation: "byDepth"
+      },
+      {
+        name: t("byDuration"),
+        location: "AggregatedView",
+        aggregation: "byDuration"
+      }
       ]
-    }
-  ]
+    }]
 
   const navigate = (item:any) => {
     
