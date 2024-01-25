@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { NavigationContainer } from '@react-navigation/native';
 
-import { Button, View, Modal, Pressable, Text } from 'react-native';
+import { Button, View, Modal, Pressable, Text, TouchableOpacity } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { Dive } from '../../models';
 
@@ -14,7 +14,7 @@ import React, { useState, useEffect } from 'react';
 
 import { getDBConnection, getDives, getImperial } from '../../services/db-service';
 
-import { divelogs_logo } from '../../assets/svgs.js'
+import { divelogs_logo, filtericon } from '../../assets/svgs.js'
 
 import DivesList from './DivesList';
 import { AggregationView } from './Aggregation'
@@ -53,12 +53,11 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
           headerShown: true,
           headerRight: () => (
-            <>
-              <Button
-              onPress={() => navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}
-              title="🐝"
-              accessibilityLabel="grouped view"
-              color="#fff"/>
+            <>              
+              <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
+                  <SvgXml style={{marginRight: 15}} xml={filtericon} width="15" height="15"/>
+              </TouchableOpacity>
+
               <Button
               onPress={toggleSort}
               title={sortindicator}
@@ -84,11 +83,9 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           title: "",
           headerRight: () => (
             <>
-              <Button
-                onPress={() => navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}
-                title="🐝"
-                accessibilityLabel="grouped view"
-                color="#fff"/>
+              <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
+                  <SvgXml style={{marginRight: 15}} xml={filtericon} width="15" height="15"/>
+              </TouchableOpacity>
               <Button
                 onPress={toggleSort}
                 title={sortindicator}
@@ -121,11 +118,9 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           headerShown: true,
           headerRight: () => (
             <>
-              <Button
-              onPress={() => navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}
-              title="🐝"
-              accessibilityLabel="grouped view"
-              color="#fff"/>
+              <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
+                  <SvgXml style={{marginRight: 15}} xml={filtericon} width="15" height="15"/>
+              </TouchableOpacity>
               <Button
               onPress={toggleSort}
               title={sortindicator}

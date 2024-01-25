@@ -8,6 +8,8 @@ import { getDiveCount } from '../../services/db-aggregation-service'
 
 import { Button, View, Modal, Pressable, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
 
+
+
 const ListItem = ({name, label}:any) => {
   return <View style={[
         {
@@ -40,7 +42,7 @@ const DiveListSelection = ({navigation}:any) => {
       section: "1",
       data: [
         {
-          name: t("All Dives"),
+          name: t("allDives"),
           location: "AllDives",
           label: diveCount
         }
@@ -51,48 +53,48 @@ const DiveListSelection = ({navigation}:any) => {
       section: "2",
       data: [
         {
-          name: t("By Year"),
+          name: t("byYear"),
           location: "AggregatedView",
           aggregation: "byYear",
           column: `strftime("%Y",divedate)`
         },
         {
-          name: t("By Months"),
+          name: t("byMonth"),
           location: "AggregatedView",
           aggregation: "byMonth",
           column: `strftime("%Y-%m",divedate)`
         },
         {
-          name: t("By Partner"),
+          name: t("byPartner"),
           location: "AggregatedView",
           aggregation: "byPartner",
           column: `buddy`
         },
         {
-          name: t("By Location"),
+          name: t("byLocation"),
           location: "AggregatedView",
           aggregation: "byLocation",
           column: `location`
         },
         {
-          name: t("By Site"),
+          name: t("bySite"),
           location: "AggregatedView",
           aggregation: "bySite",
           column: `divesite`
         },
         {
-          name: t("By Boat"),
+          name: t("byBoat"),
           location: "AggregatedView",
           aggregation: "byBoat",
           column: `boat`
         },                   
         {
-          name: t("By Depth"),
+          name: t("byDepth"),
           location: "AggregatedView",
           aggregation: "byDepth"
         },
         {
-          name: t("By Duration"),
+          name: t("byDuration"),
           location: "AggregatedView",
           aggregation: "byDuration"
         }
@@ -107,6 +109,7 @@ const DiveListSelection = ({navigation}:any) => {
   if (!diveCount) return;
 
   return <View style={{flex:1}}>
+            <Text style={styles.listHeader}>{t('choosefilter')}:</Text>
             <SectionList
               sections={views}
               keyExtractor={(item, index) => item.location + index}
@@ -124,6 +127,16 @@ const DiveListSelection = ({navigation}:any) => {
 
 export default DiveListSelection
 
+const styles = StyleSheet.create({
+  listHeader: {
+    fontSize: 25,
+    
+    fontWeight: '700',
+    marginTop: 5,
+    marginLeft: 10,
+    color: '#3eb8f1'
+  }
+});
 
 /*
           <SectionList

@@ -14,8 +14,8 @@ import { StatVal } from '../../models';
 const StatRow = ({item, label}:any) => (<View
       style={styles.statRowStyle}>
       <Text style={styles.statRowText}>{label?.length > 0 ? label : "?"}</Text>
-      <Text style={{flex: 1, textAlign:"right"}}>{item.val} &gt;</Text>
-    </View>)
+      <Text style={styles.countlabel}>{item.val}</Text>
+    </View>) 
 
 export const AggregationView = ({navigation, route, view, imperial}:any) => {
 
@@ -68,7 +68,7 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
 
       case "byDepth":
         const [left, right] = item.bez.split("-")
-        const unit = imperial ? "feet" : "meter"
+        const unit = imperial ? "ft" : "m"
   
         if (left == "0")
           return `< ${right} ${t(unit)}`
@@ -77,8 +77,8 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
       case "byDuration":
         const [from, until] = item.bez.split("-")
         if (from == "0")
-          return `< ${until} ${t("Minutes")}`
-        return `${from} - ${until} ${t("Minutes")}`
+          return `< ${until} ${t("minutes")}`
+        return `${from} - ${until} ${t("minutes")}`
      
       default:
         return item.bez
@@ -87,7 +87,9 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
 
   return <View style={{flex: 1}}>
           <FlatList
-            ListHeaderComponent={() => <Text style={styles.listHeader}>{name}</Text>}
+            ListHeaderComponent={() => <><Text style={styles.listHeader}>{name}</Text><TouchableOpacity style={{ position: 'absolute', right: 10, top: 12}} onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
+              <Text style={{color: '#3eb8f1'}}>&lt;&lt; {t('allfilters')}</Text>
+          </TouchableOpacity></>}
             data={stats} 
             renderItem={({item}) => {
               const label = makeLabel(item,route.view.aggregation)
@@ -102,15 +104,27 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
 
 const styles = StyleSheet.create({
   listHeader: {
-    fontSize: 30,
-    textTransform: 'uppercase',
-    fontWeight: '900',
-    marginTop: -6,
+    fontSize: 25,
+    
+    fontWeight: '700',
+    marginTop: 5,
+    marginLeft: 10,
     color: '#3eb8f1'
+  },
+  countlabel: {
+    fontSize: 20, 
+    paddingHorizontal: 5, 
+    marginLeft: 20, 
+    borderRadius: 7, 
+    borderColor: "#3d3de3", 
+    color: "#3d3de3", 
+    borderWidth: 1,
+    textAlign:"right"
   },
   statRowStyle: {
     flex:1,
     padding:10,
+    marginTop: 10,
     flexDirection: 'row',
   },
   statRowText: {

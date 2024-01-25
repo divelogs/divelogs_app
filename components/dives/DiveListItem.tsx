@@ -46,14 +46,16 @@ export const DiveListItem: React.FC<{
 const styles = StyleSheet.create({
   divelistcontainer: {
     paddingLeft: 5,
-    paddingBottom: 5,
+    paddingTop: 2,
+    paddingBottom: 6,
     marginLeft: 0,
     marginRight: 0,
-    //borderBottomColor : 'black',
-    //borderTopColor : 'transparent',
-    //borderLeftColor : 'transparent',
-    //borderRightColor : 'transparent',
-    //borderWidth: 1,
+    backgroundColor: '#FFFFFF',
+    borderBottomColor : '#c0c0c0',
+    borderTopColor : 'transparent',
+    borderLeftColor : 'transparent',
+    borderRightColor : 'transparent',
+    borderWidth: 1,
     flexDirection: 'row',
   },
   divelistnumbercontainer: {

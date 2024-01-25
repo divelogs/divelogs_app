@@ -30,6 +30,10 @@ export default {
     last_servicedate: "Letzter Service",
     service_overdue: "Service überfällig",
     next_service: "Nächster Service",
+    max_depth: "Maximale Tiefe",
+    max_duration: "Maximale Dauer",
+    min_temp: "Minimale Temp.",
+    avg_duration: "∅ Dauer",
  
     start_pressure: "Startdruck",
     end_pressure: "Enddruck",
@@ -52,4 +56,16 @@ export default {
     month10: "Oktober",
     month11: "November",
     month12: "Dezember",
+
+    choosefilter: "Filter wählen",
+    allfilters: "Alle Filter",
+    allDives: "Alle Tauchgänge",
+    byYear: "Nach Jahren",
+    byMonth: "Nach Monaten",
+    byPartner: "Nach Tauchpartnern",
+    byLocation: "Nach Orten",
+    bySite: "Nach Tauchplätzen",
+    byBoat: "Nach Schiffen",
+    byDepth: "Nach Tiefen",
+    byDuration: "Nach Tauchdauer",
 }

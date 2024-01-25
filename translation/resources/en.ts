@@ -30,6 +30,10 @@ export default {
     last_servicedate: "Last Servicedate",
     service_overdue: "Service overdue",
     next_service: "Next Service",
+    max_depth: "Max Depth",
+    max_duration: "Max Duration",
+    min_temp: "Min Temperature",
+    avg_duration: "∅ Duration",
 
     start_pressure: "Start Press.",
     end_pressure: "End Press.",
@@ -52,4 +56,15 @@ export default {
     month10: "October",
     month11: "November",
     month12: "December",
+
+    choosefilter: "Choose Filter",
+    allDives: "All Dives",
+    byYear: "By Year",
+    byMonth: "By Month",
+    byPartner: "By Partner",
+    byLocation: "By Location",
+    bySite: "By Site",
+    byBoat: "By Boat",
+    byDepth: "By Depth",
+    byDuration: "By Duration",
 };

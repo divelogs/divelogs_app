@@ -46,18 +46,18 @@ const DiveListFooterStats = ({dives, imperial}:any) => {
     return null
 
   const lunit = (imperial) ? "ft" : "m"
-  const tunit = (imperial) ? "°F" : "°"
+  const tunit = (imperial) ? "°F" : "°C"
 
   return ( 
     <View style={[styles.footerContainer]}>
-        <Text style={[styles.footerDives, styles.footerCol]}><Text style={styles.number}>{statistics.dives}</Text> dives</Text>
+        <Text style={[styles.footerDives, styles.footerCol]}><Text style={styles.number}>{statistics.dives}</Text> {t('dives')}</Text>
         <View style={{flexDirection: "row"}}>
             <Text style={[styles.footerStats, styles.footerCol, styles.footerLeft]}>
-                {t("max Depth")}: 
+                {t("max_depth")}: 
                 <Text style={styles.number}> {Math.round(statistics.maxDepth*10)/10}{lunit}</Text>
             </Text>
             <Text style={[styles.footerStats, styles.footerCol]}>
-                {t("max Duration")}:
+                {t("max_duration")}:
                 <Text style={styles.number}> {Math.round(statistics.maxDuration/60)}min</Text>
                 </Text>
         </View>
@@ -65,13 +65,13 @@ const DiveListFooterStats = ({dives, imperial}:any) => {
             
             <Text style={[styles.footerStats, styles.footerCol, styles.footerLeft]}>
                 {statistics.minTemp == 1000 ? null : 
-                    <>{t("min Temperature")}:
+                    <>{t("min_temp")}:
                         <Text style={styles.number}> {Math.round(statistics.minTemp)}{tunit}</Text>
                     </>}
             </Text>
             
             <Text style={[styles.footerStats, styles.footerCol]}>
-                {t("∅ Duration")}:
+                {t("avg_duration")}:
                 <Text style={styles.number}> {Math.round(statistics.avgDuration/60)}min</Text>
             </Text>
         </View>        

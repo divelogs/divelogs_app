@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet,  Text,  View, NativeModules, Dimensions } from 'react-native';
-import { GearItemType } from '../models';
+import { GearItem } from '../models';
 import GearImages from './GearImages'
 import { SvgXml } from 'react-native-svg';
 import '../translation'
@@ -10,7 +10,7 @@ const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
     NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
     
 export const Gear: React.FC<{
-  gi: GearItemType;
+  gi: GearItem;
 }> = ({ gi }) => {
   
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ export const Gear: React.FC<{
 };
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
-    gearblock: {height: 106, borderBottomColor: '#c0c0c0', borderBottomWidth: 1},
+    gearblock: {minHeight: 106, borderBottomColor: '#c0c0c0', borderBottomWidth: 1},
     texts: {left:110, width: width-110},
     bold: {fontWeight:'500'},
     gearitem: { width:90, height: 90 },
