@@ -114,7 +114,11 @@ const App = () => {
     try {
       const db = await getDBConnection();
       const res = await getBearerToken(db);
-      setbearerToken(res);
+
+      if (res?.length > 0){
+        Api.setBearerToken(res)
+        setbearerToken(res);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -148,19 +152,12 @@ const App = () => {
     }
   }, []);
 
-  const loadDataFromAPI = async (bt:string = '') => {
-    if (typeof bt === 'string') {    
-      setbearerToken(bt);
-      Api.setBearerToken(bt)
-    } else {
-      Api.setBearerToken(bearerToken);
-    }
-    console.log('übertgebener BT: '+ bt);
+  const loadDataFromAPI = async () => {
+
     try {
       setLoading(true);
 
-      if (bearerToken == null){
-        console.log('fuckin bearerToken is null' );
+      if (bearerToken?.length == 0){
         setModalVisible(true);
         return;
       }     
@@ -210,10 +207,7 @@ const App = () => {
 
       if (succ) {
         setModalVisible(false);
-        console.log(loginResult);
-        console.log(loginResult.bearerToken);
-
-        loadDataFromAPI(loginResult.bearerToken);
+        loadDataFromAPI();
       }
     }
     else
