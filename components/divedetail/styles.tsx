@@ -1,10 +1,6 @@
-
 import { StyleSheet, Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('window');
-
-const divepagestyles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'white' },
+export const getDivePageStyles = (width:number) : any => StyleSheet.create({
   child: { width: width, justifyContent: 'center', padding: 5 },
   profileblock: {
     width:350,
@@ -93,4 +89,3 @@ const divepagestyles = StyleSheet.create({
   }
 });
 
-export default divepagestyles
