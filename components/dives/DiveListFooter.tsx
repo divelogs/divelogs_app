@@ -25,12 +25,14 @@ const DiveListFooterStats = ({dives, imperial}:any) => {
       s.maxDuration = 0;
       s.avgDuration = 0;
       s.minTemp = 1000;
+      s.sumDuration = 0
 
       dives.reduce((stat:Statistics, dive:Dive) => {
         if (!!dive.maxdepth) stat.maxDepth = Math.max(dive.maxdepth, stat.maxDepth)
         if (!!dive.depthtemp) stat.minTemp = Math.min(dive.depthtemp, stat.minTemp)
         if (!!dive.duration) stat.maxDuration = Math.max(dive.duration, stat.maxDuration)
         if (!!dive.duration) stat.avgDuration = (dive.duration + stat.avgDuration)
+        if (!!dive.duration) stat.sumDuration = (dive.duration + stat.sumDuration)
 
         return stat;
       }, s)
@@ -62,24 +64,25 @@ const DiveListFooterStats = ({dives, imperial}:any) => {
                 </Text>
         </View>
         <View style={{flexDirection: "row"}}>
-            
             <Text style={[styles.footerStats, styles.footerCol, styles.footerLeft]}>
-                {statistics.minTemp == 1000 ? null : 
-                    <>{t("min_temp")}:
-                        <Text style={styles.number}> {Math.round(statistics.minTemp)}{tunit}</Text>
-                    </>}
+                    {t("sum_duration")}:
+                    <Text style={styles.number}> {Math.round(statistics.sumDuration/60)}min</Text>
             </Text>
-            
             <Text style={[styles.footerStats, styles.footerCol]}>
                 {t("avg_duration")}:
                 <Text style={styles.number}> {Math.round(statistics.avgDuration/60)}min</Text>
             </Text>
-        </View>        
-        <Text>
-            
-            
-            
-        </Text>  
+        </View>
+        <View style={{flexDirection: "row"}}> 
+            <Text style={[styles.footerStats, styles.footerCol, styles.footerLeft]}>
+                {statistics.minTemp == 1000 ? null : 
+                        <>{t("min_temp")}:
+                        <Text style={styles.number}> {Math.round(statistics.minTemp)}{tunit}</Text>
+                    </>}
+            </Text>
+            <Text style={[styles.footerStats, styles.footerCol]}>
+            </Text>
+        </View>               
     </View>
       
   );
