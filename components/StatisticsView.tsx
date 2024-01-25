@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
-import { getDBConnection, getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats } from '../services/db-service';
+import { getDBConnection } from '../services/db-service';
+import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats } from '../services/db-aggregation-service';
 import { Statistic } from './Statistic';
 import { StatVal } from '../models';
 import { SvgXml } from 'react-native-svg';

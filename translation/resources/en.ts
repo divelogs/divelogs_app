@@ -30,6 +30,7 @@ export default {
     last_servicedate: "Last Servicedate",
     service_overdue: "Service overdue",
     next_service: "Next Service",
+
     start_pressure: "Start Press.",
     end_pressure: "End Press.",
     tank: "Tank",
@@ -37,5 +38,18 @@ export default {
     wp: "WP",
     o2: "o2",
     he: "he",
-    sac: "SAC"
+    sac: "SAC",
+
+    month01: "January",
+    month02: "February",
+    month03: "March",
+    month04: "April",
+    month05: "May",
+    month06: "June",
+    month07: "July",
+    month08: "August",
+    month09: "September",
+    month10: "October",
+    month11: "November",
+    month12: "December",
 };

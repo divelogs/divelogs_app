@@ -1,5 +1,10 @@
 
-import { Button, View } from 'react-native';
+
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { NavigationContainer } from '@react-navigation/native';
+
+import { Button, View, Modal, Pressable, Text } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { Dive } from '../../models';
 
@@ -12,89 +17,129 @@ import { getDBConnection, getDives, getImperial } from '../../services/db-servic
 import { divelogs_logo } from '../../assets/svgs.js'
 
 import DivesList from './DivesList';
+import { AggregationView } from './Aggregation'
+
+import DiveListSelection from './DiveListSelection'
 
 import styles from '../../stylesheets/styles'
 
-const AllDivesView = ({navigation, refreshApiData}:any) => {
+import AllDives from './AllDivesView'
+import DiveDetail from '../divedetail'
 
-  const { t } = useTranslation(); 
+const DivesNavigation = ({navigation, refreshApiData}:any) => {
 
-  const [dives, setDives] = useState<Dive[]>([]);
-  const [sort, setSort] = useState<string>('DESC');
-  const [search, setSearch] = useState<string>('');
-  const [imperial, setImperial] = useState<boolean>(false);
+  const [sort, setSort] = useState<string>("DESC")
 
-  useEffect(() => {
+  const imperial = false
 
-    (async () => {
-      const dives = await loadData()
-      setDives(dives)
-    })()
-    return () => { console.log("unmount") }
-  }, [sort, search]);
+  const Stack = createNativeStackNavigator();
 
-  useEffect(() => {
-    (async () => {
-      const imp = await getImperial();
-      setImperial(imp);
-    })()
-    return () => {  }
-  }, ["noreload"]);
-
-  const loadData = async () : Promise<Dive[]> => {
-    try {
-      const db = await getDBConnection();
-      return await getDives(db,sort,search);
-    } catch (error) {
-      console.error(error);
-    }
-    return []
-  }
-
-  const toggleSort = () => {
-    if (sort == `DESC`) {
-      setSort('ASC');
-    } else {
-      setSort('DESC');
-    }   
-  };
-
-  const doSearch = (searchtext:string) => {
-    setSearch(searchtext)
-  }
-
-  const selectDive = (dive:Dive) => {
-    navigation.navigate('DiveDetail', {diveId: dive.id, dives: dives});
-  } 
+  const toggleSort = () => setSort((sort == "DESC") ? "ASC" : "DESC")
 
   const sortindicator = (sort == "DESC") ? '↓' : '↑'
 
   return (
-    <View style={{flex:1, paddingBottom: 50, backgroundColor: '#FFFFFF'}}>
-    <View style={styles.safeArea}>
-      <View style={[styles.appTitleView]}>
-        <View style={{ width:35, position: 'absolute', left: 10, top:-5 }}>
-          <Button 
-              onPress={refreshApiData}
-              title='↺'
-              color="#FFFFFF"
-              accessibilityLabel="load from divelogs"
-            />
-        </View>
-        <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
-        <View style={{ width:35, position: 'absolute', right: 10, top:-5 }}>
-          <Button
+    <View style={{flex:1, backgroundColor: '#FFFFFF'}}>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#3fb9f2',
+            },
+            headerTintColor: '#fff',
+          }}
+        >
+
+        <Stack.Screen name="AllDives" options={{ 
+          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
+          headerShown: true,
+          headerRight: () => (
+            <>
+              <Button
+              onPress={() => navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}
+              title="🐝"
+              accessibilityLabel="grouped view"
+              color="#fff"/>
+              <Button
               onPress={toggleSort}
               title={sortindicator}
-              color="#FFFFFF"
               accessibilityLabel="change sorting"
-            />
-        </View>      
-      </View>        
-      <DivesList navigation={navigation} selectDive={selectDive} dives={dives} doSearch={doSearch} imperial={imperial}/>
-    </View>
+              color="#fff"/>              
+            </>
+          ),
+          headerLeft: () => (
+            <>
+              <Button
+              onPress={() => refreshApiData()}
+              title="↺"
+              accessibilityLabel="load from divelogs"
+              color="#fff"/>            
+            </>
+          ),          
+        }}>
+          {(props) => <AllDives {...props} sort={sort} refreshApiData={refreshApiData}/>}
+        </Stack.Screen>
+
+        <Stack.Screen name="FilteredDives" options={{ 
+          headerShown: true,
+          title: "",
+          headerRight: () => (
+            <>
+              <Button
+                onPress={() => navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}
+                title="🐝"
+                accessibilityLabel="grouped view"
+                color="#fff"/>
+              <Button
+                onPress={toggleSort}
+                title={sortindicator}
+                accessibilityLabel="change sorting"
+                color="#fff"/>              
+            </>
+          ),         
+        }}>
+          {(props) => <AllDives {...props} sort={sort} refreshApiData={refreshApiData}/>}
+        </Stack.Screen>
+
+        <Stack.Screen name="DiveDetail" options={{ 
+          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
+          headerShown: true,
+          headerBackTitleVisible: false       
+        }}>
+          {(props) => <DiveDetail {...props} imperial={imperial}/>}
+        </Stack.Screen>
+
+        <Stack.Screen name="DiveListSelection" options={{ 
+          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
+          headerShown: true,
+          animation: "none"
+        }}>
+          {(props) => <DiveListSelection {...props}/>}
+        </Stack.Screen>
+
+        <Stack.Screen name="AggregatedView" options={{ 
+          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
+          headerShown: true,
+          headerRight: () => (
+            <>
+              <Button
+              onPress={() => navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}
+              title="🐝"
+              accessibilityLabel="grouped view"
+              color="#fff"/>
+              <Button
+              onPress={toggleSort}
+              title={sortindicator}
+              accessibilityLabel="change sorting"
+              color="#fff"/>              
+            </>
+          ),
+        }}>
+          {(props) => <AggregationView {...props}/>}
+        </Stack.Screen>        
+      </Stack.Navigator>   
     </View>
   );
 };
 
-export default AllDivesView
+export default DivesNavigation
+

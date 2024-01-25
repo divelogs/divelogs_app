@@ -46,15 +46,6 @@ const BottomNavigation = ({imperial, loadDataFromAPI}:any)=> {
       }}>
         {(props) => <Dives {...props} refreshApiData={loadDataFromAPI}/>}
       </Tab.Screen>
-      <Tab.Screen name="DiveDetail" options={{ 
-        tabBarButton: () => null, // hide from TabBar
-        headerShown: false,
-        tabBarActiveTintColor: '#FFFFFF', 
-        tabBarInactiveTintColor: '#FFFFFF',
-        tabBarLabelStyle: {fontSize: 14}
-      }}>
-        {(props) => <DiveDetail {...props} imperial={imperial}/>}
-      </Tab.Screen>
       <Tab.Screen name="Certifications" component={Certifications} options={{ 
         title: t("certifications"),
         headerShown: false, 
