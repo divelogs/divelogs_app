@@ -90,13 +90,13 @@ export const getDiveCount = async (db: SQLiteDatabase): Promise<number> => {
   }
 };
 
-export const getSingleColumnStats = async (db: SQLiteDatabase, column: string): Promise<StatVal[]> => {
+export const getSingleColumnStats = async (db: SQLiteDatabase, column: string, sort: string = 'ASC'): Promise<StatVal[]> => {
   try {
     let data:StatVal[] = [];
+
     const results = await db.executeSql(`SELECT count(1) as val , `+column+` as bez FROM dives
     GROUP BY `+column+`
-    ORDER BY `+column+` ASC
-    `);
+    ORDER BY `+column+` `+sort);
 
     results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
@@ -130,7 +130,7 @@ export const getPrecalcedStats = async (db: SQLiteDatabase, type: string): Promi
   }
 };
 
-export const getYearStats = async (db: SQLiteDatabase): Promise<StatVal[]> => getSingleColumnStats(db, `strftime("%Y",divedate)`)
+export const getYearStats = async (db: SQLiteDatabase): Promise<StatVal[]> => getSingleColumnStats(db, `strftime("%Y",divedate)`, 'ASC')
 
 const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
   NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");

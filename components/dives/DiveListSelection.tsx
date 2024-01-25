@@ -56,53 +56,64 @@ const DiveListSelection = ({navigation}:any) => {
         name: t("byYear"),
         location: "AggregatedView",
         aggregation: "byYear",
-        column: `strftime("%Y",divedate)`
+        column: `strftime("%Y",divedate)`,
+        sort: 'DESC',
+        search: false
       },
       {
         name: t("byMonth"),
         location: "AggregatedView",
         aggregation: "byMonth",
-        column: `strftime("%Y-%m",divedate)`
+        column: `strftime("%Y-%m",divedate)`,
+        sort: 'DESC',
+        search: false
       },
       {
         name: t("byPartner"),
         location: "AggregatedView",
         aggregation: "byPartner",
-        column: `buddy`
+        column: `buddy`,
+        search: true
       },
       {
         name: t("byDiveGroup"),
         location: "AggregatedView",
         aggregation: "byDiveGroup",
-        column: `buddyflock`
+        column: `buddyflock`,
+        search: true
       },
       {
         name: t("byLocation"),
         location: "AggregatedView",
         aggregation: "byLocation",
-        column: `location`
+        column: `location`,
+        search: true
       },
       {
         name: t("bySite"),
         location: "AggregatedView",
         aggregation: "bySite",
-        column: `divesite`
+        column: `divesite`,
+        search: true
       },
       {
         name: t("byBoat"),
         location: "AggregatedView",
         aggregation: "byBoat",
-        column: `boat`
+        column: `boat`,
+        search: true
       },                   
       {
         name: t("byDepth"),
         location: "AggregatedView",
-        aggregation: "byDepth"
+        aggregation: "byDepth",
+        search: false
       },
       {
         name: t("byDuration"),
         location: "AggregatedView",
-        aggregation: "byDuration"
+        aggregation: "byDuration",
+        search: false
       }
       ]
     }]

@@ -1,5 +1,6 @@
 
 import { Button, View, Modal, Pressable, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import SearchBar from 'react-native-search-bar'; 
 
 import React, { useState, useEffect } from 'react';
 
@@ -21,20 +22,33 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
 
   const { t } = useTranslation();
   const [stats, setStats] = useState<StatVal[]>([])
+  const [filteredStats, setFilteredStats] = useState<StatVal[]>([])
+  const [filter, setFilter] = useState<string>("")
 
   const name = route.view.name
 
   useEffect(() => {
-
     (async () => {
       const statistics = await loadData()
       setStats(statistics)
+      setFilteredStats(statistics)
     })()
 
     navigation.setOptions({title: route.view.name})
 
     return () => { console.log("unmount") }
   }, [view]);
+
+  useEffect(() => {
+    if (filter.length <= 0){
+      setFilteredStats(stats)
+      return
+    }
+    const filtered = stats.filter(a => a.bez.toLowerCase().indexOf(filter.toLowerCase()) >= 0)
+                          .map(a => ({...a}))
+    setFilteredStats(filtered)
+  }, [filter])
+
 
   const loadData = async () : Promise<StatVal[]> => {
     try {
@@ -49,7 +63,7 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
         case "byDiveGroup":
           return await getPrecalcedStats(db, route.view.column)
         default:
-          return await getSingleColumnStats(db, route.view.column)
+          return await getSingleColumnStats(db, route.view.column, route.view.sort)
       }
     } catch (error) {
       console.error(error);
@@ -95,12 +109,36 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
     }
   }
 
+  const startSearch = (searchFor:string) => {
+    setFilter(searchFor)
+  }
+
+  const cancelSearch = () => setFilter('')
+
+  const Filter = () => {
+    if (!route.view.search) return null
+    return <SearchBar
+      placeholder={t('search')}
+      onChangeText={cancelSearch}
+      onSearchButtonPress={startSearch}
+      cancelButtonText={t('reset')}
+      onCancelButtonPress={cancelSearch}
+      showsCancelButton={true}
+      autoCapitalize={'none'}
+      text={filter}
+    /> 
+  }
+
   return <View style={{flex: 1}}>
           <FlatList
-            ListHeaderComponent={() => <><Text style={styles.listHeader}>{name}</Text><TouchableOpacity style={{ position: 'absolute', right: 10, top: 12}} onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
-              <Text style={{color: '#3eb8f1'}}>&lt;&lt; {t('allfilters')}</Text>
-          </TouchableOpacity></>}
-            data={stats} 
+            ListHeaderComponent={() => <>
+              <Filter/>
+              <Text style={styles.listHeader}>{name}</Text>
+              <TouchableOpacity style={{ position: 'absolute', right: 10, top: (route.view.search) ? 60 : 10}} onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
+                <Text style={{color: '#3eb8f1'}}>&lt;&lt; {t('allfilters')}</Text>
+              </TouchableOpacity></>
+              }
+            data={filteredStats} 
             renderItem={({item}) => {
               const label = makeLabel(item,route.view.aggregation)
               return (<TouchableOpacity onPress={() => selectStat(item, label)} >
