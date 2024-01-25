@@ -55,7 +55,7 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           headerRight: () => (
             <>              
               <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
-                  <SvgXml style={{marginRight: 15}} xml={filtericon} width="15" height="15"/>
+                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
               </TouchableOpacity>
 
               <Button
@@ -84,7 +84,7 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           headerRight: () => (
             <>
               <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
-                  <SvgXml style={{marginRight: 15}} xml={filtericon} width="15" height="15"/>
+                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
               </TouchableOpacity>
               <Button
                 onPress={toggleSort}
@@ -119,7 +119,7 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           headerRight: () => (
             <>
               <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
-                  <SvgXml style={{marginRight: 15}} xml={filtericon} width="15" height="15"/>
+                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
               </TouchableOpacity>
               <Button
               onPress={toggleSort}

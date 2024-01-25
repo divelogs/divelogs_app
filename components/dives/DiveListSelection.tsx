@@ -19,7 +19,7 @@ const ListItem = ({name, label}:any) => {
           flexDirection:'row',
         },]}>
           <Text style={[{fontSize: 20}]}>{name}</Text>
-          {label ? <Text style={[{fontSize: 20, paddingHorizontal: 5, marginLeft: 20, borderRadius: 7, borderColor: "#3d3de3", color: "#3d3de3", borderWidth: 1 }]}>{label}</Text> : null }
+          {label ? <View style={styles.countlabel}><Text style={styles.countlabeltext}>{label}</Text></View> : null }
         </View>
 }
 
@@ -129,14 +129,32 @@ export default DiveListSelection
 
 const styles = StyleSheet.create({
   listHeader: {
-    fontSize: 25,
-    
+    fontSize: 25,    
     fontWeight: '700',
     marginTop: 5,
     marginLeft: 10,
     color: '#3eb8f1'
+  },
+  countlabel: {    
+    paddingHorizontal: 5, 
+    marginLeft: 20, 
+    borderRadius: 10, 
+    borderColor: "#3fb9f2", 
+    paddingTop:3,
+    backgroundColor: '#3fb9f2',
+    borderWidth: 1,
+    minWidth:40,
+    
+    
+  },
+  countlabeltext: {
+    fontSize: 14, 
+    fontWeight: '700',
+    color: "#FFFFFF", 
+    textAlign:"center"
   }
 });
+
 
 /*
           <SectionList
