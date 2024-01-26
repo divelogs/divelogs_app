@@ -102,7 +102,7 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
         const lastIndex = search.lastIndexOf(',');
         if (lastIndex < 0)
           return search;
-        return search.slice(0, lastIndex) + " " + ('and') + search.slice(lastIndex + 1);
+        return search.slice(0, lastIndex) + " " + (t('and')) + search.slice(lastIndex + 1);
 
       default:
         return item.bez

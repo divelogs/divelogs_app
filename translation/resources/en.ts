@@ -34,6 +34,7 @@ export default {
     max_duration: "Max Duration",
     min_temp: "Min Temperature",
     avg_duration: "∅ Duration",
+    sum_duration: "∑ Duration",
 
     start_pressure: "Start Press.",
     end_pressure: "End Press.",
@@ -58,13 +59,17 @@ export default {
     month12: "December",
 
     choosefilter: "Choose Filter",
+    allfilters: "All Filters",
     allDives: "All Dives",
     byYear: "By Year",
     byMonth: "By Month",
     byPartner: "By Partner",
+    byDiveGroup: "By Buddygroup",
     byLocation: "By Location",
     bySite: "By Site",
     byBoat: "By Boat",
     byDepth: "By Depth",
     byDuration: "By Duration",
+
+    and: "und",
 };
