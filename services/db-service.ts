@@ -297,6 +297,12 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
         });
       }
 
+      // "cleanup" the buddy string to make it easier to find single entries
+      // split string by , and ;
+      // trim entries
+      // sort array
+      var bdy = divedata.buddy.split(/[;,]+/).map(s => s.trim()).sort();
+
       const values = [
         divedata.divenumber,
         divedata.date,
@@ -312,7 +318,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
         divedata.airtemp,
         divedata.depthtemp,
         divedata.surfacetemp,
-        divedata.buddy,
+        (bdy.length > 0 ? bdy.join(",") : ''),
         divedata.boat,
         divedata.weights,
         divedata.notes,

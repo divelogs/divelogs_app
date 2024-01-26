@@ -44,7 +44,7 @@ const DiveDetail = ({navigation, dive, imperial}:any) => {
           </View>
           <View style={divepagestyles.entry}>
             <Text style={divepagestyles.desc}>{t("buddy")}: </Text>
-            <Text style={divepagestyles.text}>{dive.buddy}</Text>
+            <Text style={divepagestyles.text}>{dive.buddy.replaceAll(",", ", ")}</Text>
           </View>
           <View style={divepagestyles.entry}>
             <Text style={divepagestyles.desc}>{t("boat")}: </Text>
