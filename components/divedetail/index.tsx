@@ -1,13 +1,6 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import { View, StatusBar, Button, Dimensions } from 'react-native';
-
-import divepagestyles from './styles'
-import styles from '../../stylesheets/styles'
-
-import { SvgXml } from 'react-native-svg';
-import { divelogs_logo } from '../../assets/svgs.js'
 
 import DiveDetail from './Dive'
 
@@ -18,8 +11,6 @@ const DiveSwipe = ({navigation, route, imperial}:any) => {
 
   const dives = route.params.dives
   const diveindex = dives.findIndex((obj: { id: any; }) => obj.id === route.params.diveId);
-
-  const swiperRef = useRef<any>({});
 
   useEffect(() => {
     Dimensions.addEventListener('change', ({window:{width,height}})=>{
@@ -33,8 +24,8 @@ const DiveSwipe = ({navigation, route, imperial}:any) => {
 
   return (
     <>
-       <View style={divepagestyles.container} key={diveindex}>
-        <SwiperFlatList  ref={swiperRef} key={orientation} index={diveindex} renderAll={false} data={dives}
+       <View style={{ flex: 1, backgroundColor: 'white' }} key={diveindex}>
+        <SwiperFlatList key={orientation} index={diveindex} renderAll={false} data={dives}
           renderItem={({ item }) => (             
             <DiveDetail navigation={navigation} dive={item} imperial={imperial} />
           )} />

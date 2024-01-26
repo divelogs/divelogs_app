@@ -3,19 +3,21 @@ import '../../translation'
 import { useTranslation } from 'react-i18next';
 
 import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime } from '../functions.ts'
-import divepagestyles from './styles'
+import { getDivePageStyles } from './styles'
 
 import DiveProfile from './DiveProfile'
 import { TankView } from './TankView'
 import { Tank } from '../../models'
+import { useEffect, useState } from 'react';
 
 const DiveDetail = ({navigation, dive, imperial}:any) => {
+
+  const { width } = Dimensions.get('window')
+  const [ divepagestyles, setDivepagestyles ] = useState<any>(getDivePageStyles(width))
 
   const { t } = useTranslation(); 
   const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
                NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
-
-  const { width } = Dimensions.get('window');
 
   let tanks = (dive.tanks != null ? JSON.parse(dive.tanks) : []);
 

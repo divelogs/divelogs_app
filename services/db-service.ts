@@ -98,8 +98,8 @@ export const writeStatement = async (db: SQLiteDatabase, query:string,): Promise
 const getWhere = (searchPhrase:string) : string => {
   if (searchPhrase?.length == 0) return "" 
   
-  searchPhrase = searchPhrase.replace("'", "\'");
-  return " location LIKE '%"+searchPhrase+"%' OR divesite LIKE '%"+searchPhrase+"%'  OR boat LIKE '%"+searchPhrase+"%'  OR notes LIKE '%"+searchPhrase+"%'  OR buddy LIKE '%"+searchPhrase+"%'"
+  searchPhrase = searchPhrase.replace(/'/g, "''");
+  return " (location LIKE '%"+searchPhrase+"%' OR divesite LIKE '%"+searchPhrase+"%' OR boat LIKE '%"+searchPhrase+"%'  OR notes LIKE '%"+searchPhrase+"%'  OR buddy LIKE '%"+searchPhrase+"%')"
 } 
 
 export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:string): Promise<Dive[]> => {
@@ -125,8 +125,29 @@ export const getFilteredDives = async (db: SQLiteDatabase, column: string, filte
     const Dives: Dive[] = [];
 
     const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
-    const where = "WHERE "+column.replace("'", "\'")+"= '"+filter.replace("'", "\'")+"'" + search
+    const where = "WHERE "+column.replace(/'/g, "''")+" LIKE '"+filter.replace(/'/g, "''")+"'" + search
     const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
+    results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
+      for (let index = 0; index < result.rows.length; index++) {
+        Dives.push(result.rows.item(index));
+      }
+    });
+    return Dives;
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get Dives');
+  }
+};
+
+export const getFilteredDivesByPrecalcedStatistics = async (db: SQLiteDatabase, type: string, filter:string, dir:string, searchPhrase:string): Promise<Dive[]> => {
+  try {
+    const Dives: Dive[] = [];
+
+    const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
+    const where = "WHERE statistics.value LIKE '"+filter.replace(/'/g, "''")+"'" + search
+
+    const results = await db.executeSql(`SELECT dives.* 
+    FROM dives INNER JOIN statistics ON dives.id = statistics.diveId AND type = '${type.replace(/'/g, "''")}' ${where} ORDER BY divedate ${dir}, divetime ${dir}`);
     results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
         Dives.push(result.rows.item(index));
@@ -224,6 +245,11 @@ const writeDataAndReturnId = (db: SQLiteDatabase, insertQuery:string, values:any
 };
 
 export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boolean> => {
+
+  /*
+  IMPORTANT: Everytime Dives are persisted into the database, the result should be sent to the saveStatistics() method
+  */
+
   const deleteQuery = `DELETE from dives`;
   await db.executeSql(deleteQuery);
 
@@ -313,6 +339,8 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
         console.error(error)
         throw Error("Failed to add dive")
       }
+
+
     };
     return true;
 
@@ -321,6 +349,50 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
     throw Error('Failed to save Dives');
   } 
 };
+
+export const saveStatistics = async (db: SQLiteDatabase, data:Dive[]): Promise<boolean> => 
+{
+  const deleteQuery2 = `DELETE from statistics`;
+  await db.executeSql(deleteQuery2);
+
+  const buddySplit = (b:string) => {
+    if (b?.length == 0) return []
+    return b?.split(/[;,\/\\\|\n\r]/)
+  }
+
+  try {
+    // split buddies
+    await data.map((dive:Dive) => ({ diveId: dive.id, buddy: buddySplit(dive.buddy), type: 'buddy' }))
+        .flatMap(buddies => ( buddies.buddy.map(buddy => ({...buddies, buddy: buddy.trim()})) ))
+        .filter(a => a.buddy?.length > 0)
+        .forEach(async (element) => {
+
+          const insertQuery = `INSERT into statistics
+          ( type, value, diveid )
+          values(?,?,?)`;
+          const values = [ element.type, element.buddy, element.diveId ]
+          db.executeSql(insertQuery, values);
+        });
+    // grouped buddies
+    
+    await data.map((dive:Dive) => ({ diveId: dive.id, buddy: buddySplit(dive.buddy), type: 'buddyflock' }))
+    .filter(a => a.buddy?.length > 0)
+    .map(a => ({...a, buddy: a.buddy.map(a => a.trim()).sort().join(", ") }))
+    .forEach(async (element) => {
+      const insertQuery = `INSERT into statistics
+      ( type, value, diveid )
+      values(?,?,?)`;
+      const values = [ element.type, element.buddy, element.diveId ]
+      db.executeSql(insertQuery, values);
+    });
+  }
+  catch (error) {
+    console.error(error);
+    throw Error('Failed to create statistics');
+  } 
+
+  return true;
+}
 
 export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promise<boolean> => {
   const deleteQuery1 = `DELETE from certifications`;
