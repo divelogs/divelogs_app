@@ -60,9 +60,7 @@ export const GearView = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-        <View style={[styles.appTitleView]}>
-            <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
-        </View> 
+
         <View>
             <FlatList
                 data={gearitems} 
@@ -75,4 +73,4 @@ export const GearView = () => {
   );  
 };
 
-
+export default GearView

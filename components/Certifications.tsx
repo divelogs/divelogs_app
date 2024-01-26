@@ -8,10 +8,17 @@ import { divelogs_logo } from '../assets/svgs.js'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 
+import '../translation'
+import { useTranslation } from 'react-i18next';
+
+import AppHeader from './generic/divelogsheader';
+
 export const Certifications = () => {
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
     NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
+
+  const { t } = useTranslation(); 
    
   const { config, fs } = RNFetchBlob;
   const PictureDir = fs.dirs.DocumentDir;
@@ -33,10 +40,7 @@ export const Certifications = () => {
   const Overview = ({navigation}:any) => {
     return (
       <>
-      <View style={[styles.appTitleView]}>
-          <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />               
-      </View>   
-      <View style={{ flex: 1, padding: 16 }}>       
+      <View style={{ flex: 1, padding: 16, paddingBottom: 0, paddingRight: 0 }}>       
         <FlatList
           data={certifications}             
           renderItem={({item}) => (
@@ -99,19 +103,7 @@ export const Certifications = () => {
   const Scanslider = ({navigation, route}:any) => {
     const thekey = route.params.thekey
     return (
-      <>
-      <View style={[styles.appTitleView]}>
-        <View style={{ width:70, position: 'absolute', left: 10, top:-5 }}>
-          <Button
-            title="←"
-            color={'white'}                
-            onPress={() =>
-              navigation.navigate('Home')
-            }
-          />
-        </View>
-        <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />               
-      </View>   
+      <>  
       <View style={{ flex: 1, }}>       
         <SwiperFlatList key={orientation} index={thekey} renderAll={true} data={allscans} renderItem={({ item }) => (
             <View style={{ justifyContent: 'center'}}>
@@ -127,13 +119,18 @@ export const Certifications = () => {
 
   return (
     <View style={{ flex: 1 }}>
-        <Stack.Navigator>
-        <Stack.Screen name="Home" component={Overview} options={{ 
-          headerShown: false          
-        }}/>
-        <Stack.Screen name="CertificationScans" component={Scanslider} options={{ 
-          headerShown: false          
-        }}/>
+        <Stack.Navigator screenOptions={{
+          headerStyle: { backgroundColor: '#3fb9f2'},
+          headerTitle: () => <AppHeader/>,
+          headerTintColor: '#fff'
+        }}>
+          <Stack.Screen name="CertificationHome" component={Overview} options={{ 
+            headerShown: true,
+            title: t("certifications")       
+          }}/>
+          <Stack.Screen name="CertificationScans" component={Scanslider} options={{ 
+            headerShown: true          
+          }}/>
       </Stack.Navigator>    
     </View>
   );
@@ -162,4 +159,4 @@ const makeDateObj = (date:string) => {
   return new Date(date);
 }
 
-
+export default Certifications

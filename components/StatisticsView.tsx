@@ -83,9 +83,6 @@ export const StatisticsView = ({ route, navigation }:any) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-      <View style={[styles.appTitleView]}>
-          <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
-        </View> 
         <ScrollView style={{padding: 10}}>        
             <Text>{t('depths')}:</Text>
             <Statistic StatData={{values:depthStats, xname:(imperial ? t('feet') : t('meter')), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
@@ -108,3 +105,5 @@ export const StatisticsView = ({ route, navigation }:any) => {
 
   
 };
+
+export default StatisticsView
