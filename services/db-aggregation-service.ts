@@ -113,6 +113,28 @@ export const getSingleColumnStats = async (db: SQLiteDatabase, column: string, s
 export const getPrecalcedStats = async (db: SQLiteDatabase, type: string): Promise<StatVal[]> => {
   try {
     let data:StatVal[] = [];
+    
+    /*
+    NO IDEA why this query does NOT work from within react, but works fine in a SQLite GUI
+    Left here for documentation/WTF purposes
+
+    const results = await db.executeSql(`WITH split(word, csv) AS (
+      SELECT 
+        '', buddy||','  FROM dives   
+      UNION ALL SELECT
+        substr(csv, 0, instr(csv, ',')), 
+        substr(csv, instr(csv, ',') + 1) 
+      FROM split -- recurse
+      WHERE csv != '' -- break recursion once no more csv words exist
+    ) SELECT DISTINCT 
+    (SELECT count(1) FROM dives WHERE 
+    buddy LIKE word || ',%' OR buddy LIKE '%,' || word || ',%' OR buddy LIKE '%,' || word OR buddy = word
+    ) as val, word as bez
+    FROM split 
+    WHERE word!=''
+    ORDER BY bez ASC; `)
+    */
+
     const results = await db.executeSql(`SELECT count(1) as val, value as bez FROM statistics
     WHERE type = '`+type+`'
     GROUP BY LOWER(value)
@@ -120,10 +142,13 @@ export const getPrecalcedStats = async (db: SQLiteDatabase, type: string): Promi
 
     results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
+        console.log(result.rows.item(index));
         data.push(result.rows.item(index));
       }
     });
+    
     return data;
+    
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Precalced Stats');
