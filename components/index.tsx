@@ -94,7 +94,6 @@ const AppNavigation = () => {
     const Stack = createNativeStackNavigator();
 
     return <>
-        <SafeAreaView style={{ flex:0, backgroundColor: '#3fb9f2', height:30 }} />
         <Stack.Navigator screenOptions={{
             headerShown: false
         }}>
