@@ -14,7 +14,8 @@ import { useTranslation } from 'react-i18next';
 import StatisticsView from './StatisticsView';
 import Certifications from './Certifications';
 import Dives from './dives'
-import { GearView} from './GearItemsView';
+import GearView from './GearItemsView';
+import Onboarding from './onboarding';
 
 import AppHeader from './generic/divelogsheader'
 
@@ -26,7 +27,7 @@ const BottomNavigation = ({}:any)=> {
   const loadDataFromAPI = () => Alert.alert("nope")
   const imperial = false;
 
-  return (
+  return (<>
     <Tab.Navigator screenOptions={{
       tabBarStyle: { backgroundColor: '#3fb9f2'},
       headerStyle: { backgroundColor: '#3fb9f2'},
@@ -86,6 +87,7 @@ const BottomNavigation = ({}:any)=> {
         }
       }} />   
     </Tab.Navigator>
+    </>
   );
 }
 
@@ -95,11 +97,15 @@ const AppNavigation = () => {
 
     return <>
         <Stack.Navigator screenOptions={{
-            headerShown: false
+            headerShown: false,
+            animation: "none"
         }}>
-        <Stack.Screen name="Home">
-            {(props) => <BottomNavigation {...props}/>}
-        </Stack.Screen>
+            <Stack.Screen name="Onboarding">
+                {(props) => <Onboarding {...props}/>}
+            </Stack.Screen>  
+            <Stack.Screen name="Home">
+                {(props) => <BottomNavigation {...props}/>}
+            </Stack.Screen>          
         </Stack.Navigator>
     </>
 }

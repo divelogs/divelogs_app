@@ -72,4 +72,7 @@ export default {
     byDuration: "By Duration",
 
     and: "und",
+
+    userpassnotfound: "User name or password is invalid",
+    couldnotlogin: "Could not login due to an unexpected error",
 };

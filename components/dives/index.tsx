@@ -58,10 +58,10 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
               color="#fff"/>              
             </>
           ),
-          headerLeft: () => (
+          headerLeft: (props) => (
             <>
               <Button
-              onPress={() => refreshApiData()}
+              onPress={() => navigation.navigate("Onboarding", {screen: "Sync"})}
               title="↺"
               accessibilityLabel="load from divelogs"
               color="#fff"/>            
