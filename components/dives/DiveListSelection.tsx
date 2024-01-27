@@ -8,6 +8,7 @@ import { getDiveCount } from '../../services/db-aggregation-service'
 
 import { Button, View, Modal, Pressable, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
 
+import Profile from '../generic/userprofile'
 
 
 const ListItem = ({name, label}:any) => {
@@ -125,6 +126,7 @@ const DiveListSelection = ({navigation}:any) => {
   if (!diveCount) return;
 
   return <View style={{flex:1}}>
+          <Profile></Profile>
             <Text style={styles.listHeader}>{t('choosefilter')}:</Text>
             <SectionList
               sections={views}

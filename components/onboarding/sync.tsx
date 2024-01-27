@@ -99,18 +99,9 @@ const Sync = ({navigation}:any) => {
           })()
     }, [currentStep])
 
-    const ProfilePicture = ({user}:any) : any => {
-
-        if (!user) return null
-        return <View style={styles.screen}>
-                <Image style={styles.image} source={{ uri: user.profilePictureUrl }} />
-                <Text style={styles.profile}>{user.username} ({diveCount})</Text>
-            </View>
-    }
-
     return (<View style={{flex: 1, backgroundColor:'#3fb9f2'}}>
         <Text>Downloading the logbook</Text>
-        <ProfilePicture user={userprofile}/>
+        <ProfilePicture user={userprofile} style={styles.screen}/>
         <Text >Step: {currentStep}</Text>
         <TouchableOpacity onPress={() => setCurrentStep(6)}>
             <Text >Redo</Text>
