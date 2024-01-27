@@ -81,6 +81,7 @@ export default {
     userpassnotfound: "Passwort oder Benutzername nicht korrekt",
     couldnotlogin: "Login fehlgeschlagen, Grund unbekannt",
 
+    totaldives: 'Anzahl Tauchgänge',
     avgdepth: "Durschnittliche Tiefe",
     avgduration: "Durschnittliche Dauer",
     maxdepth: "Tiefster Tauchgang",

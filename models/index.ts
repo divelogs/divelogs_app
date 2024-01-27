@@ -109,6 +109,7 @@ export type StatVal = {
 };
 
 export type BragFacts = {
+  totaldives: number;
   avgdepth: number;
   avgduration: number;
   deepestid: number;

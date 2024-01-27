@@ -93,6 +93,7 @@ export const getDiveCount = async (db: SQLiteDatabase): Promise<number> => {
 export const getBragFacts = async (db: SQLiteDatabase): Promise<any> => {
   try {
     const results = await db.executeSql(`SELECT *,
+    (SELECT count(1) FROM dives) AS totaldives, 
     (SELECT id FROM dives WHERE duration = subq.maxduration LIMIT 1) AS longestid, 
     (SELECT id FROM dives WHERE maxdepth = subq.maxdepth LIMIT 1) AS deepestid,
     (SELECT min(depthtemp) FROM dives WHERE depthtemp != 0) as coldest,
