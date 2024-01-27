@@ -47,6 +47,7 @@ export type UserProfile = {
 };
 
 export type APIDive = {
+  id: number;
   divenumber: number;
   date: Date;
   time: string;

@@ -281,6 +281,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
 
       const insertQuery = `INSERT into dives
       (
+          id,
           divenumber,
           divedate,
           divetime,
@@ -304,7 +305,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
           sampledata,
           tanks
       )
-      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       //const profiledatastring = divedata.sampledata.join(",");
 
@@ -322,6 +323,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
       var bdy = divedata.buddy.split(/[;,]+/).map(s => s.trim()).sort();
 
       const values = [
+        divedata.id,
         divedata.divenumber,
         divedata.date,
         divedata.time,
