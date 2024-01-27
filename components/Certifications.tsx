@@ -40,7 +40,8 @@ export const Certifications = () => {
   const Overview = ({navigation}:any) => {
     return (
       <>
-      <View style={{ flex: 1, padding: 16, paddingBottom: 0, paddingRight: 0 }}>       
+      <View style={{ flex: 1, padding: 16, paddingBottom: 0, paddingRight: 0, backgroundColor: '#FFFFFF' }}>     
+      <Text style={styles.listHeader}>{t('certifications')}</Text>  
         <FlatList
           data={certifications}             
           renderItem={({item}) => (
@@ -152,7 +153,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     backgroundColor: '#3fb9f2'
-  }
+  },
+  listHeader: {
+    fontSize: 25,    
+    fontWeight: '700',
+    marginTop: 5,
+    marginLeft: 0,
+    marginBottom: 15,
+    color: '#3eb8f1'
+  },
 });
 
 const makeDateObj = (date:string) => {

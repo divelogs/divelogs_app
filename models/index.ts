@@ -108,6 +108,18 @@ export type StatVal = {
   val: number
 };
 
+export type BragFacts = {
+  avgdepth: number;
+  avgduration: number;
+  deepestid: number;
+  longestid: number;
+  maxdepth: number;
+  maxduration: number;
+  totalduration: number;
+  coldest: number;
+  warmest: number;
+}
+
 export type GearItem = {
   id: number;
   name: string;

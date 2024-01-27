@@ -77,4 +77,15 @@ export default {
     byDuration: "Nach Tauchdauer",
 
     and: "und",
+
+    userpassnotfound: "Passwort oder Benutzername nicht korrekt",
+    couldnotlogin: "Login fehlgeschlagen, Grund unbekannt",
+
+    avgdepth: "Durschnittliche Tiefe",
+    avgduration: "Durschnittliche Dauer",
+    maxdepth: "Tiefster Tauchgang",
+    maxduration: "Längster Tauchgang",
+    totalduration: "Gesamttauchzeit",
+    coldest: "Kältester Tauchgang",
+    warmest: "Wärmster Tauchgang"
 }

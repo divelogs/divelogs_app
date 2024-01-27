@@ -90,6 +90,46 @@ export const getDiveCount = async (db: SQLiteDatabase): Promise<number> => {
   }
 };
 
+export const getBragFacts = async (db: SQLiteDatabase): Promise<any> => {
+  try {
+    const results = await db.executeSql(`SELECT *,
+    (SELECT id FROM dives WHERE duration = subq.maxduration LIMIT 1) AS longestid, 
+    (SELECT id FROM dives WHERE maxdepth = subq.maxdepth LIMIT 1) AS deepestid,
+    (SELECT min(depthtemp) FROM dives WHERE depthtemp != 0) as coldest,
+    (SELECT max(depthtemp) FROM dives WHERE depthtemp != 0) as warmest
+    
+    FROM 
+    (
+    SELECT SUM(duration) AS totalduration, round(AVG(duration)) AS avgduration, MAX(duration) AS maxduration, 
+    ROUND(AVG(maxdepth),2) AS avgdepth, MAX(maxdepth) AS maxdepth
+    FROM dives 
+    ) subq`);
+    if (results[0].rows.length == 0)
+      return {avgdepth: null, avgduration: null, deepestid: null, longestid: null, maxdepth: null, maxduration: null, totalduration: null};
+    else {
+      let res = results[0].rows.item(0);
+      return res;
+    }
+
+
+    
+
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get BragValues');
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
 export const getSingleColumnStats = async (db: SQLiteDatabase, column: string, sort: string = 'ASC'): Promise<StatVal[]> => {
   try {
     let data:StatVal[] = [];

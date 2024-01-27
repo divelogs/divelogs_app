@@ -80,4 +80,12 @@ export default {
 
     userpassnotfound: "User name or password is invalid",
     couldnotlogin: "Could not login due to an unexpected error",
+
+    avgdepth: "Average Depth",
+    avgduration: "Average Divetime",
+    maxdepth: "Deepest Dive",
+    maxduration: "Longest Dive",
+    totalduration: "Total Divetime",
+    coldest: "Coldest Dive",
+    warmest: "Warmest Dive"
 };
