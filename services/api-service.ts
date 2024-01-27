@@ -1,4 +1,7 @@
 
+import RNFetchBlob from "rn-fetch-blob";
+import {  NativeModules, Platform } from 'react-native';
+
 export type LoginResult = {
   success: boolean;
   bearerToken: string;
@@ -8,8 +11,11 @@ export type LoginResult = {
 export type UserSettings = {
   imperial: boolean;
   startnumber: number;
+  username: string;
+  profilePictureUrl: string;
+  firstname: string;
+  lastname: string;
 };
-
 
 const apiUrl = "https://divelogs.de/api/"
 const clientString = "Divelogs App v.0"
@@ -63,7 +69,11 @@ const getUserSettings = async () : Promise<UserSettings | null> =>
 	if (userdata != null)
 		return { 
 			imperial: userdata.imperial,
-      startnumber: userdata.startnumber
+      startnumber: userdata.startnumber,
+      username: userdata.user,
+      profilePictureUrl: userdata.avatar,
+      firstname: userdata.firstname,
+      lastname: userdata.lastname
     }
   return null
 }
@@ -106,15 +116,74 @@ const login = async (username:string, password:string ) : Promise<LoginResult> =
   }
  }
 
- export const Api = 
- {
-   setBearerToken: setBearerToken,
-   getGear: getGear,
-   getCertifications: getCertifications,
-   getUserSettings: getUserSettings,
-   getDives: getDives,
-   login: login
- }
+interface ImageDownloadResult {
+  [key: string]: string;
+} 
+
+const downloadImages = async (images:string[], subfolder:string = '') : Promise<ImageDownloadResult> => {
+  const result:ImageDownloadResult = {}
+
+  const downloads = images.map(async image => [image, (await downloadImage(image, subfolder))]);
+  (await Promise.all(downloads)).forEach(a => result[a[0]] = a[1])
+  return result
+}
+
+const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string> => new Promise<string>((resolve, reject) => 
+  {
+    const { config, fs } = RNFetchBlob;
+
+    let newImgUri = image_URL.lastIndexOf('/');
+    let imageName = image_URL.substring(newImgUri);
+
+    let pathBuild = [fs.dirs.DocumentDir, 'divelogs', subfolder, imageName]
+    const imagePath:string = pathBuild.map(a => a.replace(/^\//, ''))
+                                      .filter(a => a.length > 0)
+                                      .reduce((a,b) => a + "/" + b, "")
+
+    // Get config and fs from RNFetchBlob
+    // config: To pass the downloading related options
+    // fs: Directory path where we want our image to download
+    let options = {
+      fileCache: true,
+      fileName: imageName,
+      addAndroidDownloads: {
+        // Related to the Android only
+        useDownloadManager: true,
+        notification: true,
+        path: imagePath,
+        description: 'Image',
+      },
+    };
+
+    config(options)
+      .fetch('GET', image_URL)
+      .then( (res) => {
+        return res.readFile('base64');
+      }).then(base64Data => {
+        if (Platform.OS == 'ios'){
+          fs.writeFile(imagePath, base64Data, 'base64').then( (res) => {
+            resolve(imagePath)
+          });
+        }
+        else {
+          throw "Other Platforms not implemented"
+        }
+      })
+      .catch((e) => {
+        reject(`The file ${image_URL} ERROR: ${e.message}`);
+      }); 
+  });
+
+export const Api = 
+{
+  setBearerToken: setBearerToken,
+  getGear: getGear,
+  getCertifications: getCertifications,
+  getUserSettings: getUserSettings,
+  getDives: getDives,
+  login: login,
+  downloadImages: downloadImages
+}
 
 
 

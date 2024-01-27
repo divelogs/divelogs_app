@@ -401,67 +401,33 @@ export const saveStatistics = async (db: SQLiteDatabase, data:Dive[]): Promise<b
 }
 
 export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promise<boolean> => {
-  const deleteQuery1 = `DELETE from certifications`;
+  const deleteQuery1 = `DELETE from certifications_files; DELETE from certifications`;
+  const insertQuery = `INSERT into certifications (name, org, date) values(?,?,?)`;
+  const fileInsertQuery = "INSERT INTO certifications_files (certification_id, filename) VALUES (?,?)";
+  
   await db.executeSql(deleteQuery1);
+  
+  const storeCerts = data.map((cert:any) => {
+    const values = [ cert.name, cert.org, cert.date];
+    return new Promise<any>((resolve, reject) => { 
+      db.transaction(tx => { 
+        tx.executeSql(insertQuery, values, (_, results) => resolve({id: results.insertId, scans: cert.scans})) 
+      })
+    })
+  })
 
-  const deleteQuery2 = `DELETE from certifications_files`;
-  await db.executeSql(deleteQuery2);
- 
   try {
-    for(let i = 0; i < data.length; i++) {
-    //Object.keys(data).forEach(function(key) {
-      const certificationsdata = (<any>data)[i];
-      const insertQuery = `INSERT into certifications
-      (
-          name, org, date
-      )
-      values(?,?,?)`;
-
-      const values = [
-        certificationsdata.name,
-        certificationsdata.org,
-        certificationsdata.date
-      ]
-
-      const writeCertification = () => {
-        return new Promise((resolve, reject) => {
-            db.transaction(tx => {
-                tx.executeSql(
-                    insertQuery,
-                    values,
-                    (tx, results) => {
-                      resolve(results.insertId);
-                    }
-                );
-            });
-        });        
-      };
-
-      const certid = await writeCertification();
-
-      try {
-        Object.keys(certificationsdata.scans).forEach(function(key) {
-          const scanURI = (<any>certificationsdata.scans)[key];
-          const imageName = downloadImage(scanURI);
-          const certfileinsert = "INSERT INTO certifications_files (certification_id, filename) VALUES (?,?)";
-          const filevalues = [
-            certid,
-            imageName
-          ];
-          db.executeSql(certfileinsert,filevalues);
-        });
-
-      } catch (error) {
-        console.error(error)
-        throw Error("Failed to add Certification")
-      }
-    };
-    return true;
-
-  } catch (error) {
-    console.error(error);
-    throw Error('Failed to save Certifications');
+    const storeCertsResult = (await Promise.all(storeCerts))
+    const storeFilePromises = (await Promise.all(storeCerts))
+      .flatMap(({id, scans}) => scans.map((scan:any) => ([id, scan])))
+      .map(async (filevalues:string[]) => await db.executeSql(fileInsertQuery,filevalues))
+    await Promise.all(storeFilePromises)
   }
+  catch(a) {
+    console.error(a)
+    return false;
+  }
+  return true
 };
 
 export const saveGearItems = async (db: SQLiteDatabase, data:JSON | null): Promise<boolean> => {
@@ -553,43 +519,3 @@ export const writeBearerToken = async (db: SQLiteDatabase, apptoken: string): Pr
     throw Error('Failed to get Bearer Token');
   }
 };
-
-const downloadImage = (image_URL:string) => {
-  let newImgUri = image_URL.lastIndexOf('/');
-  let imageName = image_URL.substring(newImgUri);
-  let imagePath:string;
-  // Get config and fs from RNFetchBlob
-  // config: To pass the downloading related options
-  // fs: Directory path where we want our image to download
-  let options = {
-    fileCache: true,
-    fileName: imageName,
-    addAndroidDownloads: {
-      // Related to the Android only
-      useDownloadManager: true,
-      notification: true,
-      path:
-        PictureDir +
-        '/divelogs' + 
-        imageName,
-      description: 'Image',
-    },
-  };
-  config(options)
-    .fetch('GET', image_URL)
-    .then( (res) => {
-      imagePath = PictureDir + '/divelogs' + imageName;
-      return res.readFile('base64');
-    }).then(base64Data => {
-      if (Platform.OS == 'ios'){
-        RNFetchBlob.fs.writeFile(imagePath, base64Data, 'base64') .then( (res) => {
-          //console.log(res);
-        });
-      }
-    })
-    .catch((e) => {
-      console.log('The file ERROR', e.message);
-    }); 
-  return imageName.replace("/","");
-};
-
