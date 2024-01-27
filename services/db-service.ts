@@ -419,11 +419,13 @@ export const saveStatistics = async (db: SQLiteDatabase, data:Dive[]): Promise<b
 }
 
 export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promise<boolean> => {
-  const deleteQuery1 = `DELETE from certifications_files; DELETE from certifications`;
+  const deleteQuery1 = `DELETE from certifications`;
+  const deleteQuery2 = `DELETE from certifications_files;`;
   const insertQuery = `INSERT into certifications (name, org, date) values(?,?,?)`;
   const fileInsertQuery = "INSERT INTO certifications_files (certification_id, filename) VALUES (?,?)";
   
   await db.executeSql(deleteQuery1);
+  await db.executeSql(deleteQuery2);
 
   const storeCerts = data.map((cert:any) => {
     const values = [ cert.name, cert.org, cert.date];

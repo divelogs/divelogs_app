@@ -55,7 +55,7 @@ export const Certifications = () => {
                     <TouchableOpacity key={item.id} onPress={() =>
                         navigation.navigate('CertificationScans', {thekey: thekey})
                       } >                     
-                      <Image source = {{uri: "file://" + PictureDir + "/divelogs/" + scan, width: 150, height: 150}} style={{marginRight: 10}}/>
+                      <Image source = {{uri: "file://" + PictureDir + scan, width: 150, height: 150}} style={{marginRight: 10}}/>
                     </TouchableOpacity>
                   </View>
                 );

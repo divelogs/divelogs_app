@@ -158,7 +158,7 @@ const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string
     let newImgUri = image_URL.lastIndexOf('/');
     let imageName = image_URL.substring(newImgUri);
 
-    let pathBuild = [fs.dirs.DocumentDir, 'divelogs', subfolder, imageName]
+    let pathBuild = [ 'divelogs', subfolder, imageName]
     const imagePath:string = pathBuild.map(a => a.replace(/^\//, ''))
                                       .filter(a => a.length > 0)
                                       .reduce((a,b) => a + "/" + b, "")
@@ -184,7 +184,7 @@ const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string
         return res.readFile('base64');
       }).then(base64Data => {
         if (Platform.OS == 'ios'){
-          fs.writeFile(imagePath, base64Data, 'base64').then( (res) => {
+          fs.writeFile(fs.dirs.DocumentDir + '/' + imagePath, base64Data, 'base64').then( (res) => {
             resolve(imagePath)
           });
         }

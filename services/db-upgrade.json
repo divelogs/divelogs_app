@@ -14,11 +14,9 @@
       "DROP TABLE IF EXISTS statistics; CREATE TABLE statistics (type varchar(255), value varchar(255), diveid INTEGER);"
     ],
     "to_v7": [
-      "DROP TABLE IF EXISTS profile",
-      "CREATE TABLE profile (username varchar(255), firstname varchar(255), lastname varchar(255), profilePictureUrl varchar(500));"      
+      "DROP TABLE IF EXISTS profile; CREATE TABLE profile (username varchar(255), firstname varchar(255), lastname varchar(255), profilePictureUrl varchar(500));"      
     ],
-    "to_v8": ["ALTER TABLE settings ADD COLUMN forceSync boolean DEFAULT 0",
-              "UPDATE Settings SET forceSync = 1"
+    "to_v8": ["ALTER TABLE settings ADD COLUMN forceSync boolean DEFAULT 0; UPDATE Settings SET forceSync = 1"
     ]
   }
 }

@@ -2,12 +2,15 @@
 import { useEffect, useState } from 'react';
 import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Image, StyleSheet, Vibration, TouchableOpacity } from 'react-native';
 import { UserProfile } from '../../models';
+import RNFetchBlob from "rn-fetch-blob";
 
 import { getDBConnection, getDives, getBearerToken, saveDives, saveStatistics, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, getImperial, saveProfile, getProfile, } from '../../services/db-service';
 
 const ProfilePicture = ({userprofile, style}:any) : any => 
 {
     const [profile, setProfile] = useState<UserProfile|null>(userprofile)
+    const { config, fs } = RNFetchBlob;
+    
 
     useEffect(() => {
         if (profile != null) return;
@@ -23,7 +26,7 @@ const ProfilePicture = ({userprofile, style}:any) : any =>
         return null;
 
     return <View style={[style]}>
-            <Image style={styles.image} source={{ uri: profile!.profilePictureUrl }} />
+            <Image style={styles.image} source={{ uri: fs.dirs.DocumentDir + profile!.profilePictureUrl }} />
             <Text style={styles.profile}>{profile!.username}</Text>
         </View>
 }
