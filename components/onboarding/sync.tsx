@@ -7,7 +7,12 @@ import { Api } from '../../services/api-service'
 import { APIDive, Certification } from '../../models';
 import { UserProfile } from '../../models'
 
-import ProfilePicture from '../generic/userprofile';
+import '../../translation'
+import { useTranslation } from 'react-i18next';
+
+import Loader from '../generic/loader'
+
+import { ProfilePictureWithLoader } from '../generic/userprofile';
 
 const Sync = ({navigation}:any) => {
 
@@ -15,6 +20,8 @@ const Sync = ({navigation}:any) => {
     const [userprofile, setUserProfile] = useState<UserProfile|null>()
     const [diveCount, setDiveCount] = useState(0)
     const [bag, setBag] = useState<any>()
+
+    const { t } = useTranslation(); 
 
     const SYNC_STEPS = [
         async () => {
@@ -88,7 +95,7 @@ const Sync = ({navigation}:any) => {
         },
         async () => {
             resetSyncForced();
-            //navigation.reset({index: 0, routes: [{ name: 'Home'}]})
+            navigation.reset({index: 0, routes: [{ name: 'Home'}]})
         }
     ]
 
@@ -104,16 +111,12 @@ const Sync = ({navigation}:any) => {
     }, [currentStep])
 
     return (<View style={{flex: 1, backgroundColor:'#3fb9f2'}}>
-        <Text>Downloading the logbook</Text>
-        <ProfilePicture user={userprofile} style={styles.screen}/>
-        <Text >Step: {currentStep}</Text>
-        <TouchableOpacity onPress={() => setCurrentStep(0)}>
-            <Text >Redo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.reset({index: 0, routes: [{ name: 'Home'}]})}>
-            <Text >Open App</Text>
-        </TouchableOpacity>
+        <View style={{position:'absolute', alignItems:'center', width: '100%', top: '25%'}}>
+            <ProfilePictureWithLoader imageSize={170} userprofile={userprofile} style={styles.screen}/>
 
+            <Text style={[styles.text]}>{t('loading')}</Text>
+            <Text style={[styles.text]}>{t('step')} {currentStep} / {SYNC_STEPS.length}</Text>
+        </View>
     </View>)
 }
 
@@ -135,7 +138,11 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 20,
         fontWeight: '300'
+    },
+    text: {
+        color: '#fff'
     }
+
   });
 
 

@@ -75,4 +75,7 @@ export default {
 
     userpassnotfound: "User name or password is invalid",
     couldnotlogin: "Could not login due to an unexpected error",
+
+    step: "step",
+    welcome: "Hello"
 };

@@ -527,14 +527,11 @@ export const saveGearItems = async (db: SQLiteDatabase, data:JSON | null): Promi
   }
 };
  
-export const getBearerToken = async (db: SQLiteDatabase): Promise<string> => {
-  try {
-    const results = await db.executeSql("SELECT apptoken FROM apptoken");
-    return results[0].rows.item(0)['apptoken'];
-  } catch (error) {
-    console.error(error);
-    throw Error('Failed to get Bearer Token');
-  }
+export const getBearerToken = async (db: SQLiteDatabase): Promise<string|null> => {
+  const results = await db.executeSql("SELECT apptoken FROM apptoken");
+  if (results[0].rows.length == 0) 
+    return null
+  return results[0].rows.item(0)['apptoken'];
 };
 
 export const getDbVersion = async (db: SQLiteDatabase): Promise<number> => {

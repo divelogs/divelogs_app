@@ -72,4 +72,7 @@ export default {
     byDuration: "Nach Tauchdauer",
 
     and: "und",
+
+    step: "Schritt",
+    welcome: "Hi",
 }

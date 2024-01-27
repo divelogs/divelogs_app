@@ -46,19 +46,6 @@ const App = () => {
   
   const { t } = useTranslation(); 
 
-  const getCredentials = useCallback(async () => {
-    try {
-      const db = await getDBConnection();
-      const res = await getBearerToken(db);
-
-      if (res?.length > 0){
-        Api.setBearerToken(res)
-        setbearerToken(res);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
 
   const DBCheck = useCallback(async () => {
     try {
@@ -79,163 +66,17 @@ const App = () => {
     }
   }, []);
 
-  const loadDataCallback = useCallback(async () => {
-    try {
 
-
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
-  const loadDataFromAPI = async () => {
-
-    try {
-      setLoading(true);
-
-      if (bearerToken?.length == 0){
-        setModalVisible(true);
-        return;
-      }     
-
-      console.log("-->" + bearerToken)
-
-      const apiDives: any = await Api.getDives()
-
-      // null occurs when no data could be retrieved from the API
-      if(apiDives == null) {
-        console.log('apiDives is null');
-        setModalVisible(true);
-      }
-
-      if (!apiDives || apiDives.length == 0 || apiDives == null) 
-        return;
-
-      const db = await getDBConnection();
-      await saveDives(db, apiDives);
-      const storedDives = await getDives(db,sort,'');
-
-      await saveStatistics(db, storedDives);
-
-      setDives(storedDives); 
-      
-      const userSettings:any = await Api.getUserSettings()
-      const certifications:any = await Api.getCertifications()
-      const gearitems = await Api.getGear()
-      
-      await saveCertifications(db, certifications);
-      await saveSettings(db, userSettings.imperial, userSettings.startnumber);
-      await saveGearItems(db, gearitems);
-      setImperial(userSettings.imperial);
-
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const doLogin = async () => {
-
-    const loginResult = await Api.login(username, password)
-
-    if (loginResult.success)
-    {
-      setbearerToken(loginResult.bearerToken);
-      Api.setBearerToken(loginResult.bearerToken);
-      const db = await getDBConnection();
-      const succ = await writeBearerToken(db, loginResult.bearerToken);
-
-      if (succ) {
-        setModalVisible(false);
-        loadDataFromAPI();
-      }
-    }
-    else
-      Alert.alert(loginResult.error);
-  }
-
-  useEffect(() => {
-    loadDataCallback();
-  }, [loadDataCallback]);
-
-  useEffect(() => {
-    getCredentials();
-  }, [getCredentials]);
 
   // This gets called before the component renders. In case DB Updates are needed
   useLayoutEffect(() => {
     DBCheck();
   }, []);
 
-
-  // Use this const as key of the SwiperFlatList to enforce re-render on orientation-change
-  const [orientation, setOrientation] = useState('');
-  useEffect(() => {
-    Dimensions.addEventListener('change', ({window:{width,height}})=>{
-      if (width<height) {
-        setOrientation("PORTRAIT")
-      } else {
-        setOrientation("LANDSCAPE")    
-      }
-    })
-  }, []);
-
-
-  const { width } = Dimensions.get('window');
-
-  if (isLoading)
-    return (<>        
-        <SafeAreaView style={{ flex:0, backgroundColor: '#3fb9f2', height:30 }} />
-        <View style={[styles.appTitleView]}>
-          <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
-        </View>  
-        <View style={styles.centeredView}>
-          <Text style={{height: 50, textAlign:'center'}}>{t('loading')}</Text>     
-          <ActivityIndicator />
-        </View>
-      </>)
-
   return (
     <NavigationContainer> 
       <Index></Index>
     </NavigationContainer>)
-
-
-
-
-  return (
-    <NavigationContainer>       
-      <SafeAreaView style={{ flex:0, backgroundColor: '#3fb9f2', height:30 }} />
-
-
-      <BottomNavigation imperial={imperial} loadDataFromAPI={loadDataFromAPI} />
-      
-      
-      
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>{t('login')}</Text>
-            <TextInput placeholder="username" style={styles.logininputs} onChangeText={newText => setUsername(newText)} autoCapitalize="none"></TextInput>
-            <TextInput placeholder="password" secureTextEntry={true} style={styles.logininputs} onChangeText={newText => setPassword(newText)}></TextInput>
-            <Pressable
-              style={styles.button}
-              onPress={() => doLogin()}>
-              <Text style={styles.textStyle}>Login</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>       
-    </NavigationContainer>
-  );
 };
 
 export default App; 
