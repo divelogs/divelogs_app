@@ -1,5 +1,5 @@
 import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { Dive, Certification, StatVal, GearItem, APIDive } from '../models';
+import { Dive, Certification, StatVal, GearItem, APIDive, UserProfile } from '../models';
 import RNFetchBlob from "rn-fetch-blob";
 import {  NativeModules, Platform } from 'react-native';
 import dbUpgrade from "./db-upgrade.json";
@@ -35,20 +35,25 @@ export const updateDB = (): Promise<number> => {
     });   
 };
 
-export const getImperial = (): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
-    getDBConnection()
-      .then((instance) => {
-        instance.executeSql("SELECT imperial FROM settings")
-          .then((results) => {
-            let imperial = results[0].rows.item(0)['imperial'];
-            imperial = (imperial == "1" ? true : false);
-            resolve(imperial);
-          })
-          .catch((error) => console.error(error));
-      })
-      .catch((error) => console.error(error));
-    });   
+export const getImperial = async (): Promise<boolean> => {
+  const db = await getDBConnection()
+  const result = await db.executeSql("SELECT imperial FROM settings")
+  if (result[0].rows.length == 0) 
+    return false;
+  return result[0].rows.item(0).imperial == "1"
+};
+
+export const getSyncForced = async (): Promise<boolean> => {
+  const db = await getDBConnection()
+  const result = await db.executeSql("SELECT forceSync FROM settings")
+  if (result[0].rows.length == 0) 
+    return false;
+  return result[0].rows.item(0).forceSync == "1"
+};
+
+export const resetSyncForced = async (): Promise<void> => {
+  const db = await getDBConnection()
+  await db.executeSql("UPDATE settings SET forceSync = 0")
 };
 
 export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
@@ -225,6 +230,19 @@ export const getCertifications = async (db: SQLiteDatabase): Promise<Certificati
   }
 };
 
+ 
+export const getProfile = async (db: SQLiteDatabase): Promise<UserProfile|null> => {
+  try {
+    const results = await db.executeSql("SELECT * FROM profile");
+    if (results[0].rows.length == 0) 
+      return null
+    return results[0].rows.item(0);
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get Bearer Token');
+  }
+};
+
 export const saveSettings = async (db: SQLiteDatabase, imperial:boolean, startnumber:number): Promise<boolean> => {
   await db.executeSql("UPDATE settings SET imperial='"+(imperial ? "1" : "0")+"', firstdive='"+startnumber+"'");
   return true;
@@ -263,6 +281,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
 
       const insertQuery = `INSERT into dives
       (
+          id,
           divenumber,
           divedate,
           divetime,
@@ -286,7 +305,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
           sampledata,
           tanks
       )
-      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       //const profiledatastring = divedata.sampledata.join(",");
 
@@ -304,6 +323,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
       var bdy = divedata.buddy.split(/[;,]+/).map(s => s.trim()).sort();
 
       const values = [
+        divedata.id,
         divedata.divenumber,
         divedata.date,
         divedata.time,
@@ -402,66 +422,56 @@ export const saveStatistics = async (db: SQLiteDatabase, data:Dive[]): Promise<b
 
 export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promise<boolean> => {
   const deleteQuery1 = `DELETE from certifications`;
+  const deleteQuery2 = `DELETE from certifications_files;`;
+  const insertQuery = `INSERT into certifications (name, org, date) values(?,?,?)`;
+  const fileInsertQuery = "INSERT INTO certifications_files (certification_id, filename) VALUES (?,?)";
+  
   await db.executeSql(deleteQuery1);
-
-  const deleteQuery2 = `DELETE from certifications_files`;
   await db.executeSql(deleteQuery2);
- 
+
+  const storeCerts = data.map((cert:any) => {
+    const values = [ cert.name, cert.org, cert.date];
+    return new Promise<any>((resolve, reject) => { 
+      db.transaction(tx => { 
+        tx.executeSql(insertQuery, values, (_, results) => resolve({id: results.insertId, scans: cert.scans})) 
+      })
+    })
+  })
+
   try {
-    for(let i = 0; i < data.length; i++) {
-    //Object.keys(data).forEach(function(key) {
-      const certificationsdata = (<any>data)[i];
-      const insertQuery = `INSERT into certifications
-      (
-          name, org, date
-      )
-      values(?,?,?)`;
-
-      const values = [
-        certificationsdata.name,
-        certificationsdata.org,
-        certificationsdata.date
-      ]
-
-      const writeCertification = () => {
-        return new Promise((resolve, reject) => {
-            db.transaction(tx => {
-                tx.executeSql(
-                    insertQuery,
-                    values,
-                    (tx, results) => {
-                      resolve(results.insertId);
-                    }
-                );
-            });
-        });        
-      };
-
-      const certid = await writeCertification();
-
-      try {
-        Object.keys(certificationsdata.scans).forEach(function(key) {
-          const scanURI = (<any>certificationsdata.scans)[key];
-          const imageName = downloadImage(scanURI);
-          const certfileinsert = "INSERT INTO certifications_files (certification_id, filename) VALUES (?,?)";
-          const filevalues = [
-            certid,
-            imageName
-          ];
-          db.executeSql(certfileinsert,filevalues);
-        });
-
-      } catch (error) {
-        console.error(error)
-        throw Error("Failed to add Certification")
-      }
-    };
-    return true;
-
-  } catch (error) {
-    console.error(error);
-    throw Error('Failed to save Certifications');
+    const storeCertsResult = (await Promise.all(storeCerts))
+    const storeFilePromises = (await Promise.all(storeCerts))
+      .flatMap(({id, scans}) => scans.map((scan:any) => ([id, scan])))
+      .map(async (filevalues:string[]) => await db.executeSql(fileInsertQuery,filevalues))
+    await Promise.all(storeFilePromises)
   }
+  catch(a) {
+    console.error(a)
+    return false;
+  }
+  return true
+};
+
+export const saveProfile = async (db: SQLiteDatabase, data:UserProfile | null): Promise<boolean> => {
+  const deleteQuery = `DELETE from profile`; 
+  const insertQuery = `INSERT into profile
+  (
+    username,
+    profilePictureUrl,
+    firstname,
+    lastname
+  )
+  values(?,?,?,?)`;
+    
+  const values = [ data?.username, data?.profilePictureUrl, data?.firstname, data?.lastname, ]
+  try {
+    await db.executeSql(deleteQuery);
+    await db.executeSql(insertQuery, values)
+  } catch (error) {
+    console.error(error)
+    throw Error("Could not store Profile")
+  }
+  return true
 };
 
 export const saveGearItems = async (db: SQLiteDatabase, data:JSON | null): Promise<boolean> => {
@@ -553,43 +563,3 @@ export const writeBearerToken = async (db: SQLiteDatabase, apptoken: string): Pr
     throw Error('Failed to get Bearer Token');
   }
 };
-
-const downloadImage = (image_URL:string) => {
-  let newImgUri = image_URL.lastIndexOf('/');
-  let imageName = image_URL.substring(newImgUri);
-  let imagePath:string;
-  // Get config and fs from RNFetchBlob
-  // config: To pass the downloading related options
-  // fs: Directory path where we want our image to download
-  let options = {
-    fileCache: true,
-    fileName: imageName,
-    addAndroidDownloads: {
-      // Related to the Android only
-      useDownloadManager: true,
-      notification: true,
-      path:
-        PictureDir +
-        '/divelogs' + 
-        imageName,
-      description: 'Image',
-    },
-  };
-  config(options)
-    .fetch('GET', image_URL)
-    .then( (res) => {
-      imagePath = PictureDir + '/divelogs' + imageName;
-      return res.readFile('base64');
-    }).then(base64Data => {
-      if (Platform.OS == 'ios'){
-        RNFetchBlob.fs.writeFile(imagePath, base64Data, 'base64') .then( (res) => {
-          //console.log(res);
-        });
-      }
-    })
-    .catch((e) => {
-      console.log('The file ERROR', e.message);
-    }); 
-  return imageName.replace("/","");
-};
-

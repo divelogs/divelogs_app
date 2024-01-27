@@ -1,22 +1,15 @@
-
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import { NavigationContainer } from '@react-navigation/native';
 
 import { Button, View, Modal, Pressable, Text, TouchableOpacity } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { Dive } from '../../models';
 
-import '../../translation'
-import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 
-import { getDBConnection, getDives, getImperial } from '../../services/db-service';
 
 import { divelogs_logo, filtericon } from '../../assets/svgs.js'
 
-import DivesList from './DivesList';
+import DivelogsHeader from '../generic/divelogsheader'
+
 import { AggregationView } from './Aggregation'
 
 import DiveListSelection from './DiveListSelection'
@@ -46,11 +39,11 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
               backgroundColor: '#3fb9f2',
             },
             headerTintColor: '#fff',
+            headerTitle: () => <DivelogsHeader/>,
           }}
         >
 
         <Stack.Screen name="AllDives" options={{ 
-          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
           headerShown: true,
           headerRight: () => (
             <>              
@@ -65,10 +58,10 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
               color="#fff"/>              
             </>
           ),
-          headerLeft: () => (
+          headerLeft: (props) => (
             <>
               <Button
-              onPress={() => refreshApiData()}
+              onPress={() => navigation.navigate("Onboarding", {screen: "Sync"})}
               title="↺"
               accessibilityLabel="load from divelogs"
               color="#fff"/>            
@@ -79,7 +72,6 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
         </Stack.Screen>
 
         <Stack.Screen name="FilteredDives" options={{ 
-          headerShown: true,
           title: "",
           headerRight: () => (
             <>
@@ -98,24 +90,18 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
         </Stack.Screen>
 
         <Stack.Screen name="DiveDetail" options={{ 
-          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
-          headerShown: true,
           headerBackTitleVisible: false       
         }}>
           {(props) => <DiveDetail {...props} imperial={imperial}/>}
         </Stack.Screen>
 
         <Stack.Screen name="DiveListSelection" options={{ 
-          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
-          headerShown: true,
           animation: "none"
         }}>
           {(props) => <DiveListSelection {...props}/>}
         </Stack.Screen>
 
         <Stack.Screen name="AggregatedView" options={{ 
-          headerTitle: (props) => <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />,
-          headerShown: true,
           headerRight: () => (
             <>
               <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>

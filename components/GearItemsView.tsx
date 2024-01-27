@@ -43,14 +43,6 @@ export const GearView = () => {
   }, []);
 
   const styles = StyleSheet.create({
-    tinyLogo: {
-      width:150,
-      height:34
-    },
-    safeArea: {
-      flex: 1,
-      backgroundColor: '#FFFFFF'
-    },
     appTitleView: {
       justifyContent: 'center',
       flexDirection: 'row',
@@ -60,19 +52,14 @@ export const GearView = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-        <View style={[styles.appTitleView]}>
-            <SvgXml style={styles.tinyLogo} xml={divelogs_logo} />
-        </View> 
-        <View>
             <FlatList
                 data={gearitems} 
                 renderItem={({item}) => (
                     <Gear gi={item} />
                 )}
             />
-        </View>
     </View>
   );  
 };
 
-
+export default GearView

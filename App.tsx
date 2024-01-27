@@ -16,78 +16,19 @@ import './translation'
 import { useTranslation } from 'react-i18next';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { Api } from './services/api-service'
 import Dives from './components/dives'
+import Onboarding from './components/onboarding'
 import DiveDetail from './components/divedetail'
 
 
+import Index from './components'
+
 import styles from './stylesheets/styles'
 
-const BottomNavigation = ({imperial, loadDataFromAPI}:any)=> {
-  //const Stack = createNativeStackNavigator();
-  const Tab = createBottomTabNavigator();
-  const { t } = useTranslation(); 
-
-  return (
-    <Tab.Navigator screenOptions={{
-      tabBarStyle: { backgroundColor: '#3fb9f2'}
-    }}>
-      <Tab.Screen name="Dives" options={{ 
-        title: t("dives"),
-        headerShown: false, 
-        tabBarActiveTintColor: '#FFFFFF', 
-        tabBarInactiveTintColor: '#FFFFFF',
-        tabBarLabelStyle: {fontSize: 14},
-        tabBarIcon: ({size,focused,color}) => {
-          return (
-            <SvgXml xml={diveicon} width="40" height="25"/>
-          );
-        }
-      }}>
-        {(props) => <Dives {...props} refreshApiData={loadDataFromAPI}/>}
-      </Tab.Screen>
-      <Tab.Screen name="Certifications" component={Certifications} options={{ 
-        title: t("certifications"),
-        headerShown: false, 
-        tabBarActiveTintColor: '#FFFFFF', 
-        tabBarInactiveTintColor: '#FFFFFF',
-        tabBarLabelStyle: {fontSize: 14},
-        tabBarIcon: ({size,focused,color}) => {
-          return (
-            <SvgXml xml={certicon} width="40" height="25"/>
-          );
-        }
-      }} />
-      <Tab.Screen name="Statistics" 
-        component={StatisticsView} 
-        initialParams={{ imperial: imperial }}
-        options={{ 
-          title: t("statistics"),
-          headerShown: false, 
-          tabBarActiveTintColor: '#FFFFFF', 
-          tabBarInactiveTintColor: '#FFFFFF',
-          tabBarLabelStyle: {fontSize: 14},
-          tabBarIcon: ({size,focused,color}) => {
-            return (
-              <SvgXml xml={staticon} width="40" height="25"/>
-            );
-          }
-        }} />
-      <Tab.Screen name="GearItems" component={GearView} options={{ 
-        title: t("gearitems"),
-        headerShown: false, 
-        tabBarActiveTintColor: '#FFFFFF', 
-        tabBarInactiveTintColor: '#FFFFFF',
-        tabBarLabelStyle: {fontSize: 14},
-        tabBarIcon: ({size,focused,color}) => {
-          return (
-            <SvgXml xml={gearicon} width="40" height="25"/>
-          );
-        }
-      }} />
-    </Tab.Navigator>
-  );
-}
 
 const App = () => {
   const [isLoading, setLoading] = useState(false);
@@ -103,12 +44,7 @@ const App = () => {
 
 //
   
-
   const { t } = useTranslation(); 
-  
-  // used for localization of dates via toLocaleString(locale, options); in <SwiperFlatList> in DiveDetail. Returns ex. 'de-DE' instead of 'de_DE'
-  const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
-               NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
 
   const getCredentials = useCallback(async () => {
     try {
@@ -261,11 +197,23 @@ const App = () => {
       </>)
 
   return (
+    <NavigationContainer> 
+      <Index></Index>
+    </NavigationContainer>)
+
+
+
+
+  return (
     <NavigationContainer>       
       <SafeAreaView style={{ flex:0, backgroundColor: '#3fb9f2', height:30 }} />
 
+
       <BottomNavigation imperial={imperial} loadDataFromAPI={loadDataFromAPI} />
       
+      
+      
+
       <Modal
         animationType="slide"
         transparent={true}
