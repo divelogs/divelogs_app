@@ -35,6 +35,11 @@ export default {
     min_temp: "Minimale Temp.",
     avg_duration: "∅ Dauer",
     sum_duration: "∑ Dauer",
+
+    weather: "Wetter",
+    vizibility: "Sicht",
+    weights: "Gewicht",
+    si: "OFP",
  
     start_pressure: "Startdruck",
     end_pressure: "Enddruck",

@@ -115,14 +115,13 @@ export const getPrecalcedStats = async (db: SQLiteDatabase, type: string): Promi
     let data:StatVal[] = [];
     
     /*
-    NO IDEA why this query does NOT work from within react, but works fine in a SQLite GUI
-    Left here for documentation/WTF purposes
+    ATTENTION: This query works too, but the line "substr(csv, 0, instr(csv, ',')-1), " works here only. I an SQLite UI locally, the "-1" at the end needs to be removed. Zerobased <=> nonzerobased difference, possibly between engine versions.
 
     const results = await db.executeSql(`WITH split(word, csv) AS (
       SELECT 
         '', buddy||','  FROM dives   
       UNION ALL SELECT
-        substr(csv, 0, instr(csv, ',')), 
+        substr(csv, 0, instr(csv, ',')-1), 
         substr(csv, instr(csv, ',') + 1) 
       FROM split -- recurse
       WHERE csv != '' -- break recursion once no more csv words exist

@@ -36,6 +36,11 @@ export default {
     avg_duration: "∅ Duration",
     sum_duration: "∑ Duration",
 
+    weather: "Weather",
+    vizibility: "Vizibility",
+    weights: "Weights",
+    si: "SI",
+
     start_pressure: "Start Press.",
     end_pressure: "End Press.",
     tank: "Tank",
