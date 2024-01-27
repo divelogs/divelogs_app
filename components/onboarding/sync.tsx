@@ -2,22 +2,24 @@
 import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Image, StyleSheet, Vibration, TouchableOpacity } from 'react-native';
 
-import { getDBConnection, getDives, getBearerToken, saveDives, saveStatistics, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, getImperial, } from '../../services/db-service';
-import { Api, UserSettings } from '../../services/api-service'
+import { getDBConnection, getDives, getBearerToken, saveDives, saveStatistics, writeBearerToken, saveCertifications, resetSyncForced, saveGearItems, saveSettings, getImperial, saveProfile, } from '../../services/db-service';
+import { Api } from '../../services/api-service'
 import { APIDive, Certification } from '../../models';
-import Certifications from '../Certifications';
+import { UserProfile } from '../../models'
+
+import ProfilePicture from '../generic/userprofile';
 
 const Sync = ({navigation}:any) => {
 
     const [currentStep, setCurrentStep] = useState<number>(0)
-    const [userprofile, setUserProfile] = useState<UserSettings|null>()
+    const [userprofile, setUserProfile] = useState<UserProfile|null>()
     const [diveCount, setDiveCount] = useState(0)
     const [bag, setBag] = useState<any>()
 
     const SYNC_STEPS = [
         async () => {
             console.log("loadUserProfile")             
-            const profile = await Api.getUserSettings()
+            const profile = await Api.getUserProfile()
             setBag(profile) 
         },
         async () => {
@@ -29,6 +31,7 @@ const Sync = ({navigation}:any) => {
         async () => {
             console.log("storeUserProfile")             
             const db = await getDBConnection();
+            await saveProfile(db, userprofile!)
             await saveSettings(db, userprofile!.imperial, userprofile!.startnumber);
         },
         async () => {
@@ -84,6 +87,7 @@ const Sync = ({navigation}:any) => {
             Vibration.vibrate(250);
         },
         async () => {
+            resetSyncForced();
             //navigation.reset({index: 0, routes: [{ name: 'Home'}]})
         }
     ]
@@ -103,9 +107,13 @@ const Sync = ({navigation}:any) => {
         <Text>Downloading the logbook</Text>
         <ProfilePicture user={userprofile} style={styles.screen}/>
         <Text >Step: {currentStep}</Text>
-        <TouchableOpacity onPress={() => setCurrentStep(6)}>
+        <TouchableOpacity onPress={() => setCurrentStep(0)}>
             <Text >Redo</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.reset({index: 0, routes: [{ name: 'Home'}]})}>
+            <Text >Open App</Text>
+        </TouchableOpacity>
+
     </View>)
 }
 

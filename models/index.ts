@@ -37,6 +37,15 @@ export type Dive = {
   tanks: string | JSON;
 };
 
+export type UserProfile = {
+  imperial: boolean;
+  startnumber: number;
+  username: string;
+  profilePictureUrl: string;
+  firstname: string;
+  lastname: string;
+};
+
 export type APIDive = {
   divenumber: number;
   date: Date;

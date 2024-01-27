@@ -1,5 +1,5 @@
 import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { Dive, Certification, StatVal, GearItem, APIDive } from '../models';
+import { Dive, Certification, StatVal, GearItem, APIDive, UserProfile } from '../models';
 import RNFetchBlob from "rn-fetch-blob";
 import {  NativeModules, Platform } from 'react-native';
 import dbUpgrade from "./db-upgrade.json";
@@ -35,20 +35,25 @@ export const updateDB = (): Promise<number> => {
     });   
 };
 
-export const getImperial = (): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
-    getDBConnection()
-      .then((instance) => {
-        instance.executeSql("SELECT imperial FROM settings")
-          .then((results) => {
-            let imperial = results[0].rows.item(0)['imperial'];
-            imperial = (imperial == "1" ? true : false);
-            resolve(imperial);
-          })
-          .catch((error) => console.error(error));
-      })
-      .catch((error) => console.error(error));
-    });   
+export const getImperial = async (): Promise<boolean> => {
+  const db = await getDBConnection()
+  const result = await db.executeSql("SELECT imperial FROM settings")
+  if (result[0].rows.length == 0) 
+    return false;
+  return result[0].rows.item(0).imperial == "1"
+};
+
+export const getSyncForced = async (): Promise<boolean> => {
+  const db = await getDBConnection()
+  const result = await db.executeSql("SELECT forceSync FROM settings")
+  if (result[0].rows.length == 0) 
+    return false;
+  return result[0].rows.item(0).forceSync == "1"
+};
+
+export const resetSyncForced = async (): Promise<void> => {
+  const db = await getDBConnection()
+  await db.executeSql("UPDATE settings SET forceSync = 0")
 };
 
 export const upgradeFrom = (db: SQLiteDatabase, previousVersion:number) => {
@@ -222,6 +227,19 @@ export const getCertifications = async (db: SQLiteDatabase): Promise<Certificati
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Certifications');
+  }
+};
+
+ 
+export const getProfile = async (db: SQLiteDatabase): Promise<UserProfile|null> => {
+  try {
+    const results = await db.executeSql("SELECT * FROM profile");
+    if (results[0].rows.length == 0) 
+      return null
+    return results[0].rows.item(0);
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get Bearer Token');
   }
 };
 
@@ -406,7 +424,7 @@ export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promi
   const fileInsertQuery = "INSERT INTO certifications_files (certification_id, filename) VALUES (?,?)";
   
   await db.executeSql(deleteQuery1);
-  
+
   const storeCerts = data.map((cert:any) => {
     const values = [ cert.name, cert.org, cert.date];
     return new Promise<any>((resolve, reject) => { 
@@ -426,6 +444,28 @@ export const saveCertifications = async (db: SQLiteDatabase, data:JSON[]): Promi
   catch(a) {
     console.error(a)
     return false;
+  }
+  return true
+};
+
+export const saveProfile = async (db: SQLiteDatabase, data:UserProfile | null): Promise<boolean> => {
+  const deleteQuery = `DELETE from profile`; 
+  const insertQuery = `INSERT into profile
+  (
+    username,
+    profilePictureUrl,
+    firstname,
+    lastname
+  )
+  values(?,?,?,?)`;
+    
+  const values = [ data?.username, data?.profilePictureUrl, data?.firstname, data?.lastname, ]
+  try {
+    await db.executeSql(deleteQuery);
+    await db.executeSql(insertQuery, values)
+  } catch (error) {
+    console.error(error)
+    throw Error("Could not store Profile")
   }
   return true
 };

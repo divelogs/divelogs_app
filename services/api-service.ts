@@ -1,6 +1,7 @@
 
 import RNFetchBlob from "rn-fetch-blob";
 import {  NativeModules, Platform } from 'react-native';
+import { UserProfile } from "../models";
 
 export type LoginResult = {
   success: boolean;
@@ -8,22 +9,44 @@ export type LoginResult = {
   error: string;
 };
 
-export type UserSettings = {
-  imperial: boolean;
-  startnumber: number;
-  username: string;
-  profilePictureUrl: string;
-  firstname: string;
-  lastname: string;
-};
-
 const apiUrl = "https://divelogs.de/api/"
-const clientString = "Divelogs App v.0"
+const clientString = "Divelogs App v.1.0"
 
 var bearerToken: string | null = null;
 
 const setBearerToken = (bearer:string) => {
   bearerToken = bearer
+}
+
+const isApiAvailable = async () : Promise<boolean> => {
+
+  const t = 1000 * 5;
+  const timeout:Promise<any> = new Promise((_, reject) => setTimeout(() => reject(new Error(`${apiUrl} did not answer in ${t/1000} seconds` )), t))
+
+	const result = fetch(apiUrl, {
+    method: 'OPTIONS',
+    headers: {
+      'User-Agent': clientString,
+    },
+  });
+
+  return await Promise.race([result, timeout]).then(a => true).catch(a => {
+    console.log(a);
+    return false;
+  })
+}
+
+const isBearerTokenValid = async (bearer:string) : Promise<boolean> => {
+	const url = getUrl("user");
+	const p = fetch(url, {
+    headers: {
+      Accept: 'application/json',
+      'User-Agent': clientString,
+      Authorization: 'Bearer ' + bearer
+    }
+  });
+
+  return await p.then(res => res.ok).catch(a => false)
 }
 
 const getUrl = (endpoint:string) : string => 
@@ -63,7 +86,7 @@ const getCertifications = async () : Promise<JSON | null> =>
 	return null
 }
 
-const getUserSettings = async () : Promise<UserSettings | null> => 
+const getUserProfile = async () : Promise<UserProfile | null> => 
 {
 	var userdata:any = await getDataFromApi("user")
 	if (userdata != null)
@@ -179,10 +202,12 @@ export const Api =
   setBearerToken: setBearerToken,
   getGear: getGear,
   getCertifications: getCertifications,
-  getUserSettings: getUserSettings,
+  getUserProfile: getUserProfile,
   getDives: getDives,
   login: login,
-  downloadImages: downloadImages
+  downloadImages: downloadImages,
+  isApiAvailable: isApiAvailable,
+  isBearerTokenValid: isBearerTokenValid
 }
 
 
