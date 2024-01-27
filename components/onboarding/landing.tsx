@@ -19,6 +19,7 @@ const BlueScreen = ({navigation}:any) => {
   const bearerTokenAvailableAndValid = async (db:any) : Promise<boolean> => 
   {
     const res = await getBearerToken(db);
+    console.log(res)
 
     if (!res)
       return false;

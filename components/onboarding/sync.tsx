@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Image, StyleSheet, Vibration, TouchableOpacity } from 'react-native';
 
-import { getDBConnection, getDives, getBearerToken, saveDives, saveStatistics, writeBearerToken, saveCertifications, resetSyncForced, saveGearItems, saveSettings, getImperial, saveProfile, } from '../../services/db-service';
+import { getDBConnection, getDives, getBearerToken, getProfile, saveDives, saveStatistics, writeBearerToken, saveCertifications, resetSyncForced, saveGearItems, saveSettings, getImperial, saveProfile, } from '../../services/db-service';
 import { Api } from '../../services/api-service'
 import { APIDive, Certification } from '../../models';
 import { UserProfile } from '../../models'
@@ -14,6 +14,11 @@ import Loader from '../generic/loader'
 
 import { ProfilePictureWithLoader } from '../generic/userprofile';
 
+type SyncStep = {
+    name?: string;
+    action: () => Promise<void>;
+  };
+
 const Sync = ({navigation}:any) => {
 
     const [currentStep, setCurrentStep] = useState<number>(0)
@@ -21,53 +26,72 @@ const Sync = ({navigation}:any) => {
     const [diveCount, setDiveCount] = useState(0)
     const [bag, setBag] = useState<any>()
 
-    const { t } = useTranslation(); 
+    const { t } = useTranslation();
 
-    const SYNC_STEPS = [
-        async () => {
-            console.log("loadUserProfile")             
+    const SYNC_STEPS:SyncStep[] = [
+        { name: "Get profile from database",
+          action: async () => {
+            const db = await getDBConnection();         
+            const profile = await getProfile(db)
+            if (!!profile)
+                setUserProfile(profile) 
+        }},
+        { name: "Ensure connectivity and bearer token",
+          action: async () => {
+            await Api.isApiAvailable()
+
+            const db = await getDBConnection();
+            const token = await getBearerToken(db)
+            Api.setBearerToken(token!)
+            
+            const valid = await Api.isBearerTokenValid()
+
+            if (!valid)
+                navigation.reset({index: 0, routes: [{ name: 'Login'}]})
+        }},        
+        { name: "Get user profile from API",
+          action: async () => {        
             const profile = await Api.getUserProfile()
             setBag(profile) 
-        },
-        async () => {
-            console.log("downloadImage")
+        }},
+        { name: "Download profile picture",
+          action: async () => {
             if (!bag?.profilePictureUrl) return;
             bag.profilePictureUrl = (await Api.downloadImages([bag.profilePictureUrl], "profile"))[bag.profilePictureUrl]
             setUserProfile(bag)
-        },
-        async () => {
-            console.log("storeUserProfile")             
+        }},
+        { name: "Save profile in database",
+          action: async () => {           
             const db = await getDBConnection();
             await saveProfile(db, userprofile!)
             await saveSettings(db, userprofile!.imperial, userprofile!.startnumber);
-        },
-        async () => {
-            console.log("loadDives")   
+        }},
+        { name: "Download logbook",
+          action: async () => {
             const apiDives : any = await Api.getDives()
             setBag(apiDives)
             setDiveCount(apiDives.length)
-        },
-        async () => {
-            console.log("saveDives")   
+        }},
+        { name: "Store dives locally",
+          action: async () => {
             const db = await getDBConnection();
             await saveDives(db, bag);
             const storedDives = await getDives(db,"ASC",'');
             setBag(storedDives)
-        },
-        async () => {
-            console.log("prepareStatistics")   
+        }},
+        { name: "Prepare divelogs statistics",
+          action: async () => {
             const db = await getDBConnection();
             await saveStatistics(db, bag);
-        },
-        async () => {
-            console.log("certifactions")  
+        }},
+        { name: "Download brevets",
+          action: async () => {
             const db = await getDBConnection(); 
             const certifications:any = await Api.getCertifications()
             setBag(certifications)
-        },
-        async () => {
-            console.log("downloading brevets")
-
+        }},
+        { name: "Download brevet images",
+          action: async () => {
             const certs:Certification[] = bag
             const imageUrls = certs.flatMap((a:Certification) => a.scans)
 
@@ -77,26 +101,24 @@ const Sync = ({navigation}:any) => {
                                  .map((a:string) => downloadResult[a])
             })
             setBag(certs)
-        },
-        async () => {
+        }},
+        { name: "Store brevets in database",
+          action: async () => {
             const db = await getDBConnection(); 
-
             await saveCertifications(db, bag)
-        },
-        async () => {
-            console.log("gear")  
+        }},
+        { name: "Download and store gear",
+          action: async () => {
             const db = await getDBConnection(); 
             const gearitems = await Api.getGear()
             await saveGearItems(db, gearitems);
-        },                
-        async () => {
-            console.log("vibe!")   
+        }},                
+        { name: "Vibrate and done!",
+          action: async () => {
             Vibration.vibrate(250);
-        },
-        async () => {
             resetSyncForced();
             navigation.reset({index: 0, routes: [{ name: 'Home'}]})
-        }
+        }}
     ]
 
     useEffect(() => {
@@ -104,8 +126,9 @@ const Sync = ({navigation}:any) => {
             return;
         
         (async () => {
-            console.log(`Sync step: ${currentStep+1}/${SYNC_STEPS.length}`)
-            await SYNC_STEPS[currentStep]()
+            const step = SYNC_STEPS[currentStep]
+            console.log(`Sync step: ${currentStep+1}/${SYNC_STEPS.length}: ${step.name}`)
+            await step.action()
             setTimeout(() => setCurrentStep(currentStep+1), 150)
           })()
     }, [currentStep])
