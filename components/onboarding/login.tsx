@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
-import {SafeAreaView,Text,TextInput,View,Dimensions, Linking, Alert, Modal, Pressable, NativeModules, StyleSheet, TouchableOpacity } from 'react-native';
+import {Platform, SafeAreaView,Text,TextInput,View,Dimensions, Linking, Alert, Modal, Pressable, NativeModules, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 import { getDBConnection, writeBearerToken } from '../../services/db-service';
 import { Api } from '../../services/api-service'
@@ -31,11 +31,14 @@ const Login = ({navigation}:any) => {
     }
 
     const change = (func:any, text:string) => {
-        func(text)
         setErrormessage('')
+        func(text)
     } 
 
     const doLogin = async () => {
+
+        if (username.length == 0 || password.length == 0)
+            return;
 
         const loginResult = await Api.login(username, password)
         
@@ -43,8 +46,6 @@ const Login = ({navigation}:any) => {
             setErrormessage(translateResult(loginResult.error))
             return;
         }
-
-        console.log(loginResult.bearerToken)
 
         Api.setBearerToken(loginResult.bearerToken);
         const db = await getDBConnection();
@@ -56,9 +57,8 @@ const Login = ({navigation}:any) => {
 
 
 
-    return (<View style={[divelogsStyle.centeredView, {backgroundColor:'#3fb9f2'}]}>
+    return (<KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[divelogsStyle.centeredView, {backgroundColor:'#3fb9f2'}]}>
             <AppHeader style={[style.logo]}/>
-            <Text> </Text>
             <TextInput placeholder="username" style={style.logininputs} onChangeText={newText => change(setUsername, newText)} autoCapitalize="none"/>
             <TextInput placeholder="password" secureTextEntry={true} style={style.logininputs} onSubmitEditing={() => doLogin()} onChangeText={newText => change(setPassword,newText)}/>
             <Pressable
@@ -67,19 +67,19 @@ const Login = ({navigation}:any) => {
               <Text style={[divelogsStyle.textStyle, {fontSize: 16}]}>Login</Text>
             </Pressable>
 
-            {errorMessage.length == 0 ? null :
+            
                 <Text style={style.error}>
-                    ⚠ {errorMessage}
+                    {errorMessage.length == 0 ? null : `⚠ ${errorMessage}`}
                 </Text>
-            }
+            
             
             <Text style={style.account}>
                 {t('noaccount')}
                 <TouchableOpacity style={{marginTop: -3}} onPress={() => Linking.openURL("https://divelogs.de/register.php")}>
-                    <Text style={style.getOne}>{t('getone')}</Text>            
+                    <Text style={style.getOne}> {t('getone')}</Text>            
                 </TouchableOpacity>
             </Text>
-    </View>)
+    </KeyboardAvoidingView>)
 }
 
 const style = StyleSheet.create({
@@ -89,7 +89,7 @@ const style = StyleSheet.create({
         marginBottom: 20,
     },
     logo: {
-        marginBottom: -15,
+        marginBottom: -5,
         width:260,
         height:94
     },
@@ -109,7 +109,6 @@ const style = StyleSheet.create({
         backgroundColor: 'none',
         padding: 10,
         elevation: 2,
-        marginBottom: 200
     },
     account: {
         fontSize: 14,
@@ -122,10 +121,9 @@ const style = StyleSheet.create({
         fontWeight: '600'
     },
     error:{
-        position: 'absolute',
-        bottom: 120,
         fontWeight: '600',
-        color: '#fff'
+        color: '#fff',
+        height: 20,
     }
 })
 
