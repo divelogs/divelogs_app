@@ -81,7 +81,13 @@ export default {
     userpassnotfound: "User name or password is invalid",
     couldnotlogin: "Could not login due to an unexpected error",
 
-    totaldives: "Number of Dives",
+    step: "step",
+    welcome: "Hello",
+    close: "Close",
+    returnToLogin: "Login",
+    cantLoadDataAtThisTime: "Can't load data at this time",
+
+    totaldives: 'Number of Dives',
     avgdepth: "Average Depth",
     avgduration: "Average Divetime",
     maxdepth: "Deepest Dive",

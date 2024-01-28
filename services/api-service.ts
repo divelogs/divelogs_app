@@ -31,18 +31,22 @@ const isApiAvailable = async () : Promise<boolean> => {
   });
 
   return await Promise.race([result, timeout]).then(a => true).catch(a => {
-    console.log(a);
     return false;
   })
 }
 
-const isBearerTokenValid = async (bearer:string) : Promise<boolean> => {
+const isBearerTokenValid = async (bearer?:string) : Promise<boolean> => {
 	const url = getUrl("user");
+
+  const token = (bearer ?? bearerToken)
+  if (!token)
+    return false
+
 	const p = fetch(url, {
     headers: {
       Accept: 'application/json',
       'User-Agent': clientString,
-      Authorization: 'Bearer ' + bearer
+      Authorization: 'Bearer ' + token
     }
   });
 
@@ -53,7 +57,6 @@ const getUrl = (endpoint:string) : string =>
 apiUrl + endpoint
 
 const getDataFromApi = async (endpoint:string, method?: string) : Promise<JSON | null> => {
-console.log('Bearertoken in api getter' + bearerToken);
 	const url = getUrl(endpoint);
 	const result = await fetch(url, {
     method: method ?? 'GET',
@@ -69,8 +72,7 @@ console.log('Bearertoken in api getter' + bearerToken);
     //console.log(url, json)
     return json
   } else {
-    console.log(endpoint + ' is ' + result.status);
-    return null;
+    throw `${result.url} returns ${result.status}`
   }  	
 }
 

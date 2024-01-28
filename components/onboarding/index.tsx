@@ -14,6 +14,8 @@ import styles from '../../stylesheets/styles'
 import Sync from './sync'
 import Login from './login'
 import BlueScreen from './landing'
+import SyncFail from './syncfail'
+import Dev from './dev'
 
 const Onboarding = ({navigation}:any) => {
 
@@ -37,15 +39,21 @@ const Onboarding = ({navigation}:any) => {
   return (
         <Stack.Navigator
           screenOptions={{
-            headerShown: false
+            headerShown: false,
+            gestureEnabled: false,
+            animation: 'fade_from_bottom'
           }}
         >
+
         <Stack.Screen name="BlueScreen" component={BlueScreen} options={{ }}/>
+        
+        <Stack.Screen name="SyncFail" component={SyncFail} options={{ }}/>
 
         <Stack.Screen name="Login" component={Login} options={{ }} />
 
         <Stack.Screen name="Sync" component={Sync} options={{ }} />
 
+        <Stack.Screen name="Dev" component={Dev} options={{ }}/>
       </Stack.Navigator>   
   );
 };

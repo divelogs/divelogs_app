@@ -25,7 +25,10 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
   const [filteredStats, setFilteredStats] = useState<StatVal[]>([])
   const [filter, setFilter] = useState<string>("")
 
-  const name = route.view.name
+
+
+  const name = route.params.view.name
+
 
   useEffect(() => {
     (async () => {
@@ -34,7 +37,7 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
       setFilteredStats(statistics)
     })()
 
-    navigation.setOptions({title: route.view.name})
+    navigation.setOptions({title: route.params.view.name})
 
     return () => { console.log("unmount") }
   }, [view]);
@@ -54,16 +57,16 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
     try {
       const db = await getDBConnection();
 
-      switch (route.view.aggregation){
+      switch (route.params.view.aggregation){
         case "byDepth":
           return await getDepthStats(db, imperial)
         case "byDuration":
           return await getDurationStats(db)
         case "byPartner":
         case "byDiveGroup":
-          return await getPrecalcedStats(db, route.view.column)
+          return await getPrecalcedStats(db, route.params.view.column)
         default:
-          return await getSingleColumnStats(db, route.view.column, route.view.sort)
+          return await getSingleColumnStats(db, route.params.view.column, route.params.view.sort)
       }
     } catch (error) {
       console.error(error);
@@ -72,7 +75,7 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
   }
 
   const selectStat = (item:StatVal, label:string) => {
-    navigation.navigate('FilteredDives', { filter: {...item, label: label}, view: route.view})
+    navigation.navigate('FilteredDives', { filter: {...item, label: label}, view: route.params.view})
   }
 
   const makeLabel = (item:StatVal, type:string) : string => {
@@ -116,7 +119,7 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
   const cancelSearch = () => setFilter('')
 
   const Filter = () => {
-    if (!route.view.search) return null
+    if (!route.params.view.search) return null
     return <SearchBar
       placeholder={t('search')}
       onChangeText={cancelSearch}
@@ -134,13 +137,11 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
             ListHeaderComponent={() => <>
               <Filter/>
               <Text style={styles.listHeader}>{name}</Text>
-              <TouchableOpacity style={{ position: 'absolute', right: 10, top: (route.view.search) ? 60 : 10}} onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
-                <Text style={{color: '#3eb8f1'}}>&lt;&lt; {t('allfilters')}</Text>
-              </TouchableOpacity></>
+              </>
               }
             data={filteredStats} 
             renderItem={({item}) => {
-              const label = makeLabel(item,route.view.aggregation)
+              const label = makeLabel(item,route.params.view.aggregation)
               return (<TouchableOpacity onPress={() => selectStat(item, label)} >
                 <StatRow label={label} item={item}/>
               </TouchableOpacity>
