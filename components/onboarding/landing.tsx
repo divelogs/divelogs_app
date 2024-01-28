@@ -29,7 +29,7 @@ const BlueScreen = ({navigation}:any) => {
   }
 
   useEffect(() => {
-return
+
     (async () => {
       const db = await getDBConnection();
       const profile = await getProfile(db);
