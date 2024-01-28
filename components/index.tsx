@@ -24,7 +24,6 @@ const BottomNavigation = ({}:any)=> {
   const Tab = createBottomTabNavigator();
   const { t } = useTranslation(); 
 
-  const loadDataFromAPI = () => Alert.alert("nope")
   const imperial = false;
 
   return (<>
@@ -45,7 +44,7 @@ const BottomNavigation = ({}:any)=> {
           );
         }
       }}>
-        {(props) => <Dives {...props} refreshApiData={loadDataFromAPI}/>}
+        {(props) => <Dives {...props} />}
       </Tab.Screen>
       <Tab.Screen name="Certifications"  component={Certifications} options={{ 
         title: t("certifications"),

@@ -24,7 +24,7 @@ const ListItem = ({name, label}:any) => {
         </View>
 }
 
-const DiveListSelection = ({navigation}:any) => {
+const DiveListSelection = ({navigation, route}:any) => {
   const { t } = useTranslation();
 
   const [diveCount, setDiveCount] = useState<number|null>(null)
@@ -37,6 +37,10 @@ const DiveListSelection = ({navigation}:any) => {
     })()
     return () => {  }
   }, []);
+
+  useEffect(() => {
+    navigation.navigate("AllDivesNoAnimation")
+  }, [])
 
   const views:any = [
     {
@@ -120,7 +124,8 @@ const DiveListSelection = ({navigation}:any) => {
     }]
 
   const navigate = (item:any) => {
-    
+    navigation.navigate(item.location, {name: item.location, view: item})
+    //navigation.reset({index: 0, routes: [{ name: item.location, view: item }]}) 
   }
 
   if (!diveCount) return;
@@ -132,7 +137,7 @@ const DiveListSelection = ({navigation}:any) => {
               sections={views}
               keyExtractor={(item, index) => item.location + index}
               renderItem={({item}) => (
-                <TouchableOpacity onPress={() => navigation.reset({index: 0, routes: [{ name: item.location, view: item }]}) } >
+                <TouchableOpacity onPress={() => navigate(item) } >
                   <ListItem {...item}/>
                 </TouchableOpacity>
               )}

@@ -43,14 +43,29 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           }}
         >
 
-        <Stack.Screen name="AllDives" options={{ 
+        <Stack.Screen name="DiveListSelection" options={{ 
+          animation: "none",
+        }}>
+          {(props) => <DiveListSelection {...props}/>}
+        </Stack.Screen>
+
+        <Stack.Screen name="AllDives" 
+          options={{ 
           headerShown: true,
+          headerLeft: () => (
+            <>              
+              <TouchableOpacity onPress={()=>navigation.goBack()}>
+                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
+              </TouchableOpacity>           
+            </>            
+          ),
           headerRight: () => (
             <>              
-              <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
-                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
-              </TouchableOpacity>
-
+              <Button onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
+                title="↺"
+                accessibilityLabel="load from divelogs"
+                color="#fff"/>   
+              <View style={{width: 20}}></View>
               <Button
               onPress={toggleSort}
               title={sortindicator}
@@ -58,33 +73,57 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
               color="#fff"/>              
             </>
           ),
-          headerLeft: (props) => (
-            <>
-              <Button
-              onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
-              title="↺"
-              accessibilityLabel="load from divelogs"
-              color="#fff"/>            
-            </>
-          ),          
+       
         }}>
-          {(props) => <AllDives {...props} sort={sort} refreshApiData={refreshApiData}/>}
+          {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
+        <Stack.Screen name="AllDivesNoAnimation" 
+          options={{ 
+          headerShown: true,
+          animation: "none",
+          headerRight: () => (
+            <>              
+              <Button onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
+                title="↺"
+                accessibilityLabel="load from divelogs"
+                color="#fff"/>   
+              <View style={{width: 20}}></View>
+              <Button
+              onPress={toggleSort}
+              title={sortindicator}
+              accessibilityLabel="change sorting"
+              color="#fff"/>              
+            </>
+          ),
+          headerLeft: () => (
+            <>              
+              <TouchableOpacity onPress={()=>navigation.goBack()}>
+                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
+              </TouchableOpacity>           
+            </>            
+          ),
+        }}>
+          {(props) => <AllDives {...props} sort={sort}/>}
+        </Stack.Screen>
+
+
 
         <Stack.Screen name="FilteredDives" options={{ 
           title: "",
           headerRight: () => (
-            <>
-              <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
-                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
-              </TouchableOpacity>
+            <>              
+              <Button onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
+                title="↺"
+                accessibilityLabel="load from divelogs"
+                color="#fff"/>   
+              <View style={{width: 20}}></View>
               <Button
-                onPress={toggleSort}
-                title={sortindicator}
-                accessibilityLabel="change sorting"
-                color="#fff"/>              
+              onPress={toggleSort}
+              title={sortindicator}
+              accessibilityLabel="change sorting"
+              color="#fff"/>              
             </>
-          ),         
+          ),    
         }}>
           {(props) => <AllDives {...props} sort={sort} refreshApiData={refreshApiData}/>}
         </Stack.Screen>
@@ -95,18 +134,21 @@ const DivesNavigation = ({navigation, refreshApiData}:any) => {
           {(props) => <DiveDetail {...props} imperial={imperial}/>}
         </Stack.Screen>
 
-        <Stack.Screen name="DiveListSelection" options={{ 
-          animation: "none"
-        }}>
-          {(props) => <DiveListSelection {...props}/>}
-        </Stack.Screen>
-
         <Stack.Screen name="AggregatedView" options={{ 
+          headerLeft: () => (
+                    <>              
+                      <TouchableOpacity onPress={()=>navigation.goBack()}>
+                          <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
+                      </TouchableOpacity>           
+                    </>            
+                  ),
           headerRight: () => (
-            <>
-              <TouchableOpacity onPress={()=>navigation.reset({index: 0, routes: [{ name: 'DiveListSelection'}]})}>
-                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
-              </TouchableOpacity>
+            <>              
+              <Button onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
+                title="↺"
+                accessibilityLabel="load from divelogs"
+                color="#fff"/>   
+              <View style={{width: 20}}></View>
               <Button
               onPress={toggleSort}
               title={sortindicator}

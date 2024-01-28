@@ -52,7 +52,7 @@ const BlueScreen = ({navigation}:any) => {
       if (isSyncForced)
         return navigation.replace("Sync")
       
-      navigation.replace('Home')
+      navigation.replace('Home', { screen: 'Dives', firstLoad: 'true' })
     })()
 
   }, [])
