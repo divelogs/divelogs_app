@@ -35,6 +35,9 @@ export default {
     min_temp: "Minimale Temp.",
     avg_duration: "∅ Dauer",
     sum_duration: "∑ Dauer",
+    nodives: "Keine Tauchgänge gefunden",
+    nocerts: "Keine Breverts gefunden",
+    nogear: "Keine Ausrüstung gefunden",
 
     weather: "Wetter",
     vizibility: "Sicht",
@@ -94,5 +97,8 @@ export default {
     maxduration: "Längster Tauchgang",
     totalduration: "Gesamttauchzeit",
     coldest: "Kältester Tauchgang",
-    warmest: "Wärmster Tauchgang"
+    warmest: "Wärmster Tauchgang",
+
+    noaccount: "Noch kein divelogs.de/.org account? ",
+    getone: "Kostenlos erstellen",
 }

@@ -1,5 +1,5 @@
 
-  import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
+  import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text, TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
   import { SvgXml } from 'react-native-svg';
   import SearchBar from 'react-native-search-bar'; 
 
@@ -89,6 +89,7 @@
             ListFooterComponent={({item}) => (
               <DiveListFooterStats {...item} dives={dives} imperial={imperial} />
             )}
+            ListEmptyComponent={<View style={{justifyContent: 'center', alignItems: 'center',}}><Text>{t('nodives')}</Text></View>}
           />
         </View>         
     );

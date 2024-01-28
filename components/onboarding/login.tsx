@@ -26,7 +26,7 @@ const Login = ({navigation}:any) => {
             case "wrong password":
                 return t("userpassnotfound")
             default:
-                return t("couldnotlogin")
+                return input
         }
     }
 
@@ -58,7 +58,7 @@ const Login = ({navigation}:any) => {
 
     return (<View style={[divelogsStyle.centeredView, {backgroundColor:'#3fb9f2'}]}>
             <AppHeader style={[style.logo]}/>
-
+            <Text> </Text>
             <TextInput placeholder="username" style={style.logininputs} onChangeText={newText => change(setUsername, newText)} autoCapitalize="none"/>
             <TextInput placeholder="password" secureTextEntry={true} style={style.logininputs} onSubmitEditing={() => doLogin()} onChangeText={newText => change(setPassword,newText)}/>
             <Pressable
@@ -74,9 +74,9 @@ const Login = ({navigation}:any) => {
             }
             
             <Text style={style.account}>
-                No divelogs.de account? 
+                {t('noaccount')}
                 <TouchableOpacity style={{marginTop: -3}} onPress={() => Linking.openURL("https://divelogs.de/register.php")}>
-                    <Text style={style.getOne}> Get one!</Text>            
+                    <Text style={style.getOne}>{t('getone')}</Text>            
                 </TouchableOpacity>
             </Text>
     </View>)
@@ -109,6 +109,7 @@ const style = StyleSheet.create({
         backgroundColor: 'none',
         padding: 10,
         elevation: 2,
+        marginBottom: 200
     },
     account: {
         fontSize: 14,

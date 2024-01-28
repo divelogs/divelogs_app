@@ -62,6 +62,7 @@ export const GearView = () => {
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <Text style={styles.listHeader}>{t('gearitems')}</Text>
             <FlatList
+              ListEmptyComponent={<View style={{justifyContent: 'center', alignItems: 'center',}}><Text>{t('nogear')}</Text></View>}  
                 data={gearitems} 
                 renderItem={({item}) => (
                     <Gear gi={item} />

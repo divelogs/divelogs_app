@@ -35,6 +35,9 @@ export default {
     min_temp: "Min Temperature",
     avg_duration: "∅ Duration",
     sum_duration: "∑ Duration",
+    nodives: "No dives found",
+    nocerts: "No certifications found",
+    nogear: "No Gear Items found",
 
     weather: "Weather",
     vizibility: "Vizibility",
@@ -94,5 +97,8 @@ export default {
     maxduration: "Longest Dive",
     totalduration: "Total Divetime",
     coldest: "Coldest Dive",
-    warmest: "Warmest Dive"
+    warmest: "Warmest Dive",
+
+    noaccount: "No divelogs.de/.org account?",
+    getone: "Get one for free",
 };

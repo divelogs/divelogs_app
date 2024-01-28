@@ -43,7 +43,8 @@ export const Certifications = () => {
       <View style={{ flex: 1, padding: 16, paddingBottom: 0, paddingRight: 0, backgroundColor: '#FFFFFF' }}>     
       <Text style={styles.listHeader}>{t('certifications')}</Text>  
         <FlatList
-          data={certifications}             
+          data={certifications}
+          ListEmptyComponent={<View style={{justifyContent: 'center', alignItems: 'center',}}><Text>{t('nocerts')}</Text></View>}             
           renderItem={({item}) => (
             <>
             <Text style={styles.bold}>{item.org} {item.name}</Text>
