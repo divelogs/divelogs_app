@@ -28,9 +28,9 @@ export const Gear: React.FC<{
             </View>
             <View style={styles.texts}>
                 <Text style={styles.bold}>{gi.name}</Text>
-                <Text>Dives: {gi.divecount}</Text>
+                <Text>{t('dives')}: {gi.divecount}</Text>
                 {gi.purchasedate != null && <Text>{t('purchasedate')}: {pd.toLocaleString(locale, {year: "numeric",month: "2-digit",day: "2-digit"})}</Text>}
-                {gi.discarddate != null && <Text>{t('dicarded')}: {dd.toLocaleString(locale, {year: "numeric",month: "2-digit",day: "2-digit"})}</Text>}
+                {gi.discarddate != null && <Text>{t('discarded')}: {dd.toLocaleString(locale, {year: "numeric",month: "2-digit",day: "2-digit"})}</Text>}
                 {gi.last_servicedate != null && <Text>{t('last_servicedate')}: {ls.toLocaleString(locale, {year: "numeric",month: "2-digit",day: "2-digit"})}</Text>}
                 {((gi.servicemonths > 0 || gi.servicedives > 0) && gi.discarddate == null) && <View>{calculateService(gi.monthsleft, gi.divesleft,t)}</View>}
             </View>
