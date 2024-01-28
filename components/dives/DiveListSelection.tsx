@@ -128,7 +128,7 @@ const DiveListSelection = ({navigation, route}:any) => {
     //navigation.reset({index: 0, routes: [{ name: item.location, view: item }]}) 
   }
 
-  if (!diveCount) return;
+  //if (!diveCount) return;
 
   return <View style={{flex:1}}>
             <Text style={styles.listHeader}>{t('choosefilter')}:</Text>
