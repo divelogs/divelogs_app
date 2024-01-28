@@ -131,7 +131,6 @@ const DiveListSelection = ({navigation, route}:any) => {
   if (!diveCount) return;
 
   return <View style={{flex:1}}>
-          <Profile></Profile>
             <Text style={styles.listHeader}>{t('choosefilter')}:</Text>
             <SectionList
               sections={views}
