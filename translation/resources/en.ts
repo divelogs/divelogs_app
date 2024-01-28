@@ -83,7 +83,10 @@ export default {
 
     step: "step",
     welcome: "Hello",
-    
+    close: "Close",
+    returnToLogin: "Login",
+    cantLoadDataAtThisTime: "Can't load data at this time",
+
     totaldives: 'Number of Dives',
     avgdepth: "Average Depth",
     avgduration: "Average Divetime",

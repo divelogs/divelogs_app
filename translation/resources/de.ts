@@ -80,7 +80,10 @@ export default {
 
     step: "Schritt",
     welcome: "Hi",
-    
+    close: "Schließen",
+    returnToLogin: "Erneut einloggen",
+    cantLoadDataAtThisTime: "Daten laden ist fehlgeschlagen",
+
     userpassnotfound: "Passwort oder Benutzername nicht korrekt",
     couldnotlogin: "Login fehlgeschlagen, Grund unbekannt",
 

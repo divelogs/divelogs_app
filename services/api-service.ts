@@ -72,8 +72,7 @@ const getDataFromApi = async (endpoint:string, method?: string) : Promise<JSON |
     //console.log(url, json)
     return json
   } else {
-    console.log(endpoint + ' is ' + result.status);
-    return null;
+    throw `${result.url} returns ${result.status}`
   }  	
 }
 

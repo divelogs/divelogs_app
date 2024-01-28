@@ -10,7 +10,8 @@ import { Api } from '../../services/api-service';
 import { diveicon } from '../../assets/svgs.js'
 
 
-import styles from '../../stylesheets/styles'
+import divelogsStyle from '../../stylesheets/styles'
+
 import Sync from './sync'
 import Login from './login'
 
@@ -28,37 +29,39 @@ const BlueScreen = ({navigation}:any) => {
   }
 
   useEffect(() => {
-
+return
     (async () => {
       const db = await getDBConnection();
       const profile = await getProfile(db);
 
       if (!profile)
-        return navigation.navigate("Login")
+        return navigation.replace("Login")
 
       const isOnline = await Api.isApiAvailable()
 
       if (!isOnline)
-        return navigation.reset({index: 0, routes: [{ name: 'Home'}]})
+        return navigation.replace('Home')
 
       const bearerAvailable = await bearerTokenAvailableAndValid(db)
 
       if (!bearerAvailable)
-        return navigation.navigate("Login")
+        return navigation.replace("Login")
 
       const isSyncForced = await getSyncForced();
       console.log("--->" + isSyncForced)
       if (isSyncForced)
-        return navigation.navigate("Sync")
+        return navigation.replace("Sync")
       
-      navigation.reset({index: 0, routes: [{ name: 'Home'}]})
+      navigation.replace('Home')
     })()
 
   }, [])
 
   return (
-    <View style={{flex: 1, backgroundColor:'#3fb9f2'}}>
-    <SvgXml xml={diveicon}/>
+    <View style={[divelogsStyle.centeredView, {backgroundColor:'#3fb9f2'}]}>
+      <View style={{height: 100, width: '100%', marginTop: -30}}>
+        <SvgXml xml={diveicon} height={100}/>
+      </View>
     </View> 
   );
 };
