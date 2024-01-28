@@ -138,7 +138,7 @@ const Sync = ({navigation}:any) => {
         }},                
         { name: "Vibrate and done!", recover: Recovery.Fail,
           action: async () => {
-            Vibration.vibrate(250);
+            Vibration.vibrate(150);
             resetSyncForced();
             navigation.reset({index: 0, routes: [{ name: 'Home'}]})
         }}

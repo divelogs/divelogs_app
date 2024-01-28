@@ -28,6 +28,9 @@ export const updateDB = (): Promise<number> => {
               let result = upgradeFrom(instance, version);
               resolve(result);
             }
+            else
+              resolve(version)
+            
           })
           .catch((error) => console.error(error));
       })

@@ -27,11 +27,33 @@ import DiveDetail from './components/divedetail'
 import Index from './components'
 
 import styles from './stylesheets/styles'
+import DiverAnimation from './components/onboarding/diveranimation';
 
 
 const App = () => {
 
   const [firstLoad, setFirstLoad] = useState<string|undefined>("")
+  const [dbversion, setDbVersion] = useState<number>(0);
+
+
+  const DBCheck = async () => {
+    try {
+        const res = await updateDB();
+        setDbVersion(res);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+    // This gets called before the component renders. In case DB Updates are needed
+    useLayoutEffect(() => {
+      DBCheck();
+    }, []);
+  
+    console.log(dbversion)
+
+  if (dbversion < 1) 
+    return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>{dbversion}</Text></View>
 
   return (<View style={{flex: 1, backgroundColor: '#3fb9f2'}}>
       <NavigationContainer
@@ -42,6 +64,7 @@ const App = () => {
         <Index/>
       </NavigationContainer>
       <Diver loaded={firstLoad} style={{position: 'absolute', top:0, left:0, width: '100%', height: '100%'}}/>
+
     </View>)
 };
 
