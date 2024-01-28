@@ -8,6 +8,8 @@ import { Gear } from './GearItem'
 import '../translation'
 import { useTranslation } from 'react-i18next';
 
+import divelogsStyles from '../stylesheets/styles'
+
 export const GearView = () => {
 
     const { t } = useTranslation(); 
@@ -62,7 +64,7 @@ export const GearView = () => {
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <Text style={styles.listHeader}>{t('gearitems')}</Text>
             <FlatList
-              ListEmptyComponent={<View style={{justifyContent: 'center', alignItems: 'center',}}><Text>{t('nogear')}</Text></View>}  
+              ListEmptyComponent={<View style={[divelogsStyles.noListContent]}><Text style={[divelogsStyles.noListContentText]}>{t('nogear')}</Text></View>}  
                 data={gearitems} 
                 renderItem={({item}) => (
                     <Gear gi={item} />

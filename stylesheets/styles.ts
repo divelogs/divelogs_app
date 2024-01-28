@@ -58,6 +58,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     backgroundColor: '#3fb9f2'
+  },
+  noListContent: {
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
+  noListContentText: {
+    fontSize: 18,
+    marginTop: 50,
+    color: '#777'
   }
 });
 

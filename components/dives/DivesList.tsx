@@ -89,7 +89,7 @@
             ListFooterComponent={({item}) => (
               <DiveListFooterStats {...item} dives={dives} imperial={imperial} />
             )}
-            ListEmptyComponent={<View style={{justifyContent: 'center', alignItems: 'center',}}><Text>{t('nodives')}</Text></View>}
+            ListEmptyComponent={<View style={[styles.noListContent]}><Text style={[styles.noListContentText]}>{t('nodives')}</Text></View>}
           />
         </View>         
     );

@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next';
 
 import AppHeader from './generic/divelogsheader';
 
+import divelogsStyles from '../stylesheets/styles'
+
 export const Certifications = () => {
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
@@ -44,7 +46,7 @@ export const Certifications = () => {
       <Text style={styles.listHeader}>{t('certifications')}</Text>  
         <FlatList
           data={certifications}
-          ListEmptyComponent={<View style={{justifyContent: 'center', alignItems: 'center',}}><Text>{t('nocerts')}</Text></View>}             
+          ListEmptyComponent={<View style={[divelogsStyles.noListContent]}><Text style={[divelogsStyles.noListContentText]}>{t('nocerts')}</Text></View>}             
           renderItem={({item}) => (
             <>
             <Text style={styles.bold}>{item.org} {item.name}</Text>
