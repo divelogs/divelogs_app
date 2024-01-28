@@ -12,7 +12,7 @@ import '../translation'
 import { useTranslation } from 'react-i18next';
 
 import StatisticsView from './StatisticsView';
-import Certifications from './Certifications';
+import Certifications from './certifications';
 import Dives from './dives'
 import GearView from './GearItemsView';
 import Onboarding from './onboarding';

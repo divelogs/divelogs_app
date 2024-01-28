@@ -1,22 +1,26 @@
+/*
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, FlatList, NativeModules, StyleSheet, Button, TouchableOpacity, Dimensions, Image } from 'react-native';
-import { Certification } from '../models';
-import { getDBConnection, getCertifications } from '../services/db-service';
+import { Certification } from '../../models/index.js';
+import { getDBConnection, getCertifications } from '../../services/db-service.js';
 import RNFetchBlob from "rn-fetch-blob";
 import { SvgXml } from 'react-native-svg';
-import { divelogs_logo } from '../assets/svgs.js'
+import { divelogs_logo } from '../../assets/svgs.js'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 
-import '../translation'
+import '../../translation/index.js'
 import { useTranslation } from 'react-i18next';
 
-import AppHeader from './generic/divelogsheader';
+import AppHeader from '../generic/divelogsheader.js';
 
-import divelogsStyles from '../stylesheets/styles'
+import divelogsStyles from '../../stylesheets/styles.js'
 
 export const Certifications = () => {
   const [certifications, setCertifications] = useState<Certification[]>([]);
+
+  const [allscans, setAllScans] = useState<string[]>([])
+
   const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
     NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
 
@@ -29,7 +33,9 @@ export const Certifications = () => {
     try {
       const db = await getDBConnection();
       const certs = await getCertifications(db);
+      const as = certs.flatMap(a => a.scans)
       setCertifications(certs);
+      setAllScans(as)
     } catch (error) {
       console.error(error);
     }
@@ -73,12 +79,6 @@ export const Certifications = () => {
     )
   }
 
-  const allscans:string[] = [];
-  for (var cert of certifications) {
-    for (var scan of cert.scans) {
-      allscans.push(scan);
-    }
-  }
 
   // Use this const as key of the SwiperFlatList to enforce re-render on orientation-change
   const [orientation, setOrientation] = useState('');
@@ -172,3 +172,5 @@ const makeDateObj = (date:string) => {
 }
 
 export default Certifications
+
+*/
