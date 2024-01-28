@@ -53,6 +53,16 @@ export const renderdepth = (depth:number, imp:boolean) => {
   } 
 }
 
+export const renderweights = (weight:number, imp:boolean) => {
+  if (imp) {
+    if (weight != 0) return ( Math.round( weight/0.4536 * 10 ) / 10 ) + ' lbs'; 
+    else return ""; 
+  } else {
+    if (weight==0 ||weight==undefined || weight==null) return '';
+    else return weight+' kg'
+  } 
+}
+
 export const makeendtime = (timeString:string, seconds:number) => {
   var d = new Date('1970-01-01T' + timeString );
   d.setSeconds(d.getSeconds() + seconds);
@@ -60,7 +70,17 @@ export const makeendtime = (timeString:string, seconds:number) => {
 }
 
 export const secondstotime = (seconds:number) => {
+  if (seconds == 0 || seconds == undefined || seconds == null) return "";
   var d = new Date('1970-01-01T00:00:00' );
   d.setSeconds(d.getSeconds() + seconds);
   return d.toTimeString().substring(0,8);
 }
+
+export const secondstotimeHMS = (seconds:number) => {
+  let days = Math.floor(seconds/86400);
+  if (seconds == 0 || seconds == undefined || seconds == null) return "";
+  var d = new Date('1970-01-01T00:00:00' );
+  d.setSeconds(d.getSeconds() + seconds);
+  return (days > 0 ? days + 'd:' : '') + d.getHours() + 'h:' + d.getMinutes() + 'm:' + d.getSeconds() + 's'
+}
+

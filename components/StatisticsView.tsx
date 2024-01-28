@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
 import { getDBConnection } from '../services/db-service';
-import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats } from '../services/db-aggregation-service';
+import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats, getBragFacts } from '../services/db-aggregation-service';
 import { Statistic } from './Statistic';
-import { StatVal } from '../models';
+import { StatVal, BragFacts } from '../models';
 import { SvgXml } from 'react-native-svg';
 import { divelogs_logo } from '../assets/svgs.js'
 import '../translation'
 import { useTranslation } from 'react-i18next';
+import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, renderweights, secondstotimeHMS } from './functions.ts'
 
 export const StatisticsView = ({ route, navigation }:any) => {
 
@@ -19,12 +20,19 @@ export const StatisticsView = ({ route, navigation }:any) => {
     const [weekdayStats, setWeekdayStats] = useState<StatVal[]>([]);
     const [depthStats, setDepthStats] = useState<StatVal[]>([]);
     const [durationStats, setDurationStats] = useState<StatVal[]>([]);
+    const [bragFacts, setBragFacts] = useState<BragFacts | null>(null);
 
     const { t } = useTranslation(); 
 
     const loadDataCallback = useCallback(async () => {
     try {
         const db = await getDBConnection();
+
+        const results0 = await getBragFacts(db);
+        setBragFacts(results0);
+
+        console.log(results0);
+
         const results = await getMonthStats(db);
         setMonthStats(results);
 
@@ -78,23 +86,77 @@ export const StatisticsView = ({ route, navigation }:any) => {
       justifyContent: 'center',
       flexDirection: 'row',
       backgroundColor: '#3fb9f2'
-    }
+    },
+    oneliner: {
+      flexDirection: 'row',
+      height: 30
+    },
+    desc: {
+      color: '#39ade2'
+    },
+    listHeader: {
+      fontSize: 25,    
+      fontWeight: '700',
+      marginTop: 10,
+      marginLeft: 0,
+      marginBottom: 15,
+      color: '#3eb8f1'
+    },
   });
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-        <ScrollView style={{padding: 10}}>        
-            <Text>{t('depths')}:</Text>
+        <ScrollView style={{padding: 10}}> 
+           <Text style={styles.listHeader}>{t('statistics')}</Text>
+           <View style={styles.oneliner}>
+                <Text style={styles.desc}>{t('totaldives')}: </Text>
+                <Text>{(bragFacts ? bragFacts.totaldives: null)}</Text>  
+            </View>  
+           <View style={styles.oneliner}>
+                <Text style={styles.desc}>{t('totalduration')}: </Text>
+                <Text>{(bragFacts ? secondstotimeHMS(bragFacts.totalduration) : null)}</Text>  
+            </View>    
+            <View style={styles.oneliner}>
+                <Text style={styles.desc}>{t('avgdepth')}: </Text>
+                <Text>{(bragFacts ? renderdepth(bragFacts.avgdepth, imperial) : null)}</Text>  
+            </View>  
+            <View style={styles.oneliner}>
+                <Text style={styles.desc}>{t('avgduration')}: </Text>
+                <Text>{(bragFacts ? secondstotimeHMS(bragFacts.avgduration) : null)}</Text>  
+            </View>  
+            <View style={styles.oneliner}>
+                <Text style={styles.desc}>{t('maxdepth')}: </Text>
+                <Text>{(bragFacts ? renderdepth(bragFacts.maxdepth, imperial) : null)}</Text>  
+            </View>  
+            <View style={styles.oneliner}>
+                <Text style={styles.desc}>{t('maxduration')}: </Text>
+                <Text>{(bragFacts ? secondstotimeHMS(bragFacts.maxduration) : null)}</Text>  
+            </View>    
+            <View style={styles.oneliner}>
+                <Text style={styles.desc}>{t('coldest')}: </Text>
+                <Text>{(bragFacts ? rendertemp(bragFacts.coldest, imperial) : null)}</Text>  
+            </View>    
+            <View style={styles.oneliner}>
+                <Text style={styles.desc}>{t('warmest')}: </Text>
+                <Text>{(bragFacts ? rendertemp(bragFacts.warmest, imperial) : null)}</Text>  
+            </View>    
+            <Text> </Text>
+            <Text style={styles.desc}>{t('depths')}:</Text>
             <Statistic StatData={{values:depthStats, xname:(imperial ? t('feet') : t('meter')), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>{t('durations')}:</Text>
+            <Text> </Text>
+            <Text style={styles.desc}>{t('durations')}:</Text>
             <Statistic StatData={{values:durationStats, xname:t('minutes'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>{t('weekdays')}:</Text>
+            <Text> </Text>
+            <Text style={styles.desc}>{t('weekdays')}:</Text>
             <Statistic StatData={{values:weekdayStats, xname:t('weekday'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>{t('months')}:</Text>
+            <Text> </Text>
+            <Text style={styles.desc}>{t('months')}:</Text>
             <Statistic StatData={{values:monthStats, xname:t('month'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>{t('years')}:</Text>
+            <Text> </Text>
+            <Text style={styles.desc}>{t('years')}:</Text>
             <Statistic StatData={{values:yearStats, xname:t('year'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text>{t('entryhour')}:</Text>
+            <Text> </Text>
+            <Text style={styles.desc}>{t('entryhour')}:</Text>
             <Statistic StatData={{values:hourStats, xname:t('hour'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
             <Text></Text>
             <Text></Text>

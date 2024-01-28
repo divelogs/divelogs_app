@@ -35,6 +35,11 @@ export default {
     min_temp: "Minimale Temp.",
     avg_duration: "∅ Dauer",
     sum_duration: "∑ Dauer",
+
+    weather: "Wetter",
+    vizibility: "Sicht",
+    weights: "Gewicht",
+    si: "OFP",
  
     start_pressure: "Startdruck",
     end_pressure: "Enddruck",
@@ -75,4 +80,16 @@ export default {
 
     step: "Schritt",
     welcome: "Hi",
+    
+    userpassnotfound: "Passwort oder Benutzername nicht korrekt",
+    couldnotlogin: "Login fehlgeschlagen, Grund unbekannt",
+
+    totaldives: 'Anzahl Tauchgänge',
+    avgdepth: "Durschnittliche Tiefe",
+    avgduration: "Durschnittliche Dauer",
+    maxdepth: "Tiefster Tauchgang",
+    maxduration: "Längster Tauchgang",
+    totalduration: "Gesamttauchzeit",
+    coldest: "Kältester Tauchgang",
+    warmest: "Wärmster Tauchgang"
 }

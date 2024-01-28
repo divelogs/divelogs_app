@@ -2,7 +2,7 @@ import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList } fr
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 
-import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime } from '../functions.ts'
+import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, renderweights, secondstotimeHMS } from '../functions.ts'
 import { getDivePageStyles } from './styles'
 
 import DiveProfile from './DiveProfile'
@@ -46,9 +46,35 @@ const DiveDetail = ({navigation, dive, imperial}:any) => {
             <Text style={divepagestyles.desc}>{t("buddy")}: </Text>
             <Text style={divepagestyles.text}>{dive.buddy.replaceAll(",", ", ")}</Text>
           </View>
-          <View style={divepagestyles.entry}>
-            <Text style={divepagestyles.desc}>{t("boat")}: </Text>
-            <Text style={divepagestyles.text}>{dive.boat}</Text>
+          <View style={divepagestyles.twocolumn}>
+            <View style={divepagestyles.halfentry}>
+              <Text style={divepagestyles.desc}>{t("boat")}: </Text>
+              <Text style={divepagestyles.text}>{dive.boat}</Text>
+            </View>
+            <View style={divepagestyles.halfentry}>
+              <Text style={divepagestyles.desc}>{t("weather")}: </Text>
+              <Text style={divepagestyles.text}>{dive.weather}</Text>
+            </View>
+          </View>
+          <View style={divepagestyles.twocolumn}>            
+            <View style={divepagestyles.halfentry}>
+              <Text style={divepagestyles.desc}>{t("vizibility")}: </Text>
+              <Text style={divepagestyles.text}>{dive.vizibility}</Text>
+            </View>
+            <View style={divepagestyles.halfentry}>
+              <Text style={divepagestyles.desc}>{t("weights")}: </Text>
+              <Text style={divepagestyles.text}>{renderweights(dive.weights, imperial)}</Text>
+            </View>
+          </View>
+          <View style={divepagestyles.twocolumn}>            
+            <View style={divepagestyles.halfentry}>
+              <Text style={divepagestyles.desc}>{t("si")}: </Text>
+              <Text style={divepagestyles.text}>{secondstotimeHMS(dive.surfaceinterval)}</Text>
+            </View>
+            <View style={divepagestyles.halfentry}>
+              <Text style={divepagestyles.desc}>{t("sac")}: </Text>
+              <Text style={divepagestyles.text}>{sac}</Text>
+            </View>
           </View>
         </View>
         <View style={divepagestyles.profileblock} >
@@ -61,7 +87,7 @@ const DiveDetail = ({navigation, dive, imperial}:any) => {
           <Text style={{position: 'absolute', top:51, left:140}}>{rendertemp(dive.surfacetemp, imperial)}</Text>
           <Text style={{position: 'absolute', top:150, left:140}}>{rendertemp(dive.depthtemp, imperial)}</Text>
           <Text style={{position: 'absolute', top:176, left:115}}>{secondstotime(dive.duration)}</Text>
-          <Text style={{position: 'absolute', top:175, left:250}}>{t('sac')}: {(sac ? sac : '-')}</Text>
+
         </View>
         <View>
         <FlatList

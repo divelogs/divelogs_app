@@ -36,6 +36,11 @@ export default {
     avg_duration: "∅ Duration",
     sum_duration: "∑ Duration",
 
+    weather: "Weather",
+    vizibility: "Vizibility",
+    weights: "Weights",
+    si: "SI",
+
     start_pressure: "Start Press.",
     end_pressure: "End Press.",
     tank: "Tank",
@@ -77,5 +82,14 @@ export default {
     couldnotlogin: "Could not login due to an unexpected error",
 
     step: "step",
-    welcome: "Hello"
+    welcome: "Hello",
+    
+    totaldives: 'Number of Dives',
+    avgdepth: "Average Depth",
+    avgduration: "Average Divetime",
+    maxdepth: "Deepest Dive",
+    maxduration: "Longest Dive",
+    totalduration: "Total Divetime",
+    coldest: "Coldest Dive",
+    warmest: "Warmest Dive"
 };

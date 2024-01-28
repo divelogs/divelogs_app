@@ -42,6 +42,17 @@ export const getDivePageStyles = (width:number) : any => StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
   },
+  twocolumn: {
+    flexDirection: 'row',
+    flex: 1
+  },  
+  halfentry: {
+    marginTop: 5,
+    marginBottom: 5,
+    paddingLeft: 5,
+    flexDirection: 'row',
+    width: width*.49
+  },
   desc: {
     color: '#39ade2',     
   },

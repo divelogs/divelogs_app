@@ -90,6 +90,47 @@ export const getDiveCount = async (db: SQLiteDatabase): Promise<number> => {
   }
 };
 
+export const getBragFacts = async (db: SQLiteDatabase): Promise<any> => {
+  try {
+    const results = await db.executeSql(`SELECT *,
+    (SELECT count(1) FROM dives) AS totaldives, 
+    (SELECT id FROM dives WHERE duration = subq.maxduration LIMIT 1) AS longestid, 
+    (SELECT id FROM dives WHERE maxdepth = subq.maxdepth LIMIT 1) AS deepestid,
+    (SELECT min(depthtemp) FROM dives WHERE depthtemp != 0) as coldest,
+    (SELECT max(depthtemp) FROM dives WHERE depthtemp != 0) as warmest
+    
+    FROM 
+    (
+    SELECT SUM(duration) AS totalduration, round(AVG(duration)) AS avgduration, MAX(duration) AS maxduration, 
+    ROUND(AVG(maxdepth),2) AS avgdepth, MAX(maxdepth) AS maxdepth
+    FROM dives 
+    ) subq`);
+    if (results[0].rows.length == 0)
+      return {avgdepth: null, avgduration: null, deepestid: null, longestid: null, maxdepth: null, maxduration: null, totalduration: null};
+    else {
+      let res = results[0].rows.item(0);
+      return res;
+    }
+
+
+    
+
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get BragValues');
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
 export const getSingleColumnStats = async (db: SQLiteDatabase, column: string, sort: string = 'ASC'): Promise<StatVal[]> => {
   try {
     let data:StatVal[] = [];
@@ -115,14 +156,13 @@ export const getPrecalcedStats = async (db: SQLiteDatabase, type: string): Promi
     let data:StatVal[] = [];
     
     /*
-    NO IDEA why this query does NOT work from within react, but works fine in a SQLite GUI
-    Left here for documentation/WTF purposes
+    ATTENTION: This query works too, but the line "substr(csv, 0, instr(csv, ',')-1), " works here only. I an SQLite UI locally, the "-1" at the end needs to be removed. Zerobased <=> nonzerobased difference, possibly between engine versions.
 
     const results = await db.executeSql(`WITH split(word, csv) AS (
       SELECT 
         '', buddy||','  FROM dives   
       UNION ALL SELECT
-        substr(csv, 0, instr(csv, ',')), 
+        substr(csv, 0, instr(csv, ',')-1), 
         substr(csv, instr(csv, ',') + 1) 
       FROM split -- recurse
       WHERE csv != '' -- break recursion once no more csv words exist
