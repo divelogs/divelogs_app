@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     color: '#3eb8f1'
   },
   countlabel: {
-    
+    height: 22,
     paddingHorizontal: 5, 
     marginLeft: 20, 
     borderRadius: 10, 
