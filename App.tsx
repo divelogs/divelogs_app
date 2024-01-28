@@ -33,7 +33,7 @@ const App = () => {
 
   const [firstLoad, setFirstLoad] = useState<string|undefined>("")
 
-  return (<>
+  return (<View style={{flex: 1, backgroundColor: '#3fb9f2'}}>
       <NavigationContainer
         onStateChange={(state) => {
           console.log(state)
@@ -42,7 +42,7 @@ const App = () => {
         <Index/>
       </NavigationContainer>
       <Diver loaded={firstLoad} style={{position: 'absolute', top:0, left:0, width: '100%', height: '100%'}}/>
-    </>)
+    </View>)
 };
 
 export default App; 
