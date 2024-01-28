@@ -108,7 +108,7 @@ export const Certifications = () => {
       <View style={{ flex: 1, }}>       
         <SwiperFlatList key={orientation} index={thekey} renderAll={true} data={allscans} renderItem={({ item }) => (
             <View style={{ justifyContent: 'center'}}>
-              <Image style={sliderstyles.image} resizeMode={'contain'} source = {{uri: "file://" + PictureDir + "/divelogs/" + item}}/>
+              <Image style={sliderstyles.image} resizeMode={'contain'} source = {{uri: "file://" + PictureDir + item}}/>
             </View>
           )} />
       </View>
