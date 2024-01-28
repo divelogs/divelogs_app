@@ -19,12 +19,22 @@ import Onboarding from './onboarding';
 
 import AppHeader from './generic/divelogsheader'
 
+import { getImperial } from '../services/db-service';
+
 const BottomNavigation = ({}:any)=> {
 
   const Tab = createBottomTabNavigator();
   const { t } = useTranslation(); 
 
-  const imperial = false;
+  const [imperial, setImperial] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      const imp = await getImperial();
+      setImperial(imp);
+    })()
+    return () => {  }
+  }, []);
 
   return (<>
     <Tab.Navigator screenOptions={{
@@ -44,7 +54,7 @@ const BottomNavigation = ({}:any)=> {
           );
         }
       }}>
-        {(props) => <Dives {...props} />}
+        {(props) => <Dives {...props} imperial={imperial}/>}
       </Tab.Screen>
       <Tab.Screen name="Certifications"  component={Certifications} options={{ 
         title: t("certifications"),

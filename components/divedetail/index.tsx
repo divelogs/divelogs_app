@@ -6,6 +6,8 @@ import DiveDetail from './Dive'
 
 const DiveSwipe = ({navigation, route, imperial}:any) => {
 
+  console.log(imperial);
+
   // Use this const as key of the SwiperFlatList to enforce re-render on orientation-change
   const [orientation, setOrientation] = useState('');
 

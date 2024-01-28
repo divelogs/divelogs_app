@@ -13,6 +13,8 @@ import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, rende
 export const StatisticsView = ({ route, navigation }:any) => {
 
     const imperial = route.params.imperial;
+
+    console.log(route);
     
     const [monthStats, setMonthStats] = useState<StatVal[]>([]);
     const [hourStats, setHourStats] = useState<StatVal[]>([]);

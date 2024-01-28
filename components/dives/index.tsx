@@ -5,6 +5,8 @@ import { SvgXml } from 'react-native-svg';
 
 import React, { useState, useEffect } from 'react';
 
+import { getImperial } from '../../services/db-service';
+
 
 import { divelogs_logo, filtericon } from '../../assets/svgs.js'
 
@@ -18,12 +20,11 @@ import styles from '../../stylesheets/styles'
 
 import AllDives from './AllDivesView'
 import DiveDetail from '../divedetail'
+import { getInitialProps } from 'react-i18next';
 
-const DivesNavigation = ({navigation, refreshApiData}:any) => {
+const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
 
-  const [sort, setSort] = useState<string>("DESC")
-
-  const imperial = false
+  const [sort, setSort] = useState<string>("DESC");
 
   const Stack = createNativeStackNavigator();
 
