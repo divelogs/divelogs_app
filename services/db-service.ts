@@ -16,6 +16,7 @@ export const getDBConnection = async () => {
 };
 
 export const updateDB = (): Promise<number> => {
+  console.log(fs.dirs.DocumentDir)
   return new Promise((resolve, reject) => {
     getDBConnection()
       .then((instance) => {
