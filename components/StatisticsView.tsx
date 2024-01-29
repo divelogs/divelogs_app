@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
-import { getDBConnection } from '../services/db-service';
+import { getDBConnection, getImperial } from '../services/db-service';
 import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats, getBragFacts } from '../services/db-aggregation-service';
 import { Statistic } from './Statistic';
 import { StatVal, BragFacts } from '../models';
@@ -12,9 +12,18 @@ import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, rende
 
 export const StatisticsView = ({ route, navigation }:any) => {
 
-    const imperial = route.params.imperial;
+    const [imperial, setImperial] = useState<boolean>(false);
 
     console.log(route);
+
+    useEffect(() => {
+      (async () => {
+        const imp = await getImperial();
+        console.log('useeffect gets :'+imp);
+        setImperial(imp);
+      })()
+      return () => {  }
+    }, []);
     
     const [monthStats, setMonthStats] = useState<StatVal[]>([]);
     const [hourStats, setHourStats] = useState<StatVal[]>([]);
@@ -22,7 +31,7 @@ export const StatisticsView = ({ route, navigation }:any) => {
     const [weekdayStats, setWeekdayStats] = useState<StatVal[]>([]);
     const [depthStats, setDepthStats] = useState<StatVal[]>([]);
     const [durationStats, setDurationStats] = useState<StatVal[]>([]);
-    const [bragFacts, setBragFacts] = useState<BragFacts | null>(null);
+    const [bragFacts, setBragFacts] = useState<BragFacts | null>(null);
 
     const { t } = useTranslation(); 
 
@@ -55,7 +64,7 @@ export const StatisticsView = ({ route, navigation }:any) => {
     } catch (error) {
         console.error(error);
     }
-    }, []);
+    }, [imperial]);
 
   // Use this const as key of the SwiperFlatList to enforce re-render on orientation-change
   const [orientation, setOrientation] = useState('');
