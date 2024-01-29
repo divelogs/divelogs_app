@@ -66,7 +66,7 @@ export default {
     month11: "November",
     month12: "December",
 
-    choosefilter: "Choose Filter",
+    choosefilter: "Choose View",
     allfilters: "All Filters",
     allDives: "All Dives",
     byYear: "By Year",

@@ -66,7 +66,7 @@ export default {
     month11: "November",
     month12: "Dezember",
 
-    choosefilter: "Filter wählen",
+    choosefilter: "Ansicht wählen",
     allfilters: "Alle Filter",
     allDives: "Alle Tauchgänge",
     byYear: "Nach Jahren",
