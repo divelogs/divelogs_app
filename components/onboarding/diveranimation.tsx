@@ -1,5 +1,5 @@
 
-import { Animated, Button, View, Modal, Pressable, Text, TouchableOpacity } from 'react-native';
+import { Animated, Button, View, Modal, Pressable, Text, TouchableOpacity, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -14,6 +14,7 @@ const DiverAnimation = ({style, loaded}:any) => {
   const opacityAnimation = useRef(new Animated.Value(0)).current;
 
   const [animationDone, setAnimationDone] = useState<boolean>(false)
+  const [transform, setTransform] = useState<number>(0)
   
   const diverZooooom = () : any => {
 
@@ -37,7 +38,8 @@ const DiverAnimation = ({style, loaded}:any) => {
             ]),
 /*
 
-            ACTIVATE THIS ANiMATION FOR LOOP!
+
+//            ACTIVATE THIS ANiMATION FOR LOOP!
 
             Animated.parallel([
                 Animated.timing(sizeAnimation, {
@@ -73,7 +75,8 @@ const DiverAnimation = ({style, loaded}:any) => {
             ]),
 /*
 
-            ACTIVATE THIS ANiMATION FOR LOOP!
+
+//            ACTIVATE THIS ANiMATION FOR LOOP!
 
             Animated.parallel([
                 Animated.timing(sizeAnimation, {
@@ -93,6 +96,16 @@ const DiverAnimation = ({style, loaded}:any) => {
     return Animated.loop(anim)
   }
 
+  useEffect(() => {
+    const listner = Dimensions.addEventListener('change', ({screen:{width,height}})=>{
+      setTransform(Math.round(width/2+30))
+    })
+
+    const { width } = Dimensions.get('screen');
+    setTransform(Math.round(width/2+30))
+
+    return listner.remove;
+  }, []);
 
   useEffect(() => {
     if (!loaded) return;
@@ -115,7 +128,7 @@ const DiverAnimation = ({style, loaded}:any) => {
                 outputRange: [1, 0],
             })
     }]}>
-      <Animated.View style={{height: 100, transformOrigin: '60% center', width: '100%', marginTop: -30, 
+      <Animated.View style={{height: 100, transformOrigin: `${(transform)}px center`, width: '100%', marginTop: -30, 
                              transform: [
                                 {
                                     scale: sizeAnimation.interpolate({
