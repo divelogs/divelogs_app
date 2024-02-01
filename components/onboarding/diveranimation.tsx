@@ -1,11 +1,8 @@
 
-import { Animated, Button, View, Modal, Pressable, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { Animated, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-
 import React, { useState, useEffect, useRef } from 'react';
-
 import { diveicon } from '../../assets/svgs.js'
-
 import divelogsStyle from '../../stylesheets/styles'
 
 const DiverAnimation = ({style, loaded}:any) => {

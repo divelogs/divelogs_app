@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from 'react';
-
-import { Button, View, Modal, Pressable, Text, TouchableOpacity, StyleSheet } from 'react-native';
-
-import Load from '../generic/loader'
-import { ProfilePictureWithLoader, ProfilePicture } from '../generic/userprofile';
-
+import { Button, View, Text, StyleSheet } from 'react-native';
 import { getDiveCount } from '../../services/db-aggregation-service'
 import { getDBConnection } from '../../services/db-service'
-
 import divelogsStyle from '../../stylesheets/styles'
-
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-
 
 const SyncFail = ({navigation, route}:any) => {
 

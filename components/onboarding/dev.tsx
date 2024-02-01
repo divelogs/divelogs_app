@@ -1,12 +1,8 @@
-import { Button, View, Modal, Pressable, Text, TouchableOpacity } from 'react-native';
-
+import { View } from 'react-native';
 import Load from '../generic/loader'
 import { ProfilePictureWithLoader, ProfilePicture } from '../generic/userprofile';
 
 const BlueScreen = ({navigation}:any) => {
-
-
-
   return (
     <View style={{flex: 1, backgroundColor:'#3fb9f2'}}>
         

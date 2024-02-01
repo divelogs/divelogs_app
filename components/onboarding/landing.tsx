@@ -1,19 +1,10 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import { Button, View, Modal, Pressable, Text, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { getDBConnection, getBearerToken, getProfile, getSyncForced } from '../../services/db-service';
 import { Api } from '../../services/api-service';
-
 import { diveicon } from '../../assets/svgs.js'
-
-
 import divelogsStyle from '../../stylesheets/styles'
-
-import Sync from './sync'
-import Login from './login'
 
 const BlueScreen = ({navigation}:any) => {
 

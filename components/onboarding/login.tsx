@@ -1,14 +1,10 @@
-import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
-import {Platform, SafeAreaView,Text,TextInput,View,Dimensions, Linking, Alert, Modal, Pressable, NativeModules, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-
+import React, { useState } from 'react';
+import {Platform, Text,TextInput, Linking, Pressable,StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { getDBConnection, writeBearerToken } from '../../services/db-service';
 import { Api } from '../../services/api-service'
-
 import AppHeader from '../generic/divelogsheader'
-
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-
 import divelogsStyle from '../../stylesheets/styles'
 
 const Login = ({navigation}:any) => {

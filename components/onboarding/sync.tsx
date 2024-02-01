@@ -1,17 +1,12 @@
 
-import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
-import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Image, StyleSheet, Vibration, TouchableOpacity } from 'react-native';
-
-import { getDBConnection, getDives, getBearerToken, getProfile, saveDives, saveStatistics, writeBearerToken, saveCertifications, resetSyncForced, saveGearItems, saveSettings, getImperial, saveProfile, } from '../../services/db-service';
+import React, { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, Vibration } from 'react-native';
+import { getDBConnection, getDives, getBearerToken, getProfile, saveDives, saveStatistics, writeBearerToken, saveCertifications, resetSyncForced, saveGearItems, saveSettings, saveProfile, } from '../../services/db-service';
 import { Api } from '../../services/api-service'
-import { APIDive, Certification } from '../../models';
+import { Certification } from '../../models';
 import { UserProfile } from '../../models'
-
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-
-import Loader from '../generic/loader'
-
 import { ProfilePictureWithLoader } from '../generic/userprofile';
 
 enum Recovery {
