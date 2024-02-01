@@ -2,6 +2,7 @@
 import RNFetchBlob from "rn-fetch-blob";
 import {  NativeModules, Platform } from 'react-native';
 import { UserProfile } from "../models";
+import * as Keychain from "react-native-keychain";
 
 export type LoginResult = {
   success: boolean;
@@ -131,6 +132,7 @@ const login = async (username:string, password:string ) : Promise<LoginResult> =
     if (response.status == 200) {
       loginoutcome.success = true;
       loginoutcome.bearerToken = json.bearer_token
+      await Keychain.setGenericPassword('divelogsuser', loginoutcome.bearerToken);
       setBearerToken(json.bearer_token)
     }
     else

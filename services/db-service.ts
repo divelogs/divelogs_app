@@ -3,6 +3,7 @@ import { Dive, Certification, StatVal, GearItem, APIDive, UserProfile } from '..
 import RNFetchBlob from "rn-fetch-blob";
 import {  NativeModules, Platform } from 'react-native';
 import dbUpgrade from "./db-upgrade.json";
+import * as Keychain from "react-native-keychain";
 
 enablePromise(true);
 
@@ -532,10 +533,14 @@ export const saveGearItems = async (db: SQLiteDatabase, data:JSON | null): Promi
 };
  
 export const getBearerToken = async (db: SQLiteDatabase): Promise<string|null> => {
-  const results = await db.executeSql("SELECT apptoken FROM apptoken");
-  if (results[0].rows.length == 0) 
-    return null
-  return results[0].rows.item(0)['apptoken'];
+  // const results = await db.executeSql("SELECT apptoken FROM apptoken");
+  // if (results[0].rows.length == 0) 
+  //   return null
+  // return results[0].rows.item(0)['apptoken'];
+  const bt = await Keychain.getGenericPassword();
+  console.log(bt);
+  if (bt != false) return bt.password;
+  else return null;
 };
 
 export const getDbVersion = async (db: SQLiteDatabase): Promise<number> => {
@@ -550,15 +555,18 @@ export const getDbVersion = async (db: SQLiteDatabase): Promise<number> => {
 
 export const writeBearerToken = async (db: SQLiteDatabase, apptoken: string): Promise<boolean> => {
   try {
-    const updatequery = "UPDATE apptoken SET apptoken = ?";
-    const values = [apptoken];
-    try {
-      db.executeSql(updatequery, values);
-      return true;
-    } catch (error) {
-      console.error(error)
-      throw Error("Failed to add dive")
-    }
+    // const updatequery = "UPDATE apptoken SET apptoken = ?";
+    // const values = [apptoken];
+    // try {
+    //   db.executeSql(updatequery, values);
+    //   return true;
+    // } catch (error) {
+    //   console.error(error)
+    //   throw Error("Failed to add dive")
+    // }
+    await Keychain.setGenericPassword('divelogsuser', apptoken);
+    return true;
+
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Bearer Token');

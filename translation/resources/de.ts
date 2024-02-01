@@ -36,7 +36,7 @@ export default {
     avg_duration: "∅ Dauer",
     sum_duration: "∑ Dauer",
     nodives: "Keine Tauchgänge gefunden",
-    nocerts: "Keine Breverts gefunden",
+    nocerts: "Keine Brevets gefunden",
     nogear: "Keine Ausrüstung gefunden",
 
     weather: "Wetter",
