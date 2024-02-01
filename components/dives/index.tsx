@@ -1,26 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import { Button, View, Modal, Pressable, Text, TouchableOpacity } from 'react-native';
+import { Button, View, TouchableOpacity } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-
-import React, { useState, useEffect } from 'react';
-
-import { getImperial } from '../../services/db-service';
-
-
-import { divelogs_logo, filtericon } from '../../assets/svgs.js'
-
+import React, { useState } from 'react';
+import { filtericon } from '../../assets/svgs.js'
 import DivelogsHeader from '../generic/divelogsheader'
-
 import { AggregationView } from './Aggregation'
-
 import DiveListSelection from './DiveListSelection'
-
-import styles from '../../stylesheets/styles'
-
 import AllDives from './AllDivesView'
 import DiveDetail from '../divedetail'
-import { getInitialProps } from 'react-i18next';
 
 const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
 

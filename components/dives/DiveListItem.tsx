@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Button,  StyleSheet,  Text,  View } from 'react-native';
+import { StyleSheet,  Text,  View } from 'react-native';
 import { Dive } from '../../models';
 import { DiveProfile } from '../divedetail/DiveProfile';
 import { renderdepth } from '../functions.ts'

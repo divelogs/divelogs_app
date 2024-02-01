@@ -1,26 +1,14 @@
 
-import { Button, View, Modal, Pressable, Text } from 'react-native';
-import { SvgXml } from 'react-native-svg';
+import { View } from 'react-native';
 import { Dive } from '../../models';
-
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
-
 import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getImperial } from '../../services/db-service';
-
-import { divelogs_logo } from '../../assets/svgs.js'
-
 import DivesList from './DivesList';
-import { AggregationView } from './Aggregation'
-
-import styles from '../../stylesheets/styles'
 
 const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
 
-  const { t } = useTranslation(); 
-
-  const [showAggregationModal, setShowAggregationModal] = useState<boolean>(false);
   const [dives, setDives] = useState<Dive[]>([]);
   const [search, setSearch] = useState<string>('');
   const [imperial, setImperial] = useState<boolean>(false);

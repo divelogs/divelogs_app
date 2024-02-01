@@ -1,5 +1,5 @@
 import React, {useRef, useEffect} from 'react';
-import {Animated, Button, View, StyleSheet} from 'react-native';
+import {Animated, StyleSheet} from 'react-native';
 
 const App = ({style, pingSize, active}:any) => {
    const sizeAnimation = useRef(new Animated.Value(0)).current;

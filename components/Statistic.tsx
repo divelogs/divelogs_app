@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { StatData, StatVal } from '../models';
 

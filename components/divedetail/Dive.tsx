@@ -1,14 +1,12 @@
 import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList } from 'react-native';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-
 import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, renderweights, secondstotimeHMS } from '../functions.ts'
 import { getDivePageStyles } from './styles'
-
 import DiveProfile from './DiveProfile'
 import { TankView } from './TankView'
 import { Tank } from '../../models'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const DiveDetail = ({navigation, dive, imperial}:any) => {
 

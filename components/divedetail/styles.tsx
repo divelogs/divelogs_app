@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export const getDivePageStyles = (width:number) : any => StyleSheet.create({
   child: { width: width, justifyContent: 'center', padding: 5 },

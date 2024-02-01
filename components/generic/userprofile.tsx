@@ -1,15 +1,10 @@
-
 import { useEffect, useState } from 'react';
-import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Image, StyleSheet, Vibration, TouchableOpacity } from 'react-native';
+import { Text, View, Image, StyleSheet } from 'react-native';
 import { UserProfile } from '../../models';
 import RNFetchBlob from "rn-fetch-blob";
-
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-
-
-import { getDBConnection, getDives, getBearerToken, saveDives, saveStatistics, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, getImperial, saveProfile, getProfile, } from '../../services/db-service';
-
+import { getDBConnection, getProfile, } from '../../services/db-service';
 import Loader from './loader'
 
 export const ProfilePicture = ({userprofile, style, imageSize}:any) : any => 

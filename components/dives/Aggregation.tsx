@@ -1,15 +1,11 @@
 
-import { Button, View, Modal, Pressable, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import SearchBar from 'react-native-search-bar'; 
-
 import React, { useState, useEffect } from 'react';
-
-import { getDBConnection, getImperial } from '../../services/db-service';
+import { getDBConnection } from '../../services/db-service';
 import { getSingleColumnStats, getDepthStats, getDurationStats, getPrecalcedStats } from '../../services/db-aggregation-service';
-
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-
 import { StatVal } from '../../models';
 
 const StatRow = ({item, label}:any) => (<View
@@ -24,11 +20,7 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
   const [stats, setStats] = useState<StatVal[]>([])
   const [filteredStats, setFilteredStats] = useState<StatVal[]>([])
   const [filter, setFilter] = useState<string>("")
-
-
-
   const name = route.params.view.name
-
 
   useEffect(() => {
     (async () => {

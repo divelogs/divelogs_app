@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
+import { Text, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
 import { getDBConnection, getImperial } from '../services/db-service';
 import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats, getBragFacts } from '../services/db-aggregation-service';
 import { Statistic } from './Statistic';
 import { StatVal, BragFacts } from '../models';
-import { SvgXml } from 'react-native-svg';
-import { divelogs_logo } from '../assets/svgs.js'
 import '../translation'
 import { useTranslation } from 'react-i18next';
-import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, renderweights, secondstotimeHMS } from './functions.ts'
+import { rendertemp, renderdepth, secondstotimeHMS } from './functions.ts'
 
 export const StatisticsView = ({ route, navigation }:any) => {
 

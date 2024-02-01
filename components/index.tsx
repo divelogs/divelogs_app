@@ -1,24 +1,16 @@
-import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules } from 'react-native';
-
+import React, { useEffect, useState } from 'react';
 import { SvgXml } from 'react-native-svg';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-import { divelogs_logo, diveicon, certicon, staticon, gearicon } from '../assets/svgs.js'
+import { diveicon, certicon, staticon, gearicon } from '../assets/svgs.js'
 import '../translation'
 import { useTranslation } from 'react-i18next';
-
 import StatisticsView from './StatisticsView';
 import Certifications from './certifications';
 import Dives from './dives'
 import GearView from './GearItemsView';
 import Onboarding from './onboarding';
-
 import AppHeader from './generic/divelogsheader'
-
 import { getImperial } from '../services/db-service';
 
 const BottomNavigation = ({}:any)=> {

@@ -1,7 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
-import { View, StatusBar, Button, Dimensions } from 'react-native';
-
+import { View, Dimensions } from 'react-native';
 import DiveDetail from './Dive'
 
 const DiveSwipe = ({navigation, route, imperial}:any) => {

@@ -1,12 +1,9 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, FlatList, NativeModules, StyleSheet, Button, TouchableOpacity, Dimensions, Image } from 'react-native';
-
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-
 import AppHeader from '../generic/divelogsheader';
 import Overview from './Overview';
 import ScanSlider from './ScanSlider';

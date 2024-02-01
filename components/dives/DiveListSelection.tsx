@@ -1,27 +1,21 @@
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-
 import React, { useState, useEffect } from 'react';
-
 import { getDBConnection } from '../../services/db-service';
 import { getDiveCount } from '../../services/db-aggregation-service'
-
-import { Button, View, Modal, Pressable, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
-
-import Profile from '../generic/userprofile'
-
+import { View, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
 
 const ListItem = ({name, label}:any) => {
   return <View style={[
-        {
-          flex:1,
-          padding:13,
-          paddingLeft: 30,
-          flexDirection:'row',
-        },]}>
-          <Text style={[{fontSize: 20}]}>{name}</Text>
-          {label ? <View style={styles.countlabel}><Text style={styles.countlabeltext}>{label}</Text></View> : null }
-        </View>
+    {
+      flex:1,
+      padding:13,
+      paddingLeft: 30,
+      flexDirection:'row',
+    },]}>
+      <Text style={[{fontSize: 20}]}>{name}</Text>
+      {label ? <View style={styles.countlabel}><Text style={styles.countlabeltext}>{label}</Text></View> : null }
+    </View>
 }
 
 const DiveListSelection = ({navigation, route}:any) => {
@@ -52,9 +46,7 @@ const DiveListSelection = ({navigation, route}:any) => {
         label: diveCount
       }
       ]
-    }
-    ,
-    {
+    },{
       section: "2",
       data: [
       {
@@ -166,8 +158,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#3fb9f2',
     borderWidth: 1,
     minWidth:40,
-    
-    
   },
   countlabeltext: {
     fontSize: 14, 
@@ -176,12 +166,3 @@ const styles = StyleSheet.create({
     textAlign:"center"
   }
 });
-
-
-/*
-          <SectionList
-            ListHeaderComponent={() => <Text>Image?</Text>}
-            data={views} 
-
-          />
-*/

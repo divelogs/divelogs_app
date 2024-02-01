@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Dimensions, View, FlatList, Text } from 'react-native';
 import { getDBConnection, getGearItems } from '../services/db-service';
 import { GearItem } from '../models';
-import { SvgXml } from 'react-native-svg';
-import { divelogs_logo } from '../assets/svgs.js'
 import { Gear } from './GearItem'
 import '../translation'
 import { useTranslation } from 'react-i18next';

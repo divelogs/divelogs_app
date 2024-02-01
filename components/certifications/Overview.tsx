@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, FlatList, NativeModules, StyleSheet, Button, TouchableOpacity, Dimensions, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, NativeModules, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Certification } from '../../models';
 import { getDBConnection, getCertifications } from '../../services/db-service';
 import RNFetchBlob from "rn-fetch-blob";
-
 import { makeDateObj } from '../functions'
 import '../../translation'
 import { useTranslation } from 'react-i18next';

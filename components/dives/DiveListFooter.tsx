@@ -1,11 +1,9 @@
 
-import { Button,Image,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View,TouchableOpacity, FlatList, Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules, Platform } from 'react-native';
-
+import { StyleSheet, Text, View} from 'react-native';
 import { Dive } from '../../models'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
-
 
 interface Statistics {
   [key: string]: number;

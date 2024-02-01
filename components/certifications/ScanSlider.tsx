@@ -1,11 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, FlatList, NativeModules, StyleSheet, Button, TouchableOpacity, Dimensions, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Dimensions, Image } from 'react-native';
 import RNFetchBlob from "rn-fetch-blob";
-
-
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
-
-
 
 export const Scanslider = ({navigation, route}: any) => {
     
