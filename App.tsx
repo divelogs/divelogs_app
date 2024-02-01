@@ -49,8 +49,6 @@ const App = () => {
     useLayoutEffect(() => {
       DBCheck();
     }, []);
-  
-    console.log(dbversion)
 
   if (dbversion < 1) 
     return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>{dbversion}</Text></View>
@@ -58,7 +56,6 @@ const App = () => {
   return (<View style={{flex: 1, backgroundColor: '#3fb9f2'}}>
       <NavigationContainer
         onStateChange={(state) => {
-          console.log(state)
           setFirstLoad(state?.routes[0].name)
           }}> 
         <Index/>

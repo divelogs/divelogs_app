@@ -31,7 +31,7 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
 
     navigation.setOptions({title: route.params.view.name})
 
-    return () => { console.log("unmount") }
+    return () => {  }
   }, [view]);
 
   useEffect(() => {

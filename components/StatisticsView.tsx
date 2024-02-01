@@ -12,12 +12,9 @@ export const StatisticsView = ({ route, navigation }:any) => {
 
     const [imperial, setImperial] = useState<boolean>(false);
 
-    console.log(route);
-
     useEffect(() => {
       (async () => {
         const imp = await getImperial();
-        console.log('useeffect gets :'+imp);
         setImperial(imp);
       })()
       return () => {  }
@@ -39,8 +36,6 @@ export const StatisticsView = ({ route, navigation }:any) => {
 
         const results0 = await getBragFacts(db);
         setBragFacts(results0);
-
-        console.log(results0);
 
         const results = await getMonthStats(db);
         setMonthStats(results);

@@ -21,7 +21,7 @@ const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
       const dives = await loadData()
       setDives(dives)
     })()
-    return () => { console.log("unmount") }
+    return () => { }
   }, [sort, search]);
 
   useEffect(() => {
@@ -35,8 +35,6 @@ const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
   const loadData = async () : Promise<Dive[]> => {
     try {
       const db = await getDBConnection();
-
-console.log(route.params)
 
       if (!!route.params?.filter){
         let column:string;

@@ -39,7 +39,6 @@ const cycleAnimation = () : any => {
   }
 
    useEffect(() => {
-    console.log("aa")
     if (active)
         cycleAnimation().start()
     else{

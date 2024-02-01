@@ -17,7 +17,6 @@ export const getDBConnection = async () => {
 };
 
 export const updateDB = (): Promise<number> => {
-  console.log(fs.dirs.DocumentDir)
   return new Promise((resolve, reject) => {
     getDBConnection()
       .then((instance) => {
@@ -26,7 +25,6 @@ export const updateDB = (): Promise<number> => {
             let version = results[0].rows.item(0)['version']
             if (version < dbUpgrade.version) {
               //Call upgrade scripts
-              console.log('need DB version '+dbUpgrade.version);
               let result = upgradeFrom(instance, version);
               resolve(result);
             }
@@ -538,7 +536,6 @@ export const getBearerToken = async (db: SQLiteDatabase): Promise<string|null> =
   //   return null
   // return results[0].rows.item(0)['apptoken'];
   const bt = await Keychain.getGenericPassword();
-  console.log(bt);
   if (bt != false) return bt.password;
   else return null;
 };

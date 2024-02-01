@@ -70,7 +70,6 @@ const getDataFromApi = async (endpoint:string, method?: string) : Promise<JSON |
 
   if (result.status == 200) {
     const json = await result.json();
-    //console.log(url, json)
     return json
   } else {
     throw `${result.url} returns ${result.status}`
@@ -113,7 +112,6 @@ const login = async (username:string, password:string ) : Promise<LoginResult> =
   data.append('pass', password);
 
   const loginoutcome: LoginResult = { success: false, bearerToken: '', error: ''};
-  //console.log(loginoutcome);
 
   try{
     const url = getUrl("login")

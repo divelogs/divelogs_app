@@ -31,11 +31,8 @@ export const Scanslider = ({navigation, route}: any) => {
     }
     });
 
-
    const thekey = route.params.thekey
    const allScans = route.params.allScans
-
-   console.log(thekey)
 
    return (
      <View style={{ flex: 1, }}>       

@@ -164,7 +164,6 @@ const Sync = ({navigation}:any) => {
                 switch (step.recover ?? Recovery.Fail){
                     case Recovery.RetryAndSkip:
                     case Recovery.RetryAndFail:
-                        console.log("\tRetry required")
                         if (retry > 2)
                             break;
                         setRetry(retry+1)
@@ -187,7 +186,6 @@ const Sync = ({navigation}:any) => {
                         break;
                     case Recovery.Skip:
                     case Recovery.RetryAndSkip:
-                        console.log("\tSkipping step")
                         setCurrentStep(currentStep+1)
                         break;
                 }

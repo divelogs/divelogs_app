@@ -182,7 +182,6 @@ export const getPrecalcedStats = async (db: SQLiteDatabase, type: string): Promi
 
     results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
-        console.log(result.rows.item(index));
         data.push(result.rows.item(index));
       }
     });
