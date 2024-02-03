@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, View, TouchableOpacity } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { filtericon } from '../../assets/svgs.js'
 import DivelogsHeader from '../generic/divelogsheader'
 import { AggregationView } from './Aggregation'
@@ -12,16 +12,50 @@ import DiveDetail from '../divedetail'
 const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
 
   const [sort, setSort] = useState<string>("DESC");
-
-  const Stack = createNativeStackNavigator();
+  let selectedViewRef = useRef<any|null>(null)
 
   const toggleSort = () => setSort((sort == "DESC") ? "ASC" : "DESC")
 
   const sortindicator = (sort == "DESC") ? '↓' : '↑'
 
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('tabPress', (e) => {
+  
+      if (selectedViewRef.current == null)
+        return;
+
+      e.preventDefault();
+
+      navigation.navigate(selectedViewRef.current.name, selectedViewRef.current.params)
+    });
+  
+    return unsubscribe;
+  }, []);
+
+  const Stack = createNativeStackNavigator();
+
   return (
     <View style={{flex:1, backgroundColor: '#FFFFFF'}}>
         <Stack.Navigator
+          screenListeners={{
+            state: (e) => {
+              const lastRoute = e.data?.state?.routes?.at(-1)
+              if (!lastRoute)
+                return;
+
+              switch (lastRoute.name){
+                case "AggregatedView":
+                case "AllDives":
+                  selectedViewRef.current = {"name": lastRoute.name, "params": lastRoute.params}
+                  break;
+                case "DiveListSelection":
+                  selectedViewRef.current = null
+                  break;
+              }
+            }
+          }}
+
+
           screenOptions={{
             headerStyle: {
               backgroundColor: '#3fb9f2',
