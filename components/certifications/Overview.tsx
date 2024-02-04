@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, NativeModules, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, NativeModules, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Certification } from '../../models';
 import { getDBConnection, getCertifications } from '../../services/db-service';
 import RNFetchBlob from "rn-fetch-blob";
@@ -49,11 +49,11 @@ export const Overview = ({navigation}:any) => {
               <>
               <Text style={styles.bold}>{item.org} {item.name}</Text>
               <Text>{makeDateObj(item.certdate).toLocaleString(locale, {day: '2-digit', month:'2-digit', year: 'numeric'})}</Text>
-              <View style={{flexDirection: 'row', marginBottom: 30}}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{flexDirection: 'row', marginBottom: 30}}>
               {item.scans.map((scan) => {
                   const thekey = Object.keys(allScans).find(key => allScans[parseInt(key)] === scan);
                   return (      
-                    <View key={scan}>  
+                    <View key={scan}>
                       <TouchableOpacity key={item.id} onPress={() =>
                           navigation.navigate('CertificationScans', {thekey: thekey, allScans: allScans})
                         } >                     
@@ -62,7 +62,7 @@ export const Overview = ({navigation}:any) => {
                     </View>
                   );
                 })}
-              </View>  
+              </ScrollView>  
               </>
             )}
           />
