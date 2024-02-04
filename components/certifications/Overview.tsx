@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, NativeModules, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, FlatList, NativeModules, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
 import { Certification } from '../../models';
 import { getDBConnection, getCertifications } from '../../services/db-service';
 import RNFetchBlob from "rn-fetch-blob";
@@ -14,6 +14,8 @@ export const Overview = ({navigation}:any) => {
     const [certifications, setCertifications] = useState<Certification[]>([]);
     const [allScans, setAllScans] = useState<string[]>([]);
   
+    const { width, height } = Dimensions.get('window')
+
     const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
         NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
 
@@ -21,6 +23,8 @@ export const Overview = ({navigation}:any) => {
      
     const { config, fs } = RNFetchBlob;
     const PictureDir = fs.dirs.DocumentDir;
+
+
   
     const loadCertifications = async () => {
       try {
@@ -37,32 +41,41 @@ export const Overview = ({navigation}:any) => {
     useEffect(() => {
       loadCertifications();
     }, []);
-  
+
+    const itemCountPerline:number = 2
+    const ratio:number = 85.6 / 53.98
+    const brevetWidth:number = (Math.min(width,height) - 40) /itemCountPerline
+    const brevetHeight:number = brevetWidth / ratio
+
       return (
         <>
         <View style={{ flex: 1, paddingBottom: 0, paddingRight: 0, backgroundColor: '#FFFFFF' }}>     
         <Text style={divelogsStyles.viewHeader}>{t('certifications')}</Text>  
           <FlatList
+            style={{paddingHorizontal: 10}}
             data={certifications}
             ListEmptyComponent={<View style={[divelogsStyles.noListContent]}><Text style={[divelogsStyles.noListContentText]}>{t('nocerts')}</Text></View>}             
             renderItem={({item}) => (
               <>
-              <Text style={styles.bold}>{item.org} {item.name}</Text>
-              <Text>{makeDateObj(item.certdate).toLocaleString(locale, {day: '2-digit', month:'2-digit', year: 'numeric'})}</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{flexDirection: 'row', marginBottom: 30}}>
-              {item.scans.map((scan) => {
-                  const thekey = Object.keys(allScans).find(key => allScans[parseInt(key)] === scan);
-                  return (      
-                    <View key={scan}>
-                      <TouchableOpacity key={item.id} onPress={() =>
-                          navigation.navigate('CertificationScans', {thekey: thekey, allScans: allScans})
-                        } >                     
-                        <Image source = {{uri: "file://" + PictureDir + scan, width: 150, height: 150}} style={{marginRight: 10}}/>
-                      </TouchableOpacity>
-                    </View>
-                  );
-                })}
-              </ScrollView>  
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={styles.desc}>{item.org} {item.name}</Text>
+                  <Text style={styles.date}>{makeDateObj(item.certdate).toLocaleString(locale, {day: '2-digit', month:'2-digit', year: 'numeric'})}</Text>
+
+                </View>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{flexDirection: 'row', marginBottom: 25}}>
+                {item.scans.map((scan) => {
+                    const thekey = Object.keys(allScans).find(key => allScans[parseInt(key)] === scan);
+                    return (      
+                      <View key={scan}>
+                        <TouchableOpacity key={item.id} onPress={() =>
+                            navigation.navigate('CertificationScans', {thekey: thekey, allScans: allScans})
+                          } >                     
+                          <Image source = {{uri: "file://" + PictureDir + scan, width: brevetWidth, height: brevetHeight}} style={{marginRight: 5, borderRadius: 6 }}/>
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  })}
+                </ScrollView>  
               </>
             )}
           />
@@ -72,21 +85,19 @@ export const Overview = ({navigation}:any) => {
   };
 
   const styles = StyleSheet.create({
-    tinyLogo: {
-      width:150,
-      height:34
-    },
-    safeArea: {
-      flex: 1,
-      backgroundColor: '#FFFFFF'
-    },
     bold: {
       fontWeight: "700"
     },
-    appTitleView: {
-      justifyContent: 'center',
-      flexDirection: 'row',
-      backgroundColor: '#3fb9f2'
+    desc: {
+      fontSize: 16,
+      fontWeight: '500',
+      width: '70%',
+      flex: 3,
+      marginBottom: 4
+    },
+    date: {
+      flex: 1,
+      marginBottom: 10
     }
   });
   
