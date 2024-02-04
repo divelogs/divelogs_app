@@ -7,6 +7,8 @@ import { StatVal, BragFacts } from '../models';
 import '../translation'
 import { useTranslation } from 'react-i18next';
 import { rendertemp, renderdepth, secondstotimeHMS } from './functions.ts'
+import divelogsStyles from '../stylesheets/styles'
+
 
 export const StatisticsView = ({ route, navigation }:any) => {
 
@@ -110,8 +112,10 @@ export const StatisticsView = ({ route, navigation }:any) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+           <Text style={divelogsStyles.viewHeader}>{t('statistics')}</Text>
+        
         <ScrollView style={{padding: 10}}> 
-           <Text style={styles.listHeader}>{t('statistics')}</Text>
+        
            <View style={styles.oneliner}>
                 <Text style={styles.desc}>{t('totaldives')}: </Text>
                 <Text>{(bragFacts ? bragFacts.totaldives: null)}</Text>  

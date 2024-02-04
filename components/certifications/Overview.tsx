@@ -7,7 +7,6 @@ import { makeDateObj } from '../functions'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 
-
 import divelogsStyles from '../../stylesheets/styles'
 
 export const Overview = ({navigation}:any) => {
@@ -39,13 +38,10 @@ export const Overview = ({navigation}:any) => {
       loadCertifications();
     }, []);
   
-    console.log(certifications)
-
-
       return (
         <>
-        <View style={{ flex: 1, padding: 16, paddingBottom: 0, paddingRight: 0, backgroundColor: '#FFFFFF' }}>     
-        <Text style={styles.listHeader}>{t('certifications')}</Text>  
+        <View style={{ flex: 1, paddingBottom: 0, paddingRight: 0, backgroundColor: '#FFFFFF' }}>     
+        <Text style={divelogsStyles.viewHeader}>{t('certifications')}</Text>  
           <FlatList
             data={certifications}
             ListEmptyComponent={<View style={[divelogsStyles.noListContent]}><Text style={[divelogsStyles.noListContentText]}>{t('nocerts')}</Text></View>}             
@@ -91,15 +87,7 @@ export const Overview = ({navigation}:any) => {
       justifyContent: 'center',
       flexDirection: 'row',
       backgroundColor: '#3fb9f2'
-    },
-    listHeader: {
-      fontSize: 25,    
-      fontWeight: '700',
-      marginTop: 5,
-      marginLeft: 0,
-      marginBottom: 15,
-      color: '#3eb8f1'
-    },
+    }
   });
   
 

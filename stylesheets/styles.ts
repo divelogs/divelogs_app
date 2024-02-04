@@ -67,7 +67,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 50,
     color: '#777'
-  }
+  },
+  viewHeader: {
+    fontSize: 25,    
+    fontWeight: '700',
+    marginTop: 20,
+    marginLeft: 10,
+    marginBottom: 15,
+    color: '#3eb8f1'
+  },
 });
 
 export default styles

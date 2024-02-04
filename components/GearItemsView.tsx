@@ -5,7 +5,6 @@ import { GearItem } from '../models';
 import { Gear } from './GearItem'
 import '../translation'
 import { useTranslation } from 'react-i18next';
-
 import divelogsStyles from '../stylesheets/styles'
 
 export const GearView = () => {
@@ -60,7 +59,7 @@ export const GearView = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-      <Text style={styles.listHeader}>{t('gearitems')}</Text>
+      <Text style={divelogsStyles.viewHeader}>{t('gearitems')}</Text>
             <FlatList
               ListEmptyComponent={<View style={[divelogsStyles.noListContent]}><Text style={[divelogsStyles.noListContentText]}>{t('nogear')}</Text></View>}  
                 data={gearitems} 

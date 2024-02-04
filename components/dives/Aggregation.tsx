@@ -7,6 +7,8 @@ import { getSingleColumnStats, getDepthStats, getDurationStats, getPrecalcedStat
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { StatVal } from '../../models';
+import divelogsStyles from '../../stylesheets/styles'
+
 
 const StatRow = ({item, label}:any) => (<View
       style={styles.statRowStyle}>
@@ -128,7 +130,7 @@ export const AggregationView = ({navigation, route, view, imperial}:any) => {
           <FlatList
             ListHeaderComponent={() => <>
               <Filter/>
-              <Text style={styles.listHeader}>{name}</Text>
+              <Text style={divelogsStyles.viewHeader}>{name}</Text>
               </>
               }
             data={filteredStats} 
