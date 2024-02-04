@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, TouchableOpacity } from 'react-native';
+import { Button, View, TouchableOpacity, Pressable, Text, StyleSheet } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import React, { useState } from 'react';
 import { filtericon } from '../../assets/svgs.js'
@@ -48,17 +48,16 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
             </>            
           ),
           headerRight: () => (
-            <>              
-              <Button onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
-                title="↺"
-                accessibilityLabel="load from divelogs"
-                color="#fff"/>   
-              <View style={{width: 20}}></View>
-              <Button
-              onPress={toggleSort}
-              title={sortindicator}
-              accessibilityLabel="change sorting"
-              color="#fff"/>              
+            <>
+            <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+              <Text style={styles.text}>↺</Text>
+            </Pressable>             
+              
+            <View style={{width: 20}}></View>
+
+            <Pressable style={styles.button} onPress={toggleSort}>
+              <Text style={styles.text}>{sortindicator}</Text>
+            </Pressable>          
             </>
           ),
        
@@ -71,16 +70,15 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           animation: "none",
           headerRight: () => (
             <>              
-              <Button onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
-                title="↺"
-                accessibilityLabel="load from divelogs"
-                color="#fff"/>   
-              <View style={{width: 20}}></View>
-              <Button
-              onPress={toggleSort}
-              title={sortindicator}
-              accessibilityLabel="change sorting"
-              color="#fff"/>              
+              <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+              <Text style={styles.text}>↺</Text>
+            </Pressable>             
+              
+            <View style={{width: 20}}></View>
+
+            <Pressable style={styles.button} onPress={toggleSort}>
+              <Text style={styles.text}>{sortindicator}</Text>
+            </Pressable>               
             </>
           ),
           headerLeft: () => (
@@ -100,16 +98,15 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           title: "",
           headerRight: () => (
             <>              
-              <Button onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
-                title="↺"
-                accessibilityLabel="load from divelogs"
-                color="#fff"/>   
-              <View style={{width: 20}}></View>
-              <Button
-              onPress={toggleSort}
-              title={sortindicator}
-              accessibilityLabel="change sorting"
-              color="#fff"/>              
+              <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+              <Text style={styles.text}>↺</Text>
+            </Pressable>             
+              
+            <View style={{width: 20}}></View>
+
+            <Pressable style={styles.button} onPress={toggleSort}>
+              <Text style={styles.text}>{sortindicator}</Text>
+            </Pressable>             
             </>
           ),    
         }}>
@@ -132,16 +129,15 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
                   ),
           headerRight: () => (
             <>              
-              <Button onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
-                title="↺"
-                accessibilityLabel="load from divelogs"
-                color="#fff"/>   
-              <View style={{width: 20}}></View>
-              <Button
-              onPress={toggleSort}
-              title={sortindicator}
-              accessibilityLabel="change sorting"
-              color="#fff"/>              
+              <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+              <Text style={styles.text}>↺</Text>
+            </Pressable>             
+              
+            <View style={{width: 20}}></View>
+
+            <Pressable style={styles.button} onPress={toggleSort}>
+              <Text style={styles.text}>{sortindicator}</Text>
+            </Pressable>              
             </>
           ),
         }}>
@@ -151,6 +147,17 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#3fb9f2' 
+  },
+  text: {
+    fontSize: 28,
+    color: '#FFFFFF',
+    fontWeight: '900'
+  }
+});
 
 export default DivesNavigation
 
