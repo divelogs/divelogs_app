@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     flex: 0.63
   },  
   divelistrightcontainer: {
-    marginTop:15,
+    marginTop:20,
     flex: 0.15
   },
   diveNumber: {
@@ -76,15 +76,18 @@ const styles = StyleSheet.create({
     paddingTop: 3
   },
   divedate: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '500',
     lineHeight:20
   },
   
   divelistLocationContainer: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '400',
+    marginLeft: 0
   }, 
   divelistDetailContainer: {
     fontSize: 12,
+    marginTop: 3
   }
 });
