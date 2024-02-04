@@ -3,6 +3,7 @@ import { Text, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
 import { getDBConnection, getImperial } from '../services/db-service';
 import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats, getBragFacts } from '../services/db-aggregation-service';
 import { Statistic } from './Statistic';
+import Oneliner from './generic/ValueView';
 import { StatVal, BragFacts } from '../models';
 import '../translation'
 import { useTranslation } from 'react-i18next';
@@ -98,13 +99,17 @@ export const StatisticsView = ({ route, navigation }:any) => {
       height: 30
     },
     desc: {
-      color: '#39ade2'
+      color: '#39ade2',
+      marginTop: 20,
+      marginBottom: 14,
+      fontSize: 18,
+      fontWeight: '500'
     },
     listHeader: {
       fontSize: 25,    
       fontWeight: '700',
-      marginTop: 10,
-      marginLeft: 0,
+      marginTop: 20,
+      marginLeft: 10,
       marginBottom: 15,
       color: '#3eb8f1'
     },
@@ -113,58 +118,34 @@ export const StatisticsView = ({ route, navigation }:any) => {
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
            <Text style={divelogsStyles.viewHeader}>{t('statistics')}</Text>
-        
+
         <ScrollView style={{padding: 10}}> 
-        
-           <View style={styles.oneliner}>
-                <Text style={styles.desc}>{t('totaldives')}: </Text>
-                <Text>{(bragFacts ? bragFacts.totaldives: null)}</Text>  
-            </View>  
-           <View style={styles.oneliner}>
-                <Text style={styles.desc}>{t('totalduration')}: </Text>
-                <Text>{(bragFacts ? secondstotimeHMS(bragFacts.totalduration) : null)}</Text>  
-            </View>    
-            <View style={styles.oneliner}>
-                <Text style={styles.desc}>{t('avgdepth')}: </Text>
-                <Text>{(bragFacts ? renderdepth(bragFacts.avgdepth, imperial) : null)}</Text>  
-            </View>  
-            <View style={styles.oneliner}>
-                <Text style={styles.desc}>{t('avgduration')}: </Text>
-                <Text>{(bragFacts ? secondstotimeHMS(bragFacts.avgduration) : null)}</Text>  
-            </View>  
-            <View style={styles.oneliner}>
-                <Text style={styles.desc}>{t('maxdepth')}: </Text>
-                <Text>{(bragFacts ? renderdepth(bragFacts.maxdepth, imperial) : null)}</Text>  
-            </View>  
-            <View style={styles.oneliner}>
-                <Text style={styles.desc}>{t('maxduration')}: </Text>
-                <Text>{(bragFacts ? secondstotimeHMS(bragFacts.maxduration) : null)}</Text>  
-            </View>    
-            <View style={styles.oneliner}>
-                <Text style={styles.desc}>{t('coldest')}: </Text>
-                <Text>{(bragFacts ? rendertemp(bragFacts.coldest, imperial) : null)}</Text>  
-            </View>    
-            <View style={styles.oneliner}>
-                <Text style={styles.desc}>{t('warmest')}: </Text>
-                <Text>{(bragFacts ? rendertemp(bragFacts.warmest, imperial) : null)}</Text>  
-            </View>    
-            <Text> </Text>
-            <Text style={styles.desc}>{t('depths')}:</Text>
+
+            <Oneliner label={t('totaldives')}>{bragFacts?.totaldives}</Oneliner>
+            <Oneliner label={t('totalduration')}>{(bragFacts ? secondstotimeHMS(bragFacts.totalduration) : null)}</Oneliner>
+            <Oneliner label={t('avgdepth')}>{(bragFacts ? renderdepth(bragFacts.avgdepth, imperial) : null)}</Oneliner>
+            <Oneliner label={t('avgduration')}>{(bragFacts ? secondstotimeHMS(bragFacts.avgduration) : null)}</Oneliner>
+            <Oneliner label={t('maxdepth')}>{(bragFacts ? renderdepth(bragFacts.maxdepth, imperial) : null)}</Oneliner>
+            <Oneliner label={t('maxduration')}>{(bragFacts ? secondstotimeHMS(bragFacts.maxduration) : null)}</Oneliner>
+            <Oneliner label={t('coldest')}>{(bragFacts ? rendertemp(bragFacts.coldest, imperial) : null)}</Oneliner>
+            <Oneliner label={t('warmest')}>{(bragFacts ? rendertemp(bragFacts.warmest, imperial) : null)}</Oneliner>
+
+            <Text style={styles.desc}>{t('depths')}</Text>
             <Statistic StatData={{values:depthStats, xname:(imperial ? t('feet') : t('meter')), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text> </Text>
-            <Text style={styles.desc}>{t('durations')}:</Text>
+
+            <Text style={styles.desc}>{t('durations')}</Text>
             <Statistic StatData={{values:durationStats, xname:t('minutes'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text> </Text>
-            <Text style={styles.desc}>{t('weekdays')}:</Text>
+
+            <Text style={styles.desc}>{t('weekdays')}</Text>
             <Statistic StatData={{values:weekdayStats, xname:t('weekday'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text> </Text>
-            <Text style={styles.desc}>{t('months')}:</Text>
+
+            <Text style={styles.desc}>{t('months')}</Text>
             <Statistic StatData={{values:monthStats, xname:t('month'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text> </Text>
-            <Text style={styles.desc}>{t('years')}:</Text>
+
+            <Text style={styles.desc}>{t('years')}</Text>
             <Statistic StatData={{values:yearStats, xname:t('year'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
-            <Text> </Text>
-            <Text style={styles.desc}>{t('entryhour')}:</Text>
+
+            <Text style={styles.desc}>{t('entryhour')}</Text>
             <Statistic StatData={{values:hourStats, xname:t('hour'), yname: t('dives'), width:width.width, height: width.width/1.9}}/>
             <Text></Text>
             <Text></Text>

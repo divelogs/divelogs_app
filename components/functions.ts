@@ -81,6 +81,6 @@ export const secondstotimeHMS = (seconds:number) => {
   if (seconds == 0 || seconds == undefined || seconds == null) return "";
   var d = new Date('1970-01-01T00:00:00' );
   d.setSeconds(d.getSeconds() + seconds);
-  return (days > 0 ? days + 'd:' : '') + d.getHours() + 'h:' + d.getMinutes() + 'm:' + d.getSeconds() + 's'
+  return (days > 0 ? days + 'd ' : '') + d.getHours() + 'h ' + d.getMinutes() + 'm ' + d.getSeconds() + 's'
 }
 
