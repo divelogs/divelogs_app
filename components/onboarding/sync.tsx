@@ -68,6 +68,7 @@ const Sync = ({navigation}:any) => {
 
             setBag(profile)
             setUserProfile(profile)
+            console.log(profile);
         }},
         { name: "Download profile picture", recover: Recovery.RetryAndSkip,
           action: async () => {

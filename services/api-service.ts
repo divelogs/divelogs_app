@@ -190,49 +190,36 @@ const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string
                                       .filter(a => a.length > 0)
                                       .reduce((a,b) => a + "/" + b, "")
 
-    // Get config and fs from RNFetchBlob
-    // config: To pass the downloading related options
-    // fs: Directory path where we want our image to download
-
-    let DocumentDir = FileSystem.DocumentDirectoryPath;
+    let DocumentDir = RNFetchBlob.fs.dirs.DocumentDir;
     console.log(DocumentDir);
 
-    let options = {
-      fileCache: true,
-      fileName: imageName,
-      addAndroidDownloads: {
-        // Related to the Android only
-        useDownloadManager: true,
-        notification: true,
-        path: '/data/user/0/de.divelogs/files/foo.jpg',
-        description: 'Image',
-      },
-    };
-
-    if(await CheckFilePermissions(Platform.OS)) {
-      console.log('yes!');
-    } else {
-      console.log('no!');
-    }
-
-    config(options)
+    RNFetchBlob
+      .config({ path: DocumentDir + imagePath, fileCache: true })
       .fetch('GET', image_URL)
-      .then( (res) => {
-        return res.readFile('base64');
-      }).then(base64Data => {
-        if (Platform.OS == 'ios'){
-          fs.writeFile(fs.dirs.DocumentDir + '/' + imagePath, base64Data, 'base64').then( (res) => {
-            console.log(imagePath);
-            resolve(imagePath)
-          });
-        }
-        else {
-          throw "Other Platforms not implemented"
-        }
+      .then((res) => {
+        console.log(res);
+        console.log('The file saved to ', res.path())
+        resolve(imagePath);
       })
-      .catch((e) => {
-        reject(`The file ${image_URL} ERROR: ${e.message}`);
-      }); 
+
+    // config(options)
+    //   .fetch('GET', image_URL)
+    //   .then( (res) => {
+    //     return res.readFile('base64');
+    //   }).then(base64Data => {
+    //     if (Platform.OS == 'ios'){
+    //       fs.writeFile(fs.dirs.DocumentDir + '/' + imagePath, base64Data, 'base64').then( (res) => {
+    //         console.log(imagePath);
+    //         resolve(imagePath)
+    //       });
+    //     }
+    //     else {
+    //       throw "Other Platforms not implemented"
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     reject(`The file ${image_URL} ERROR: ${e.message}`);
+    //   }); 
   });
 
 export const Api = 
