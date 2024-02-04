@@ -1,13 +1,38 @@
 
 import RNFetchBlob from "rn-fetch-blob";
-import {  NativeModules, Platform } from 'react-native';
+import {  NativeModules, Platform, PermissionsAndroid } from 'react-native';
 import { UserProfile } from "../models";
 import * as Keychain from "react-native-keychain";
+import FileSystem from 'react-native-fs';
 
 export type LoginResult = {
   success: boolean;
   bearerToken: string;
   error: string;
+};
+
+export const CheckFilePermissions = async (platform:any) => {
+  if(platform === 'android') {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      ]);
+      if (granted['android.permission.READ_EXTERNAL_STORAGE'] && granted['android.permission.WRITE_EXTERNAL_STORAGE']) {
+        // user granted permissions
+        return true;
+      } else {
+        // user didn't grant permission... handle with toastr, popup, something...
+        return false;
+      }
+    } catch (err) {
+      // unexpected error
+      return false;
+    }
+  } else {
+    // platform is iOS
+    return true;
+  }
 };
 
 const apiUrl = "https://divelogs.de/api/"
@@ -153,7 +178,7 @@ const downloadImages = async (images:string[], subfolder:string = '') : Promise<
   return result
 }
 
-const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string> => new Promise<string>((resolve, reject) => 
+const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string> => new Promise<string>(async (resolve, reject) => 
   {
     const { config, fs } = RNFetchBlob;
 
@@ -168,6 +193,10 @@ const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string
     // Get config and fs from RNFetchBlob
     // config: To pass the downloading related options
     // fs: Directory path where we want our image to download
+
+    let DocumentDir = FileSystem.DocumentDirectoryPath;
+    console.log(DocumentDir);
+
     let options = {
       fileCache: true,
       fileName: imageName,
@@ -175,10 +204,16 @@ const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string
         // Related to the Android only
         useDownloadManager: true,
         notification: true,
-        path: imagePath,
+        path: '/data/user/0/de.divelogs/files/foo.jpg',
         description: 'Image',
       },
     };
+
+    if(await CheckFilePermissions(Platform.OS)) {
+      console.log('yes!');
+    } else {
+      console.log('no!');
+    }
 
     config(options)
       .fetch('GET', image_URL)
@@ -187,6 +222,7 @@ const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string
       }).then(base64Data => {
         if (Platform.OS == 'ios'){
           fs.writeFile(fs.dirs.DocumentDir + '/' + imagePath, base64Data, 'base64').then( (res) => {
+            console.log(imagePath);
             resolve(imagePath)
           });
         }

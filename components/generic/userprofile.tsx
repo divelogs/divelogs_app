@@ -5,7 +5,8 @@ import RNFetchBlob from "rn-fetch-blob";
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { getDBConnection, getProfile, } from '../../services/db-service';
-import Loader from './loader'
+import Loader from './loader';
+import FileSystem from 'react-native-fs';
 
 export const ProfilePicture = ({userprofile, style, imageSize}:any) : any => 
 {
@@ -37,7 +38,7 @@ export const ProfilePicture = ({userprofile, style, imageSize}:any) : any =>
                 <View style={[styles.image, s]}></View>
                 <Text style={styles.profile}>{t("welcome")}</Text>
             </> : <>
-                <Image style={[styles.image, s]} source={{ uri: fs.dirs.DocumentDir + profile!.profilePictureUrl }} />
+                <Image style={[styles.image, s]} source={{ uri: FileSystem.DocumentDirectoryPath + profile!.profilePictureUrl }} />
                 <Text style={styles.profile}>{profile!.username}</Text>
             </>}
         </View>

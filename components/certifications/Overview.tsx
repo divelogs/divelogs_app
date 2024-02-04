@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, NativeModules, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, NativeModules, StyleSheet, TouchableOpacity, Image, Platform } from 'react-native';
 import { Certification } from '../../models';
 import { getDBConnection, getCertifications } from '../../services/db-service';
 import RNFetchBlob from "rn-fetch-blob";
@@ -15,8 +15,11 @@ export const Overview = ({navigation}:any) => {
     const [certifications, setCertifications] = useState<Certification[]>([]);
     const [allScans, setAllScans] = useState<string[]>([]);
   
-    const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
-        NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
+    const locale =
+    (Platform.OS === 'ios'
+      ? NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
+      : NativeModules.I18nManager.localeIdentifier).replace("_","-");
 
     const { t } = useTranslation(); 
      

@@ -1,7 +1,7 @@
 import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { Dive, Certification, StatVal, GearItem, APIDive, UserProfile } from '../models';
+import { Dive, Certification, GearItem, APIDive, UserProfile } from '../models';
 import RNFetchBlob from "rn-fetch-blob";
-import {  NativeModules, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import dbUpgrade from "./db-upgrade.json";
 import * as Keychain from "react-native-keychain";
 
@@ -9,11 +9,9 @@ enablePromise(true);
 
 const dbupdates: { [key: string]: any } = dbUpgrade;
 
-const { config, fs } = RNFetchBlob;
-const PictureDir = fs.dirs.DocumentDir;
-
 export const getDBConnection = async () => {
-  return openDatabase({ name: 'divelogs.db', createFromLocation : 1 });
+  if (Platform.OS === 'ios') return openDatabase({ name: 'divelogs.db', createFromLocation : 1 });
+  else return openDatabase({ name: 'divelogs.db', createFromLocation : '~www/divelogs.db' });
 };
 
 export const updateDB = (): Promise<number> => {
