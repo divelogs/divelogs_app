@@ -66,10 +66,8 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           }}
 
           screenOptions={{
-            headerStyle: {
-              backgroundColor: '#3fb9f2',
-            },
             headerTintColor: '#fff',
+            headerStyle: {  backgroundColor: '#3fb9f2'},
             headerTitle: () => <DivelogsHeader/>,
           }}
         >
