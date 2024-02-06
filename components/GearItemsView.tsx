@@ -41,22 +41,6 @@ export const GearView = () => {
     })
   }, []);
 
-  const styles = StyleSheet.create({
-    appTitleView: {
-      justifyContent: 'center',
-      flexDirection: 'row',
-      backgroundColor: '#3fb9f2'
-    },
-    listHeader: {
-      fontSize: 25,    
-      fontWeight: '700',
-      marginTop: 20,
-      marginLeft: 10,
-      marginBottom: 15,
-      color: '#3eb8f1'
-    },
-  });
-
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <Text style={divelogsStyles.viewHeader}>{t('gearitems')}</Text>

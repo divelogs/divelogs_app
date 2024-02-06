@@ -33,24 +33,6 @@ const DiverAnimation = ({style, loaded}:any) => {
                   })
 
             ]),
-/*
-
-
-//            ACTIVATE THIS ANiMATION FOR LOOP!
-
-            Animated.parallel([
-                Animated.timing(sizeAnimation, {
-                    toValue: 0,
-                    duration: 0,
-                    delay: 640,
-                    useNativeDriver: true
-                }),
-                Animated.timing(opacityAnimation, {
-                    toValue: 1,
-                    duration: 0,
-                    useNativeDriver: true
-                })           
-            ]),*/
         ])
     return anim
     return Animated.loop(anim)
@@ -70,24 +52,6 @@ const DiverAnimation = ({style, loaded}:any) => {
                     useNativeDriver: true
                   })
             ]),
-/*
-
-
-//            ACTIVATE THIS ANiMATION FOR LOOP!
-
-            Animated.parallel([
-                Animated.timing(sizeAnimation, {
-                    toValue: 0,
-                    duration: 0,
-                    delay: 640,
-                    useNativeDriver: true
-                }),
-                Animated.timing(opacityAnimation, {
-                    toValue: 1,
-                    duration: 0,
-                    useNativeDriver: true
-                })           
-            ]),*/
         ])
     return anim
     return Animated.loop(anim)

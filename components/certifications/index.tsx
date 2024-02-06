@@ -33,25 +33,5 @@ export const Certifications = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  bold: {
-    fontWeight: "700"
-  },
-  appTitleView: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#3fb9f2'
-  },
-  listHeader: {
-    fontSize: 25,    
-    fontWeight: '700',
-    marginTop: 5,
-    marginLeft: 0,
-    marginBottom: 15,
-    color: '#3eb8f1'
-  },
-});
-
-
 export default Certifications
 

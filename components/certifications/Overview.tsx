@@ -48,7 +48,7 @@ export const Overview = ({navigation}:any) => {
     const brevetHeight:number = brevetWidth / ratio
 
       return (
-        <>
+
         <View style={{ flex: 1, paddingBottom: 0, paddingRight: 0, backgroundColor: '#FFFFFF' }}>     
         <Text style={divelogsStyles.viewHeader}>{t('certifications')}</Text>  
           <FlatList
@@ -80,7 +80,7 @@ export const Overview = ({navigation}:any) => {
             )}
           />
         </View>
-        </>
+
       )
   };
 
