@@ -15,7 +15,7 @@ const DiverAnimation = ({style, loaded}:any) => {
   
   const diverZooooom = () : any => {
 
-    const delay = 300
+    const delay = 700
 
     const anim = Animated.sequence([
             Animated.parallel([

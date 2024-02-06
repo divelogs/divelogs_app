@@ -34,8 +34,12 @@ const DiveListSelection = ({navigation, route}:any) => {
     return () => {  }
   }, []);
 
+  // useEffect(() => {
+  //   navigation.navigate("AllDivesNoAnimation")
+  // }, [])
+
   useEffect(() => {
-    navigation.navigate("AllDivesNoAnimation")
+    navigation.navigate("AllDives")
   }, [])
 
   const views:any = [

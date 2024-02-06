@@ -22,16 +22,14 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('tabPress', (e:any) => {
   
-      if (lastListView.current == null)
-        return;
+      if (lastListView.current == null) {
+        lastView.current = {"name": "AllDives" };
+      }
 
       e.preventDefault();
-
-      // if (lastListView.current?.name == lastView.current?.name) {
-      //   navigation.navigate("DiveListSelection")
-      // }
-      // else
-         navigation.navigate(lastListView.current.name, lastListView.current.params)
+    
+      if (lastListView.current?.name == undefined) navigation.navigate("AllDives");
+      else navigation.navigate(lastListView.current.name, lastListView.current.params)
     });
     return unsubscribe;
   }, []);
@@ -108,36 +106,6 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
         }}>
           {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
-        <Stack.Screen name="AllDivesNoAnimation" 
-          options={{ 
-          headerShown: true,
-          animation: "none",
-          headerRight: () => (
-            <>              
-              <Button onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}
-                title="↺"
-                accessibilityLabel="load from divelogs"
-                color="#fff"/>   
-              <View style={{width: 20}}></View>
-              <Button
-              onPress={toggleSort}
-              title={sortindicator}
-              accessibilityLabel="change sorting"
-              color="#fff"/>              
-            </>
-          ),
-          headerLeft: () => (
-            <>              
-              <TouchableOpacity onPress={()=>navigation.goBack()}>
-                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
-              </TouchableOpacity>           
-            </>            
-          ),
-        }}>
-          {(props) => <AllDives {...props} sort={sort}/>}
-        </Stack.Screen>
-
-
 
         <Stack.Screen name="FilteredDives" options={{ 
           title: "",
