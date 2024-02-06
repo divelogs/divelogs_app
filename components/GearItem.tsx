@@ -31,8 +31,6 @@ export const Gear: React.FC<{
                 <Text style={styles.bold}>{gi.name}</Text>
                 <OneLiner label={t('dives')}>{gi.divecount}</OneLiner>
 
-                
-
                 {gi.purchasedate != null && <OneLiner label={t('purchasedate')}>{pd.toLocaleString(locale, {year: "numeric",month: "2-digit",day: "2-digit"})}</OneLiner>}
 
                 {gi.discarddate != null && <OneLiner label={t('discarded')}>{dd.toLocaleString(locale, {year: "numeric",month: "2-digit",day: "2-digit"})}</OneLiner>}

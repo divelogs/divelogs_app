@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     },
     desc: {
       flex: 2,
-      maxWidth: 160,
+      maxWidth: 130,
       color: '#39ade2',
       textAlignVertical: "bottom",
     }

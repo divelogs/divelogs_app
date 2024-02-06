@@ -27,10 +27,11 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
 
       e.preventDefault();
 
-      if (lastListView.current?.name == lastView.current?.name)
-        navigation.navigate("DiveListSelection")
-      else
-        navigation.navigate(lastListView.current.name, lastListView.current.params)
+      // if (lastListView.current?.name == lastView.current?.name) {
+      //   navigation.navigate("DiveListSelection")
+      // }
+      // else
+         navigation.navigate(lastListView.current.name, lastListView.current.params)
     });
     return unsubscribe;
   }, []);
@@ -45,6 +46,7 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
     switch (lastRoute.name){
       case "AggregatedView":
       case "AllDives":
+      case "FilteredDives":
         lastListView.current = {"name": lastRoute.name, "params": lastRoute.params}
         break;
       case "DiveListSelection":
