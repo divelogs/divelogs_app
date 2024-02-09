@@ -38,6 +38,7 @@ export default {
     nodives: "Keine Tauchgänge gefunden",
     nocerts: "Keine Brevets gefunden",
     nogear: "Keine Ausrüstung gefunden",
+    maps: "Karte",
 
     weather: "Wetter",
     vizibility: "Sicht",

@@ -38,6 +38,7 @@ export default {
     nodives: "No dives found",
     nocerts: "No certifications found",
     nogear: "No Gear Items found",
+    maps: "Map",
 
     weather: "Weather",
     vizibility: "Vizibility",

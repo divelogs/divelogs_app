@@ -35,6 +35,8 @@ export type Dive = {
   created: Date;
   modified: Date;
   tanks: string | JSON;
+  lat: number;
+  lng: number;
 };
 
 export type UserProfile = {
@@ -70,6 +72,8 @@ export type APIDive = {
   samplerate: number;
   sampledata: string[];
   tanks: Tank[];
+  lat: number;
+  lng: number;
 }
 
 export type Tank = {
@@ -135,4 +139,10 @@ export type GearItem = {
   divesleft: number;
   type: number;
 };
+
+export type MapMarker = {
+  latitude: number;
+  longitude: number;
+  divesite: string;
+}
 

@@ -3,10 +3,11 @@ import { SafeAreaView } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { diveicon, certicon, staticon, gearicon } from '../assets/svgs.js'
+import { diveicon, certicon, staticon, gearicon, globe } from '../assets/svgs.js'
 import '../translation'
 import { useTranslation } from 'react-i18next';
 import StatisticsView from './StatisticsView';
+import MapsView from './MapsView';
 import Certifications from './certifications';
 import Dives from './dives'
 import GearView from './GearItemsView';
@@ -61,6 +62,20 @@ const BottomNavigation = ({}:any)=> {
           tabBarIcon: ({size,focused,color}) => {
             return (
               <SvgXml xml={certicon} width="40" height="25"/>
+            );
+          }
+        }} />
+      <Tab.Screen name="Maps"  
+        component={MapsView} 
+        options={{ 
+          title: t("maps"),
+          headerShown: false, 
+          tabBarActiveTintColor: '#FFFFFF', 
+          tabBarInactiveTintColor: '#FFFFFF',
+          tabBarLabelStyle: {fontSize: 14},
+          tabBarIcon: ({size,focused,color}) => {
+            return (
+              <SvgXml xml={globe} width="40" height="25"/>
             );
           }
         }} />

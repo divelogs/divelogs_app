@@ -1,5 +1,5 @@
 import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { Dive, Certification, GearItem, APIDive, UserProfile } from '../models';
+import { Dive, Certification, GearItem, APIDive, UserProfile, MapMarker } from '../models';
 import RNFetchBlob from "rn-fetch-blob";
 import { Platform } from 'react-native';
 import dbUpgrade from "./db-upgrade.json";
@@ -125,6 +125,27 @@ export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:stri
     throw Error('Failed to get Dives');
   }
 };
+
+export const getCoordinates = async (db: SQLiteDatabase): Promise<MapMarker[]> => {
+  try {
+    const coords:MapMarker[] = [];
+    const results = await db.executeSql("select distinct lat as latitude, lng as longitude, divesite from dives WHERE lat != 0 and lng != 0");
+    results.forEach((result: { rows: { length: number; item: (arg0: number) => MapMarker; }; }) => {
+      for (let index = 0; index < result.rows.length; index++) {
+        coords.push(result.rows.item(index));
+      }
+    });
+    return coords;
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get Maps');
+  }
+};
+
+
+
+
+
 
 export const getFilteredDives = async (db: SQLiteDatabase, column: string, filter:string, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
@@ -304,9 +325,11 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
           gearitems,
           samplerate,
           sampledata,
-          tanks
+          tanks,
+          lat,
+          lng
       )
-      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       //const profiledatastring = divedata.sampledata.join(",");
 
@@ -346,7 +369,9 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
         (gi.length > 0 ? gi.join(",") : null),
         divedata.samplerate,
         (divedata.sampledata != null ? divedata.sampledata.join(",") : ''),
-        JSON.stringify(divedata.tanks)
+        JSON.stringify(divedata.tanks),
+        divedata.lat,
+        divedata.lng
       ]
      
       try {
