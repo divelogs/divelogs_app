@@ -38,12 +38,23 @@ export const MapsView = ({ route, navigation }:any) => {
     },
   });
 
+
   return (
     <View style={styles.container}> 
       <MapView style={styles.map}>
-        {dives.map((item, index) => (
-          <Marker key={index} title={item.divesite} coordinate={{latitude: item.latitude, longitude: item.longitude}} />
-        ))}
+        {dives.map((item, i) => {
+       
+          return(<Marker
+              key={i}
+              coordinate={{
+                latitude: item.latitude,
+                longitude: item.longitude
+              }}
+              title={item.divesite}
+            />)
+          
+        })}
+
       </MapView>
     </View>
   );
@@ -54,11 +65,11 @@ export default MapsView
 
 /*
         {Object.entries(dives).map(([key, value]) => {
-          if(value.lat != null) return <Marker key={key} title={value.divesite} coordinate={{latitude: value.lat, longitude: value.lng}} />
+          if(value.latitude != null) return <Marker key={key} title={value.divesite} coordinate={{latitude: value.latitude, longitude: value.longitude}} />
         })}
 
         {dives.map((item, index) => (
-          <Marker key={index} title={item.divesite} coordinate={{latitude: item.lat, longitude: item.lng}} />
+          <Marker key={index} title={item.divesite} coordinate={{latitude: item.latitude, longitude: item.longitude}} />
         ))}
 
 */
