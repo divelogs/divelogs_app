@@ -33,7 +33,8 @@ const BottomNavigation = ({}:any)=> {
     <Tab.Navigator screenOptions={{
       tabBarStyle: { backgroundColor: '#3fb9f2'},
       headerStyle: { backgroundColor: '#3fb9f2'},
-      headerTitle: () => <AppHeader/>
+      headerTitle: () => <AppHeader/>,
+      headerTitleAlign: 'center'      
     }}>
       <Tab.Screen name="Dives" options={{ 
         title: t("dives"),

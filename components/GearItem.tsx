@@ -1,14 +1,17 @@
 import React from 'react';
-import { StyleSheet,  Text,  View, NativeModules, Dimensions } from 'react-native';
+import { StyleSheet,  Text,  View, NativeModules, Dimensions, Platform } from 'react-native';
 import { GearItem } from '../models';
 import GearImages from './GearImages'
 import { SvgXml } from 'react-native-svg';
-import '../translation'
+import '../translation';
 import { useTranslation } from 'react-i18next';
 import OneLiner from './generic/GearLines'
 
-const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
-    NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
+const locale =
+    (Platform.OS === 'ios'
+      ? NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
+      : NativeModules.I18nManager.localeIdentifier).replace("_","-");
     
 export const Gear: React.FC<{
   gi: GearItem;

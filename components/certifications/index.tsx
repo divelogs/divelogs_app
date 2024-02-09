@@ -19,7 +19,8 @@ export const Certifications = () => {
         <Stack.Navigator screenOptions={{
           headerStyle: { backgroundColor: '#3fb9f2'},
           headerTitle: () => <AppHeader/>,
-          headerTintColor: '#fff'
+          headerTintColor: '#fff',
+          headerTitleAlign: 'center'
         }}>
           <Stack.Screen name="CertificationHome" component={Overview} options={{ 
             headerShown: true,

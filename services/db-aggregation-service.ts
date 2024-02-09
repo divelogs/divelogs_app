@@ -196,8 +196,11 @@ export const getPrecalcedStats = async (db: SQLiteDatabase, type: string): Promi
 
 export const getYearStats = async (db: SQLiteDatabase): Promise<StatVal[]> => getSingleColumnStats(db, `strftime("%Y",divedate)`, 'ASC')
 
-const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
-  NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
+const locale =
+    (Platform.OS === 'ios'
+      ? NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
+      : NativeModules.I18nManager.localeIdentifier).replace("_","-");
 
 export const getWeekdayStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
   try {

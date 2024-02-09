@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import { Text, View, Image, StyleSheet, Platform } from 'react-native';
 import { UserProfile } from '../../models';
 import RNFetchBlob from "rn-fetch-blob";
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { getDBConnection, getProfile, } from '../../services/db-service';
-import Loader from './loader'
+import Loader from './loader';
+import FileSystem from 'react-native-fs';
 
 export const ProfilePicture = ({userprofile, style, imageSize}:any) : any => 
 {
@@ -28,6 +29,8 @@ export const ProfilePicture = ({userprofile, style, imageSize}:any) : any =>
         setProfile(userprofile)
     }, [userprofile])
 
+    let DocumentDir = RNFetchBlob.fs.dirs.DocumentDir;
+
     let s : any
     if (!!imageSize)
         s = { width: imageSize, height: imageSize }
@@ -37,7 +40,7 @@ export const ProfilePicture = ({userprofile, style, imageSize}:any) : any =>
                 <View style={[styles.image, s]}></View>
                 <Text style={styles.profile}>{t("welcome")}</Text>
             </> : <>
-                <Image style={[styles.image, s]} source={{ uri: fs.dirs.DocumentDir + profile!.profilePictureUrl }} />
+            <Image style={[styles.image, s]} source = {{uri: "file://" + DocumentDir + profile!.profilePictureUrl }} />
                 <Text style={styles.profile}>{profile!.username}</Text>
             </>}
         </View>

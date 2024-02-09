@@ -1,10 +1,17 @@
 /**
  * Divelogs App
 */
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import {SafeAreaView,Text,View, Dimensions } from 'react-native';
-import { updateDB } from './services/db-service';
+import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules } from 'react-native';
+
+import { Dive } from './models';
+import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, saveStatistics, getImperial } from './services/db-service';
+import { SvgXml } from 'react-native-svg';
+import { divelogs_logo, diveicon, certicon, staticon, gearicon } from './assets/svgs.js'
+import { StatisticsView } from './components/StatisticsView';
+import { Certifications } from './components/Certifications';
+import { GearView} from './components/GearItemsView';
 import './translation'
 import Diver from './components/onboarding/diveranimation'
 import Index from './components'
@@ -13,7 +20,6 @@ const App = () => {
 
   const [firstLoad, setFirstLoad] = useState<string|undefined>("")
   const [dbversion, setDbVersion] = useState<number>(0);
-
 
   const DBCheck = async () => {
     try {
@@ -32,7 +38,7 @@ const App = () => {
     const window = Dimensions.get('window');
 
   if (dbversion < 1) 
-    return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>{dbversion}</Text></View>
+    return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>DBVersion: {dbversion}</Text></View>
 
   return (<SafeAreaView style={{flex: 1, backgroundColor: '#3fb9f2'}}>
       <NavigationContainer

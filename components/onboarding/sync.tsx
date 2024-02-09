@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Vibration } from 'react-native';
+import { Text, View, StyleSheet, Vibration, Platform } from 'react-native';
 import { getDBConnection, getDives, getBearerToken, getProfile, saveDives, saveStatistics, writeBearerToken, saveCertifications, resetSyncForced, saveGearItems, saveSettings, saveProfile, } from '../../services/db-service';
 import { Api } from '../../services/api-service'
 import { Certification } from '../../models';
@@ -68,6 +68,7 @@ const Sync = ({navigation}:any) => {
 
             setBag(profile)
             setUserProfile(profile)
+            console.log(profile);
         }},
         { name: "Download profile picture", recover: Recovery.RetryAndSkip,
           action: async () => {
@@ -130,10 +131,11 @@ const Sync = ({navigation}:any) => {
             const db = await getDBConnection(); 
             const gearitems = await Api.getGear()
             await saveGearItems(db, gearitems);
-        }},                
+        }}
+        ,                
         { name: "Vibrate and done!", recover: Recovery.Fail,
           action: async () => {
-            Vibration.vibrate(150);
+            if (Platform.OS == 'ios') Vibration.vibrate(150);
             resetSyncForced();
             navigation.reset({index: 0, routes: [{ name: 'Home'}]})
         }}
