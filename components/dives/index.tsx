@@ -28,6 +28,7 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
             },
             headerTintColor: '#fff',
             headerTitle: () => <DivelogsHeader/>,
+            headerTitleAlign: 'center'
           }}
         >
 

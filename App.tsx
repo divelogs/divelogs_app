@@ -32,7 +32,7 @@ const App = () => {
     return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>DBVersion: {dbversion}</Text></View>
 
   return (<View style={{flex: 1, backgroundColor: '#3fb9f2'}}>
-      <NavigationContainer
+      <NavigationContainer 
         onStateChange={(state) => {
           setFirstLoad(state?.routes[0].name)
           }}> 
