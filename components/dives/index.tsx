@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, TouchableOpacity, Pressable, Text, StyleSheet } from 'react-native';
+import { Button, View, Pressable, Text, StyleSheet, Platform } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import React, { useState } from 'react';
 import { filtericon } from '../../assets/svgs.js'
@@ -42,15 +42,15 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           options={{ 
           headerShown: true,
           headerLeft: () => (
-            <>              
-              <TouchableOpacity onPress={()=>navigation.goBack()}>
-                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
-              </TouchableOpacity>           
-            </>            
+            (Platform.OS == 'ios' ? <>              
+              <Pressable onPress={()=>navigation.goBack()}>
+                  <Text style={styles.text}>←</Text>
+              </Pressable>           
+            </>            : null)
           ),
           headerRight: () => (
             <>
-            <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+            <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
               <Text style={styles.text}>↺</Text>
             </Pressable>             
               
@@ -83,11 +83,11 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
             </>
           ),
           headerLeft: () => (
-            <>              
-              <TouchableOpacity onPress={()=>navigation.goBack()}>
-                  <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
-              </TouchableOpacity>           
-            </>            
+            (Platform.OS == 'ios' ? <>              
+              <Pressable onPress={()=>navigation.goBack()}>
+                  <Text style={styles.text}>←</Text>
+              </Pressable>           
+            </>            : null)
           ),
         }}>
           {(props) => <AllDives {...props} sort={sort}/>}
@@ -99,7 +99,7 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           title: "",
           headerRight: () => (
             <>              
-              <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+              <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
               <Text style={styles.text}>↺</Text>
             </Pressable>             
               
@@ -122,11 +122,11 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
 
         <Stack.Screen name="AggregatedView" options={{ 
           headerLeft: () => (
-                    <>              
-                      <TouchableOpacity onPress={()=>navigation.goBack()}>
-                          <SvgXml style={{marginRight: 25}} xml={filtericon} width="15" height="15"/>
-                      </TouchableOpacity>           
-                    </>            
+            (Platform.OS == 'ios' ? <>              
+              <Pressable onPress={()=>navigation.goBack()}>
+                  <Text style={styles.text}>←</Text>
+              </Pressable>           
+            </>           : null)
                   ),
           headerRight: () => (
             <>              
@@ -154,9 +154,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#3fb9f2' 
   },
   text: {
-    fontSize: 28,
+    fontSize: (Platform.OS === 'ios' ? 20 : 26),
     color: '#FFFFFF',
-    fontWeight: '900'
+    fontWeight: (Platform.OS === 'ios' ? '400' : '900'),
   }
 });
 

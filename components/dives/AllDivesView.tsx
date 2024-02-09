@@ -77,7 +77,6 @@ const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
     navigation.navigate('DiveDetail', {dive: dive, diveId: dive.id, dives: dives});
   } 
 
-  const sortindicator = (sort == "DESC") ? '↓' : '↑'
   return (
     <View style={{flex:1}}>
       <DivesList navigation={navigation} selectDive={selectDive} dives={dives} doSearch={doSearch} imperial={imperial}/>
