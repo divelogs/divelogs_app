@@ -37,8 +37,9 @@ const App = () => {
 
     const window = Dimensions.get('window');
 
-  if (dbversion < 1) 
-    return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>DBVersion: {dbversion}</Text></View>
+  // this shows briefly on Android, even if the DB is ok
+  // if (dbversion < 1) 
+  //   return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>DBVersion: {dbversion}</Text></View>
 
   return (<SafeAreaView style={{flex: 1, backgroundColor: '#3fb9f2'}}>
       <NavigationContainer
