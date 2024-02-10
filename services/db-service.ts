@@ -126,10 +126,10 @@ export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:stri
   }
 };
 
-export const getCoordinates = async (db: SQLiteDatabase): Promise<MapMarker[]> => {
+export const getCoordinates = async (db: SQLiteDatabase): Promise<[]> => {
   try {
-    const coords:MapMarker[] = [];
-    const results = await db.executeSql("select distinct lat as latitude, lng as longitude, divesite from dives WHERE lat != 0 and lng != 0");
+    const coords = <any>[];
+    const results = await db.executeSql("SELECT distinct lat as latitude, lng as longitude, divesite from dives WHERE lat != 0 and lng != 0");
     results.forEach((result: { rows: { length: number; item: (arg0: number) => MapMarker; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
         coords.push(result.rows.item(index));

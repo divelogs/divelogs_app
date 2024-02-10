@@ -6,25 +6,21 @@ import { Dive, MapMarker } from '../models';
 
 export const MapsView = ({ route, navigation }:any) => { 
 
-  const [dives, setDives] = useState<MapMarker[]>([]);
+  const [markers, setMarkers] = useState<MapMarker[]>([]);
 
-  const loadData = async () : Promise<MapMarker[]> => {
+  const loadData = useCallback(async () => {
     try {
-      const db = await getDBConnection();
-      return await getCoordinates(db);
+        const db = await getDBConnection();
+        const m = await getCoordinates(db);
+        setMarkers(m);
     } catch (error) {
-      console.error(error);
-      return []
+        console.error(error);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    (async () => {
-      const dives = await loadData()
-      setDives(dives)
-    })()
-    return () => { }
-  }, []);
+    loadData();
+  }, [loadData]);
 
   const styles = StyleSheet.create({
     container: {
@@ -38,21 +34,14 @@ export const MapsView = ({ route, navigation }:any) => {
     },
   });
 
-
   return (
     <View style={styles.container}> 
       <MapView style={styles.map}>
-        {dives.map((item, i) => {
-       
-          return(<Marker
-              key={i}
-              coordinate={{
-                latitude: item.latitude,
-                longitude: item.longitude
-              }}
-              title={item.divesite}
-            />)
-          
+
+       {Object.entries(markers).map(([key, value]) => {
+          if(value.latitude != null) {
+            return <Marker key={key} title={value.divesite} coordinate={{latitude: value.latitude, longitude: value.longitude}} />
+          }
         })}
 
       </MapView>
@@ -62,14 +51,3 @@ export const MapsView = ({ route, navigation }:any) => {
 };
 
 export default MapsView
-
-/*
-        {Object.entries(dives).map(([key, value]) => {
-          if(value.latitude != null) return <Marker key={key} title={value.divesite} coordinate={{latitude: value.latitude, longitude: value.longitude}} />
-        })}
-
-        {dives.map((item, index) => (
-          <Marker key={index} title={item.divesite} coordinate={{latitude: item.latitude, longitude: item.longitude}} />
-        ))}
-
-*/
