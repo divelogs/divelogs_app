@@ -79,8 +79,9 @@ export default {
     byBoat: "By Boat",
     byDepth: "By Depth",
     byDuration: "By Duration",
+    showdives: "Show Dives",
 
-    and: "und",
+    and: "and",
 
     userpassnotfound: "User name or password is invalid",
     couldnotlogin: "Could not login due to an unexpected error",

@@ -1,4 +1,3 @@
-
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import SearchBar from 'react-native-search-bar'; 
 import React, { useState, useEffect } from 'react';

@@ -1,10 +1,10 @@
 
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { Dive } from '../../models';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
-import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getImperial } from '../../services/db-service';
+import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getImperial, getDivesByLatLng } from '../../services/db-service';
 import DivesList from './DivesList';
 
 const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
@@ -12,6 +12,7 @@ const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
   const [dives, setDives] = useState<Dive[]>([]);
   const [search, setSearch] = useState<string>('');
   const [imperial, setImperial] = useState<boolean>(false);
+  const [fromMap, setFromMap] = useState<boolean>(false);
 
   useEffect(() => {
     if (!!route.params?.filter?.label)
@@ -19,10 +20,11 @@ const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
 
     (async () => {
       const dives = await loadData()
+      console.log('doin stuff');
       setDives(dives)
     })()
     return () => { }
-  }, [sort, search]);
+  }, [sort, search, route]);
 
   useEffect(() => {
     (async () => {
@@ -35,6 +37,12 @@ const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
   const loadData = async () : Promise<Dive[]> => {
     try {
       const db = await getDBConnection();
+
+      if (!!route.params?.aggregation && route.params.aggregation == "byLatLng") {
+        console.log(navigation);
+        setFromMap(true);
+        return await getDivesByLatLng(db, route.params.lat, route.params.lng, 'ASC');
+      } else setFromMap(false);
 
       if (!!route.params?.filter){
         let column:string;
@@ -79,7 +87,7 @@ const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
 
   return (
     <View style={{flex:1}}>
-      <DivesList navigation={navigation} selectDive={selectDive} dives={dives} doSearch={doSearch} imperial={imperial}/>
+      <DivesList navigation={navigation} selectDive={selectDive} dives={dives} doSearch={doSearch} imperial={imperial} fromMap={fromMap}/>
     </View>
   );
 };

@@ -1,10 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
+import { Text, StyleSheet, Dimensions, ScrollView, View, Pressable } from 'react-native';
 import { getDBConnection, getCoordinates } from '../services/db-service';
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Callout } from "react-native-maps";
 import { Dive, MapMarker } from '../models';
+import '../translation'
+import { useTranslation } from 'react-i18next';
 
 export const MapsView = ({ route, navigation }:any) => { 
+
+  const { t } = useTranslation(); 
 
   const [markers, setMarkers] = useState<MapMarker[]>([]);
 
@@ -32,6 +36,17 @@ export const MapsView = ({ route, navigation }:any) => {
     map: {
       ...StyleSheet.absoluteFillObject,
     },
+    showdives: {
+      backgroundColor: '#3fb9f2',
+      color: '#FFF',
+      borderRadius: 5,
+      padding: 3,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    showdivestext: {
+      color: '#FFF',
+    }
   });
 
   return (
@@ -40,7 +55,16 @@ export const MapsView = ({ route, navigation }:any) => {
 
        {Object.entries(markers).map(([key, value]) => {
           if(value.latitude != null) {
-            return <Marker key={key} title={value.divesite} coordinate={{latitude: value.latitude, longitude: value.longitude}} />
+            return <Marker key={key} title={value.divesite} coordinate={{latitude: value.latitude, longitude: value.longitude}} > 
+            <Callout>
+                <View>
+                    <Text>{value.divesite}</Text>
+                    <Pressable onPress={() => {navigation.navigate("FilteredDives", {aggregation: "byLatLng", lat: value.latitude, lng: value.longitude})}}>
+                      <View style={styles.showdives}><Text style={styles.showdivestext}>{t('showdives')}</Text></View>
+                    </Pressable>  
+                </View>
+            </Callout>
+            </Marker>
           }
         })}
 

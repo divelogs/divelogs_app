@@ -2,14 +2,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, View, Pressable, Text, StyleSheet, Platform } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import React, { useState, useRef, useEffect } from 'react';
-import { filtericon } from '../../assets/svgs.js'
 import DivelogsHeader from '../generic/divelogsheader'
 import { AggregationView } from './Aggregation'
 import DiveListSelection from './DiveListSelection'
 import AllDives from './AllDivesView'
 import DiveDetail from '../divedetail'
+import { NavigationContainer, NavigationContext, StackRouter } from '@react-navigation/native';
+import '../../translation'
+import { useTranslation } from 'react-i18next';
 
 const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
+
+  const { t } = useTranslation(); 
 
   const [sort, setSort] = useState<string>("DESC");
   let lastListView = useRef<any|null>({"name": "AllDives" })
@@ -30,12 +34,14 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
     
       if (lastListView.current?.name == undefined) navigation.navigate("AllDives");
       else navigation.navigate(lastListView.current.name, lastListView.current.params)
+
     });
     return unsubscribe;
   }, []);
 
   const listenRouteChange = (e:any) => {
     const lastRoute = e.data?.state?.routes?.at(-1)
+    console.log(e.data);
     if (!lastRoute)
       return;
 
@@ -53,7 +59,6 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
     }
 
     console.log(lastListView.current?.name, " ---> " ,lastView.current?.name)
-
   }
 
   const Stack = createNativeStackNavigator();
@@ -108,6 +113,13 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
 
         <Stack.Screen name="FilteredDives" options={{ 
           title: "",
+          // headerLeft: () => (
+          //  (navigation.route.props.aggregation == 'byLatLng' ? <>              
+          //     <Pressable onPress={()=>navigation.navigate("Maps")}>
+          //         <Text style={styles.text}>{t("maps")}</Text>
+          //     </Pressable>           
+          //   </>            : null)
+          // ),
           headerRight: () => (
             <>              
               <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>

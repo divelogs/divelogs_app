@@ -13,7 +13,7 @@
     [key: string]: number;
   }
 
-  const DiveList = ({navigation, dives, doSearch, selectDive, imperial}:any) => {
+  const DiveList = ({navigation, dives, doSearch, selectDive, imperial, frommap}:any) => {
 
     const [searchText, setSearchText] = useState<string>('');
     const [statistics, setStatistics] = useState<Statistics>({})

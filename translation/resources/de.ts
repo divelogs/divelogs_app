@@ -79,6 +79,7 @@ export default {
     byBoat: "Nach Schiffen",
     byDepth: "Nach Tiefen",
     byDuration: "Nach Tauchdauer",
+    showdives: "Zeige Tauchgänge",
 
     and: "und",
 

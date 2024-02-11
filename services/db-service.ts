@@ -129,7 +129,10 @@ export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:stri
 export const getCoordinates = async (db: SQLiteDatabase): Promise<[]> => {
   try {
     const coords = <any>[];
-    const results = await db.executeSql("SELECT distinct lat as latitude, lng as longitude, divesite from dives WHERE lat != 0 and lng != 0");
+    const results = await db.executeSql(`SELECT distinct CAST(CAST(lat*1000 as int) as REAL)/1000 as latitude, CAST(CAST(lng*1000 as int) as REAL)/1000 as longitude, GROUP_CONCAT(DISTINCT divesite) as divesite from dives
+    WHERE lat != 0 AND lng != 0 
+    GROUP BY ROUND(lat*1000), ROUND(lng*1000)
+    order by divesite ASC`);
     results.forEach((result: { rows: { length: number; item: (arg0: number) => MapMarker; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
         coords.push(result.rows.item(index));
@@ -141,10 +144,6 @@ export const getCoordinates = async (db: SQLiteDatabase): Promise<[]> => {
     throw Error('Failed to get Maps');
   }
 };
-
-
-
-
 
 
 export const getFilteredDives = async (db: SQLiteDatabase, column: string, filter:string, dir:string, searchPhrase:string): Promise<Dive[]> => {
@@ -163,6 +162,24 @@ export const getFilteredDives = async (db: SQLiteDatabase, column: string, filte
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Dives');
+  }
+};
+
+
+export const getDivesByLatLng = async (db: SQLiteDatabase, lat: number, lng:number, dir:string): Promise<Dive[]> => {
+  try {
+    const Dives: Dive[] = [];
+    const where = "WHERE lat LIKE '"+lat+"%' AND lng LIKE '"+lng+"%'"
+    const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
+    results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
+      for (let index = 0; index < result.rows.length; index++) {
+        Dives.push(result.rows.item(index));
+      }
+    });
+    return Dives;
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get Dives by location');
   }
 };
 
