@@ -50,15 +50,16 @@ export const DiveProfileOverlay = ({sampleData, imperial}:any) => {
         const pick = (position.x - padding) / (width - ProfileDimensions.padleft*2)
         const index = Math.floor(samples.length * pick)
 
+        if (samples.length <= index) return null
+
         const theSample = samples[index]
-        const nextSample = (samples.length > index) ? samples[index +1] : 0
+        const nextSample = (samples.length-1 > index) ? samples[index +1] : 0
         const percent = (samples.length * pick) % 1
 
         const actual = theSample + ((nextSample - theSample) * percent)
         console.log(samples.length * pick, theSample, nextSample, actual, percent)
 
-        var mult = (ProfileDimensions.height*0.9)/calculated.maxDepth
-        
+        var mult = (height*0.9)/calculated.maxDepth
 
         var ycolumn = actual * mult;
 
