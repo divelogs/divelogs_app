@@ -6,25 +6,27 @@ import { SampleData } from '../../models';
 export const DiveProfile: React.FC<{
     SampleData: SampleData,
 	imperial: boolean
-}> = ({ SampleData: {sampledata, samplerate, duration, width, height, lines = true, forlist = false}, imperial }) => {
-  var samples = (sampledata != null && sampledata.length > 5 ? sampledata.split(",") : []);
-  if (samples.length > 0) {
-	var profileSVG = makeSVGprofile(samples, samplerate, duration, lines, imperial);
-	return (
-		<View style={forlist ? styles.forlist : styles.flex}>
-			<SvgXml xml={profileSVG} width={width} height={height} />
-		</View>
-	)
-  } else {
-	return (
-		<View>
-			<Image
-				style={styles.tinyprofile}
-				source={require('../../assets/profileplaceholder.png')}
-			/>
-		</View>
-	)
-  }
+}> = ({ SampleData: {sampledata, duration, width, height, lines = true, forlist = false}, imperial }) => {
+  
+	
+	if (sampledata?.length > 5) {
+		var samples = sampledata.split(",").map(parseFloat);
+		var profileSVG = makeSVGprofile(samples, duration, lines, imperial);
+		return (
+			<View style={forlist ? styles.forlist : styles.flex}>
+				<SvgXml xml={profileSVG} width={width} height={height} />
+			</View>
+		)
+  	} else {
+		return (
+			<View>
+				<Image
+					style={styles.tinyprofile}
+					source={require('../../assets/profileplaceholder.png')}
+				/>
+			</View>
+		)
+  	}
 };
 
 const styles = StyleSheet.create({
@@ -42,14 +44,26 @@ const styles = StyleSheet.create({
 	}
   });
 
-function makeSVGprofile(samples: string | any[], rate: number, duration: number, lines = true, imperial = false)
+export const ProfileDimensions = {
+	width:700,
+	height:400,
+	padleft:25,
+	loffset:2,	
+}
+
+function makeSVGprofile(samples: number[], duration: number, lines = true, imperial = false)
 {
-		var width = 700, height = 400, padleft = 25, loffset = 2;
+		const {width, height, padleft, loffset} = ProfileDimensions;
 
-		rate = duration / samples.length;
+		// ensurs zero sample at top and bottom of dive
+		if (samples[0] != 0)
+			samples.unshift(0)
+		if (samples[samples.length-1] !== 0)
+			samples.push(0)
 
+		const rate = duration / samples.length;	
 		// get the hoizontal multiplier
-		var horiz_mult = (width-padleft-8)/(samples.length+1);		
+		var horiz_mult = (width-padleft-8)/(samples.length-1);	
 
 		// maximum depth
 		var maxdepth = Math.max(...samples);
@@ -61,23 +75,25 @@ function makeSVGprofile(samples: string | any[], rate: number, duration: number,
 		// array for polygon points
 		var koords = [];
 		
-		// first coordinates for start of dive
-		koords.push(padleft + ",-1");
+		//first coordinates for start of dive
+		//koords.push(padleft + ",0");
 
 		// write all coordinates to array
 		for (var e=0;e<samples.length;e++)
 		{
 			// transform samples to coordinates (in Pixels)
-			var xcolumn = (e+1)*horiz_mult+padleft+2;
-			var ycolumn = Math.floor(samples[e]*mult)+1;
+			var xcolumn = (e)*horiz_mult+padleft;
+			var ycolumn = Math.floor(samples[e]*mult)
 		
 			// push both values comma-separated to array
 			koords.push(Math.round(xcolumn) + "," + Math.round(ycolumn));
 		}
 
 		// end of dive coordinate (Depth 0m)
-		koords.push((e+2)*horiz_mult+padleft+2 + ",-1");
-
+		//koords.push((e+2)*horiz_mult+padleft+2 + ",0");
+		
+		
+		console.log(koords.join(" ") )
 		var vert_10minute_lines =(((rate/60)*samples.length) / 10) + 1;		
 
 		var ret = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" style="font-family:Arial, Helvetica, sans-serif; width:100%; height: auto;" viewBox="0 0 ' + width + ' ' + height + '">'
