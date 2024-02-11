@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Text, StyleSheet, Dimensions, ScrollView, View, TouchableOpacity, useWindowDimensions } from 'react-native';
 
 import DiveProfile from './DiveProfile';
+import DiveProfileOverlay from './DiveProfileOverlay';
+import { SampleData } from '../../models';
 
 export const DiveProfileModal = ({navigation, route}:any) => {
 
@@ -36,10 +38,22 @@ export const DiveProfileModal = ({navigation, route}:any) => {
 
     const style = isLandscape ? {} : styles.profilePortrait
 
+    const sampleData:SampleData = {
+        sampledata: dive.sampledata, 
+        samplerate: dive.samplerate, 
+        duration: dive.duration, 
+        height: profileDim.height, 
+        width: profileDim.width, 
+        lines: true, 
+        forlist: false 
+    }
+
     return <View style={styles.page}>
         <View style={style}>
-        <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: profileDim.height, width: profileDim.width, lines: true, forlist: false }} imperial={false} />
+            <DiveProfile SampleData={sampleData} imperial={false} />
+            <DiveProfileOverlay sampleData={sampleData}/>
         </View>
+
 
         <TouchableOpacity style={styles.close} onPress={closeView}>
             <Text style={{fontSize: 30}}>🦀</Text>
