@@ -1,4 +1,4 @@
-import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList, Platform } from 'react-native';
+import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList, Platform, TouchableOpacity } from 'react-native';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, renderweights, secondstotimeHMS } from '../functions.ts'
@@ -23,6 +23,10 @@ const DiveDetail = ({navigation, dive, imperial}:any) => {
   let tanks = (dive.tanks != null ? JSON.parse(dive.tanks) : []);
 
   let sac = (dive.tanks != null ? calculate_sac(tanks, imperial, dive.duration, dive.meandepth) : false);
+
+  const focusDiveProfile = () => {
+    navigation.push("DiveProfilFocus", {dive: dive});
+  }
 
   return (<ScrollView>
       <View style={[divepagestyles.bg, divepagestyles.child]}>                
@@ -99,8 +103,10 @@ const DiveDetail = ({navigation, dive, imperial}:any) => {
           />
         <View style={divepagestyles.fullwidthentry}><Text style={divepagestyles.desc}>{t("notes")}: </Text><Text>{dive.notes}</Text></View>    
         </View>
-
-        <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} /> 
+        
+        <TouchableOpacity onPress={() => focusDiveProfile()}>
+          <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} />
+        </TouchableOpacity>
       </View>
     </ScrollView>)
   }

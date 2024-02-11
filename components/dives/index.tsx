@@ -7,6 +7,7 @@ import DivelogsHeader from '../generic/divelogsheader'
 import { AggregationView } from './Aggregation'
 import DiveListSelection from './DiveListSelection'
 import AllDives from './AllDivesView'
+import DiveProfileModal from '../divedetail/DiveProfileModal';
 import DiveDetail from '../divedetail'
 
 const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
@@ -154,7 +155,12 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           ),
         }}>
           {(props) => <AggregationView {...props}/>}
-        </Stack.Screen>        
+        </Stack.Screen>
+        <Stack.Screen
+          name="DiveProfilFocus"
+          component={DiveProfileModal}
+          options={{ presentation: 'transparentModal', headerShown: false }}
+        />   
       </Stack.Navigator>   
     </View>
   );
