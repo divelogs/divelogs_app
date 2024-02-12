@@ -39,7 +39,7 @@ const AllDivesView = ({navigation, route, sort}:any) => {
         {
           case "byLatLng":
             const {lat, lng} = route.params.filter
-            return await getDivesByLatLng(db, lat, lng, sort);
+            return await getDivesByLatLng(db, lat, lng, sort, search);
           case "byDepth":
             value = route.params.filter.bez.replace(/\-.+/, "")
             if (imperial)
