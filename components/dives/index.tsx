@@ -11,7 +11,7 @@ import { NavigationContainer, NavigationContext, StackRouter } from '@react-navi
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 
-const DivesNavigation = ({navigation, imperial}:any) => {
+const DivesNavigation = ({navigation}:any) => {
 
   const { t } = useTranslation(); 
 
@@ -131,7 +131,7 @@ const DivesNavigation = ({navigation, imperial}:any) => {
         <Stack.Screen name="DiveDetail" options={{ 
           headerBackTitleVisible: false       
         }}>
-          {(props) => <DiveDetail {...props} imperial={imperial}/>}
+          {(props) => <DiveDetail {...props}/>}
         </Stack.Screen>
 
         <Stack.Screen name="AggregatedView" options={{ 

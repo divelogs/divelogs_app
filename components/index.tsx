@@ -13,22 +13,11 @@ import Dives from './dives'
 import GearView from './gear';
 import Onboarding from './onboarding';
 import AppHeader from './generic/divelogsheader'
-import { getImperial } from '../services/db-service';
 
 const BottomNavigation = ({}:any)=> {
 
   const Tab = createBottomTabNavigator();
   const { t } = useTranslation(); 
-
-  const [imperial, setImperial] = useState<boolean>(false);
-
-  useEffect(() => {
-    (async () => {
-      const imp = await getImperial();
-      setImperial(imp);
-    })()
-    return () => {  }
-  }, []);
 
   return (<>
     <Tab.Navigator screenOptions={{
@@ -49,7 +38,7 @@ const BottomNavigation = ({}:any)=> {
           );
         }
       }}>
-        {(props) => <Dives {...props} imperial={imperial}/>}
+        {(props) => <Dives {...props}/>}
       </Tab.Screen>
       <Tab.Screen name="Certifications"  
         component={Certifications} 
@@ -81,7 +70,6 @@ const BottomNavigation = ({}:any)=> {
         }} />
       <Tab.Screen name="Statistics" 
         component={StatisticsView} 
-        initialParams={{ imperial: imperial }}
         options={{ 
           title: t("statistics"),
           headerShown: true, 

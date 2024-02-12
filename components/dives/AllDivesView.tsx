@@ -3,16 +3,19 @@ import { View, Text } from 'react-native';
 import { Dive } from '../../models';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-import React, { useState, useEffect } from 'react';
-import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getImperial, getDivesByLatLng } from '../../services/db-service';
+import React, { useState, useEffect, useContext } from 'react';
+import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getDivesByLatLng } from '../../services/db-service';
 import DivesList from './DivesList';
+
+import { DivelogsContext } from '../../App'; 
 
 const AllDivesView = ({navigation, route, sort}:any) => {
 
   const [dives, setDives] = useState<Dive[]>([]);
   const [search, setSearch] = useState<string>('');
-  const [imperial, setImperial] = useState<boolean>(false);
-  const [fromMap, setFromMap] = useState<boolean>(false);
+
+  const context = useContext(DivelogsContext);
+  const imperial = context.userProfile?.imperial || false
 
   useEffect(() => {
     if (!!route.params?.filter?.label)
@@ -20,19 +23,10 @@ const AllDivesView = ({navigation, route, sort}:any) => {
 
     (async () => {
       const dives = await loadData()
-      console.log('doin stuff');
       setDives(dives)
     })()
     return () => { }
   }, [sort, search, route]);
-
-  useEffect(() => {
-    (async () => {
-      const imp = await getImperial();
-      setImperial(imp);
-    })()
-    return () => {  }
-  }, ["noreload"]);
 
   const loadData = async () : Promise<Dive[]> => {
     try {
@@ -40,9 +34,8 @@ const AllDivesView = ({navigation, route, sort}:any) => {
 
       if (!!route.params?.aggregation && route.params.aggregation == "byLatLng") {
         console.log(navigation);
-        setFromMap(true);
         return await getDivesByLatLng(db, route.params.lat, route.params.lng, 'ASC');
-      } else setFromMap(false);
+      }
 
       if (!!route.params?.filter){
         let column:string;
@@ -87,7 +80,7 @@ const AllDivesView = ({navigation, route, sort}:any) => {
 
   return (
     <View style={{flex:1}}>
-      <DivesList navigation={navigation} selectDive={selectDive} dives={dives} doSearch={doSearch} imperial={imperial} fromMap={fromMap}/>
+      <DivesList navigation={navigation} selectDive={selectDive} dives={dives} doSearch={doSearch}/>
     </View>
   );
 };

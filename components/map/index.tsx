@@ -50,7 +50,7 @@ export const MapHome = () => {
         <Stack.Screen name="DiveDetail" options={{ 
           headerBackTitleVisible: false       
         }}>
-          {(props) => <DiveDetail {...props} imperial={false}/>}
+          {(props) => <DiveDetail {...props}/>}
         </Stack.Screen>
         
       </Stack.Navigator>  
