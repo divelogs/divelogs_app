@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Text, StyleSheet, Dimensions, ScrollView, View, Pressable } from 'react-native';
-import { getDBConnection, getCoordinates } from '../services/db-service';
+import { getDBConnection, getCoordinates } from '../../services/db-service';
 import MapView, { Marker, Callout } from "react-native-maps";
-import { Dive, MapMarker } from '../models';
-import '../translation'
+import { Dive, MapMarker } from '../../models';
+import '../../translation'
 import { useTranslation } from 'react-i18next';
 
 export const MapsView = ({ route, navigation }:any) => { 
