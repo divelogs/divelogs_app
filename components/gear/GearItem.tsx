@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet,  Text,  View, NativeModules, Dimensions, Platform } from 'react-native';
-import { GearItem } from '../models';
+import { GearItem } from '../../models';
 import GearImages from './GearImages'
 import { SvgXml } from 'react-native-svg';
-import '../translation';
+import '../../translation';
 import { useTranslation } from 'react-i18next';
-import OneLiner from './generic/GearLines'
+import OneLiner from '../generic/GearLines'
 
 const locale =
     (Platform.OS === 'ios'

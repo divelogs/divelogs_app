@@ -6,11 +6,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { diveicon, certicon, staticon, gearicon, globe } from '../assets/svgs.js'
 import '../translation'
 import { useTranslation } from 'react-i18next';
-import StatisticsView from './StatisticsView';
+import StatisticsView from './statistics';
 import MapsView from './map';
 import Certifications from './certifications';
 import Dives from './dives'
-import GearView from './GearItemsView';
+import GearView from './gear';
 import Onboarding from './onboarding';
 import AppHeader from './generic/divelogsheader'
 import { getImperial } from '../services/db-service';
