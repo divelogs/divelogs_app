@@ -10,7 +10,6 @@ import DiveDetail from '../divedetail'
 import { NavigationContainer, NavigationContext, StackRouter } from '@react-navigation/native';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-import Icon from "react-native-vector-icons";
 
 const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
 
@@ -77,7 +76,7 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           }}
         >
 
-        <Stack.Screen name=" " options={{ 
+        <Stack.Screen name="DiveListSelection" options={{ 
           animation: "none",
         }}>
           {(props) => <DiveListSelection {...props}/>}
@@ -86,14 +85,13 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
         <Stack.Screen name="AllDives" 
           options={{ 
           headerShown: true,
-          headerTitle: () => <DivelogsHeader/>,
-          // headerLeft: () => (
-          //   (Platform.OS == 'ios' ? <>              
-          //     <Pressable onPress={()=>navigation.goBack()}>
-          //         <Text style={styles.text}>❮</Text>
-          //     </Pressable>           
-          //   </> : null)
-          // ),
+          headerLeft: () => (
+            (Platform.OS == 'ios' ? <>              
+              <Pressable onPress={()=>navigation.goBack()}>
+                  <Text style={styles.text}>←</Text>
+              </Pressable>           
+            </>            : null)
+          ),
           headerRight: () => (
             <>
             <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
@@ -115,6 +113,13 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
 
         <Stack.Screen name="FilteredDives" options={{ 
           title: "",
+          // headerLeft: () => (
+          //  (navigation.route.props.aggregation == 'byLatLng' ? <>              
+          //     <Pressable onPress={()=>navigation.navigate("Maps")}>
+          //         <Text style={styles.text}>{t("maps")}</Text>
+          //     </Pressable>           
+          //   </>            : null)
+          // ),
           headerRight: () => (
             <>              
               <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
@@ -139,13 +144,13 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
         </Stack.Screen>
 
         <Stack.Screen name="AggregatedView" options={{ 
-          // headerLeft: () => (
-          //   (Platform.OS == 'ios' ? <>              
-          //     <Pressable onPress={()=>navigation.goBack()}>
-          //         <Text style={styles.text}>❮</Text>
-          //     </Pressable>           
-          //   </>           : null)
-          //         ),
+          headerLeft: () => (
+            (Platform.OS == 'ios' ? <>              
+              <Pressable onPress={()=>navigation.goBack()}>
+                  <Text style={styles.text}>←</Text>
+              </Pressable>           
+            </>           : null)
+                  ),
           headerRight: () => (
             <>              
               <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
