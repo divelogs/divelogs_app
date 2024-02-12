@@ -50,7 +50,7 @@ export const MapsView = ({ route, navigation }:any) => {
   });
 
   const showMarkerDives = (value:any) => {
-    navigation.push("Map.FilteredDives", {aggregation: "byLatLng", lat: value.latitude, lng: value.longitude})
+    navigation.navigate("Map.FilteredDives", {view: { aggregation: "byLatLng" }, filter: { lat: value.latitude, lng: value.longitude }})
   }
 
   return (

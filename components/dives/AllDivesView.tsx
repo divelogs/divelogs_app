@@ -32,16 +32,14 @@ const AllDivesView = ({navigation, route, sort}:any) => {
     try {
       const db = await getDBConnection();
 
-      if (!!route.params?.aggregation && route.params.aggregation == "byLatLng") {
-        console.log(navigation);
-        return await getDivesByLatLng(db, route.params.lat, route.params.lng, 'ASC');
-      }
-
       if (!!route.params?.filter){
         let column:string;
         let value:string;
         switch (route.params.view.aggregation)
         {
+          case "byLatLng":
+            const {lat, lng} = route.params.filter
+            return await getDivesByLatLng(db, lat, lng, sort);
           case "byDepth":
             value = route.params.filter.bez.replace(/\-.+/, "")
             if (imperial)
