@@ -111,13 +111,6 @@ const DivesNavigation = ({navigation, imperial}:any) => {
 
         <Stack.Screen name="FilteredDives" options={{ 
           title: "",
-          // headerLeft: () => (
-          //  (navigation.route.props.aggregation == 'byLatLng' ? <>              
-          //     <Pressable onPress={()=>navigation.navigate("Maps")}>
-          //         <Text style={styles.text}>{t("maps")}</Text>
-          //     </Pressable>           
-          //   </>            : null)
-          // ),
           headerRight: () => (
             <>              
               <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>

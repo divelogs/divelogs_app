@@ -49,6 +49,10 @@ export const MapsView = ({ route, navigation }:any) => {
     }
   });
 
+  const showMarkerDives = (value:any) => {
+    navigation.push("Map.FilteredDives", {aggregation: "byLatLng", lat: value.latitude, lng: value.longitude})
+  }
+
   return (
     <View style={styles.container}> 
       <MapView style={styles.map}>
@@ -59,7 +63,7 @@ export const MapsView = ({ route, navigation }:any) => {
             <Callout>
                 <View>
                     <Text>{value.divesite}</Text>
-                    <Pressable onPress={() => {navigation.navigate("FilteredDives", {aggregation: "byLatLng", lat: value.latitude, lng: value.longitude})}}>
+                    <Pressable onPress={() => showMarkerDives(value)}>
                       <View style={styles.showdives}><Text style={styles.showdivestext}>{t('showdives')}</Text></View>
                     </Pressable>  
                 </View>
