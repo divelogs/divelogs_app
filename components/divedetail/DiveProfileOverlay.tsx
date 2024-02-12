@@ -39,31 +39,43 @@ export const DiveProfileOverlay = ({sampleData, imperial}:any) => {
         console.log(samples)
     }, [sampleData])
 
-    const calculateSample = (position:any) : SpotlightSample | null  => {
 
         const padding = ProfileDimensions.padleft + ProfileDimensions.loffset + 1
 
+    const calculateSample = (position:any) : SpotlightSample | null  => {
+
+        const padding = ProfileDimensions.padleft + ProfileDimensions.loffset // 27
+        const width = 628
+        
         if (position.x - padding < 0) return null;
+        if (position.x - padding > width) return null;
         if (samples?.length < 1) return null;
         if (!calculated) return null; 
+        
+        
+        const pick = (position.x - padding) / (width)
 
-        const pick = (position.x - padding) / (width - ProfileDimensions.padleft*2)
-        const index = Math.floor(samples.length * pick)
+
+        const time = (samples.length-1) * pick
+        const percent = (time) % 1
+        const index = Math.floor(time)
+
+
+
 
         if (samples.length <= index) return null
 
         const theSample = samples[index]
-        const nextSample = (samples.length-1 > index) ? samples[index +1] : 0
-        const percent = (samples.length * pick) % 1
+        const nextSample = samples[index +1] ?? 0
 
         const actual = theSample + ((nextSample - theSample) * percent)
         console.log(samples.length * pick, theSample, nextSample, actual, percent)
 
         var mult = (height*0.9)/calculated.maxDepth
 
-        var ycolumn = actual * mult;
+        var ycolumn = Math.ceil(actual * mult) //+ 5;
 
-        return { x: position.x, y: ycolumn, sample: theSample, depth: (Math.round(actual*100)/100) + " m" }
+        return { x: position.x, y: ycolumn-1, sample: theSample, depth: (Math.round(actual*100)/100) + " m" }
     }
 
     const tapped = ({nativeEvent: evt}:any) => {
@@ -87,7 +99,7 @@ const SvgOverlay = (sample:SpotlightSample | null, height:number, width:number) 
 
     let content = "";
 
-    const pointRadius = 4;
+    const pointRadius = 8;
 
     if (sample){
         content = `<g>
@@ -95,8 +107,12 @@ const SvgOverlay = (sample:SpotlightSample | null, height:number, width:number) 
             <circle r="${pointRadius}" cx="${sample.x}" cy="${sample.y}" stroke-width="1" fill="none" />
             <line x1="${sample.x}" y1="${sample.y+pointRadius}" x2="${sample.x}" y2="${height}" />
             <text x="${sample.x + pointRadius + 4}" y="${sample.y+10}" fill="#a8a8a8" style="font-size: 10px;">${sample.depth}</text>
+            <line style="opacity:0.3" x1="${sample.x}" y1="${sample.y-7}" x2="${sample.x}" y2="${sample.y+7}" />
+            <!--
+            <line style="opacity:0.3" x1="${sample.x-20}" y1="${sample.y}" x2="${sample.x+20}" y2="${sample.y}" />
+            -->
+            <line x1="28" x2="${sample.x-10}" y1="${height-20}" y2="${height-20}" marker-end="url(#triangle)" />         
 
-            <line x1="28" x2="${sample.x-10}" y1="${height-20}" y2="${height-20}" marker-end="url(#triangle)" />
         </g>`
     }
 

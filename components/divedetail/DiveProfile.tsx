@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
 		position: 'absolute'
 	},
 	flex: {
-		flex: 1
+		flex: 1,
+		//marginTop: 5
 	}
   });
 
