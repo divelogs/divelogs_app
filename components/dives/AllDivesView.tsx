@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getImperial, getDivesByLatLng } from '../../services/db-service';
 import DivesList from './DivesList';
 
-const AllDivesView = ({navigation, route, sort, refreshApiData}:any) => {
+const AllDivesView = ({navigation, route, sort}:any) => {
 
   const [dives, setDives] = useState<Dive[]>([]);
   const [search, setSearch] = useState<string>('');

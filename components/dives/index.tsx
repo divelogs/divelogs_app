@@ -11,7 +11,7 @@ import { NavigationContainer, NavigationContext, StackRouter } from '@react-navi
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 
-const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
+const DivesNavigation = ({navigation, imperial}:any) => {
 
   const { t } = useTranslation(); 
 
@@ -109,8 +109,6 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
 
-
-
         <Stack.Screen name="FilteredDives" options={{ 
           title: "",
           // headerLeft: () => (
@@ -134,7 +132,7 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
             </>
           ),    
         }}>
-          {(props) => <AllDives {...props} sort={sort} refreshApiData={refreshApiData}/>}
+          {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
 
         <Stack.Screen name="DiveDetail" options={{ 
