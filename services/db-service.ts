@@ -1,4 +1,4 @@
-import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
+import { enablePromise, openDatabase, ResultSet, SQLiteDatabase } from 'react-native-sqlite-storage';
 import { Dive, Certification, GearItem, APIDive, UserProfile, MapMarker } from '../models';
 import RNFetchBlob from "rn-fetch-blob";
 import { Platform } from 'react-native';
@@ -13,6 +13,10 @@ export const getDBConnection = async () => {
   if (Platform.OS === 'ios') return openDatabase({ name: 'divelogs.db', createFromLocation : 1 });
   else return openDatabase({ name: 'divelogs.db', createFromLocation : '~www/divelogs.db' });
 };
+
+export const readResultSet = <TType>([result]:ResultSet[]) : TType[] => result.rows.raw()
+export const readResultSingle = <TType>([result]:ResultSet[]) : TType | null => (result.rows.length > 0) ? result.rows.raw()[0] : null
+export const readResultScalar = <TType>([result]:ResultSet[], columnName: string) : TType | null => (result.rows.length > 0) ? result.rows.raw()[0][columnName] : null
 
 export const updateDB = (): Promise<number> => {
   return new Promise((resolve, reject) => {
@@ -35,21 +39,10 @@ export const updateDB = (): Promise<number> => {
       .catch((error) => console.error(error));
     });   
 };
-
-export const getImperial = async (): Promise<boolean> => {
-  const db = await getDBConnection()
-  const result = await db.executeSql("SELECT imperial FROM settings")
-  if (result[0].rows.length == 0) 
-    return false;
-  return result[0].rows.item(0).imperial == "1"
-};
-
 export const getSyncForced = async (): Promise<boolean> => {
   const db = await getDBConnection()
   const result = await db.executeSql("SELECT forceSync FROM settings")
-  if (result[0].rows.length == 0) 
-    return false;
-  return result[0].rows.item(0).forceSync == "1"
+  return readResultScalar<boolean>(result, "forceSync") ?? false
 };
 
 export const resetSyncForced = async (): Promise<void> => {
@@ -110,25 +103,29 @@ const getWhere = (searchPhrase:string) : string => {
 
 export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
-    const Dives: Dive[] = [];
-
     const where = (searchPhrase.length > 0 ? "WHERE " + getWhere(searchPhrase) : "");
     const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        Dives.push(result.rows.item(index));
-      }
-    });
-    return Dives;
+
+    return readResultSet<Dive>(results)
+
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Dives');
   }
 };
 
-export const getCoordinates = async (db: SQLiteDatabase): Promise<[]> => {
+export const getLastDiveWithCoordinates = async (db: SQLiteDatabase): Promise<Dive | null> => {
   try {
-    const coords = <any>[];
+    const results = await db.executeSql("SELECT * FROM dives  WHERE lat != 0 AND lng != 0 ORDER BY divedate DESC, divetime DESC LIMIT 1");
+    return readResultSingle<Dive>(results)
+  } catch (error) {
+    console.error(error);
+    throw Error('Failed to get Dives');
+  }
+};
+
+export const getCoordinates = async (db: SQLiteDatabase): Promise<MapMarker[]> => {
+  try {
     const results = await db.executeSql(`SELECT distinct CAST(CAST(lat*1000 as int) as REAL)/1000 as latitude, 
     CAST(CAST(lng*1000 as int) as REAL)/1000 as longitude, 
     CASE WHEN GROUP_CONCAT(DISTINCT divesite) = '' THEN '?' ELSE GROUP_CONCAT(DISTINCT divesite) END as divesite from dives
@@ -136,12 +133,8 @@ export const getCoordinates = async (db: SQLiteDatabase): Promise<[]> => {
     GROUP BY CAST(lat*1000 as int), CAST(lng*1000 as int)
     order by divesite ASC
     `);
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => MapMarker; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        coords.push(result.rows.item(index));
-      }
-    });
-    return coords;
+
+    return readResultSet<MapMarker>(results)
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Maps');
@@ -151,17 +144,11 @@ export const getCoordinates = async (db: SQLiteDatabase): Promise<[]> => {
 
 export const getFilteredDives = async (db: SQLiteDatabase, column: string, filter:string, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
-    const Dives: Dive[] = [];
-
     const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
     const where = "WHERE "+column.replace(/'/g, "''")+" LIKE '"+filter.replace(/'/g, "''")+"'" + search
     const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        Dives.push(result.rows.item(index));
-      }
-    });
-    return Dives;
+
+    return readResultSet<Dive>(results)
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Dives');
@@ -171,17 +158,11 @@ export const getFilteredDives = async (db: SQLiteDatabase, column: string, filte
 
 export const getDivesByLatLng = async (db: SQLiteDatabase, lat: number, lng:number, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
-    const Dives: Dive[] = [];
     const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
     const where = "WHERE lat LIKE '"+lat+"%' AND lng LIKE '"+lng+"%' " + search
     const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
 
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        Dives.push(result.rows.item(index));
-      }
-    });
-    return Dives;
+    return readResultSet<Dive>(results)
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Dives by location');
@@ -190,19 +171,13 @@ export const getDivesByLatLng = async (db: SQLiteDatabase, lat: number, lng:numb
 
 export const getFilteredDivesByPrecalcedStatistics = async (db: SQLiteDatabase, type: string, filter:string, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
-    const Dives: Dive[] = [];
-
     const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
     const where = "WHERE statistics.value LIKE '"+filter.replace(/'/g, "''")+"'" + search
 
     const results = await db.executeSql(`SELECT dives.* 
     FROM dives INNER JOIN statistics ON dives.id = statistics.diveId AND type = '${type.replace(/'/g, "''")}' ${where} ORDER BY divedate ${dir}, divetime ${dir}`);
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        Dives.push(result.rows.item(index));
-      }
-    });
-    return Dives;
+
+    return readResultSet<Dive>(results)
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Dives');
@@ -211,7 +186,6 @@ export const getFilteredDivesByPrecalcedStatistics = async (db: SQLiteDatabase, 
 
 export const getGearItems = async (db: SQLiteDatabase): Promise<GearItem[]> => {
   try {
-    const GearItems: GearItem[] = [];
     const results = await db.executeSql(`SELECT name, servicemonths, servicedives, last_servicedate, type, purchasedate, discarddate, geartype, (
       SELECT count(*) FROM dives WHERE 
       (
@@ -244,12 +218,8 @@ export const getGearItems = async (db: SQLiteDatabase): Promise<GearItem[]> => {
     ORDER BY sort
     
     `);
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => GearItem; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        GearItems.push(result.rows.item(index));
-      }
-    });
-    return GearItems;
+    
+    return readResultSet<GearItem>(results)
   } catch (error) {
     console.error(error);
     throw Error('Failed to get GearItems');
@@ -258,16 +228,9 @@ export const getGearItems = async (db: SQLiteDatabase): Promise<GearItem[]> => {
 
 export const getCertifications = async (db: SQLiteDatabase): Promise<Certification[]> => {
   try {
-    const Certifications: Certification[] = [];
     const results = await db.executeSql("SELECT certifications.id, date as certdate, name, org, GROUP_CONCAT(certifications_files.filename) as scans_string FROM certifications LEFT JOIN certifications_files ON certifications.id = certifications_files.certification_id GROUP BY certifications.id ORDER BY date DESC");
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => Certification; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        var cert = result.rows.item(index);
-        cert.scans = (cert.scans_string != undefined ? cert.scans_string.split(",") : []);
-        Certifications.push(result.rows.item(index));
-      }
-    });
-    return Certifications;
+
+    return readResultSet<Certification>(results).map(c => ({...c, scans: (c.scans_string ? c.scans_string.split(",") : []) }))
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Certifications');
@@ -278,9 +241,7 @@ export const getCertifications = async (db: SQLiteDatabase): Promise<Certificati
 export const getProfile = async (db: SQLiteDatabase): Promise<UserProfile|null> => {
   try {
     const results = await db.executeSql("SELECT * FROM profile");
-    if (results[0].rows.length == 0) 
-      return null
-    return results[0].rows.item(0);
+    return readResultSingle<UserProfile>(results)
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Bearer Token');
@@ -588,7 +549,7 @@ export const getBearerToken = async (db: SQLiteDatabase): Promise<string|null> =
 export const getDbVersion = async (db: SQLiteDatabase): Promise<number> => {
   try {
     const results = await db.executeSql("SELECT version FROM version");
-    return parseInt(results[0].rows.item(0)['version']);
+    return readResultScalar<any>(results, "version") ?? 0
   } catch (error) {
     console.error(error);
     throw Error('Failed to get DB-Version');
