@@ -10,13 +10,13 @@ import './translation'
 import Diver from './components/onboarding/diveranimation'
 import Index from './components'
 
-import { AppContext } from './models'
+import { AppContext, UpdateableAppContext } from './models'
 
-export const DivelogsContext = createContext<AppContext>({ theme: "light", userProfile: null });
+export const DivelogsContext = createContext<UpdateableAppContext>([{ theme: "light", userProfile: null }]);
 
 const App = () => {
 
-  const [appContext, setAppContext] = useState<AppContext>({ theme: "light", userProfile: null })
+  const [appContext, setAppContext] = useState<UpdateableAppContext>([{ theme: "light", userProfile: null }])
   const [firstLoad, setFirstLoad] = useState<string|undefined>("")
   const [dbversion, setDbVersion] = useState<number>(0);
 
@@ -34,12 +34,19 @@ const App = () => {
     DBCheck();
   }, []);
 
+  const updateContextState = (appContext:AppContext) => {
+    console.log("updating application context", appContext)
+    setAppContext([appContext, updateContextState])
+  }
+
   useEffect(() => {
     ;(async () => {
       const db = await getDBConnection()
       const profile = await getProfile(db)
-      const ctx = {...appContext, profile}
-      setAppContext(ctx);
+
+      const [appCtx] = appContext
+      const ctx:AppContext = {...appCtx, userProfile: profile}
+      updateContextState(ctx);
     })()
   }, [])
 

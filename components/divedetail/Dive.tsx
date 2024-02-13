@@ -15,7 +15,7 @@ const DiveDetail = ({navigation, dive}:any) => {
   const { width } = Dimensions.get('window')
   const [ divepagestyles, setDivepagestyles ] = useState<any>(getDivePageStyles(width))
 
-  const context = useContext(DivelogsContext);
+  const [context] = useContext(DivelogsContext);
   const imperial = context.userProfile?.imperial || false
 
   const { t } = useTranslation(); 

@@ -20,7 +20,7 @@
     const [statistics, setStatistics] = useState<Statistics>({})
     const { t } = useTranslation(); 
 
-    const context = useContext(DivelogsContext);
+    const [context] = useContext(DivelogsContext);
     const imperial = context.userProfile?.imperial || false
 
     useEffect(() => {

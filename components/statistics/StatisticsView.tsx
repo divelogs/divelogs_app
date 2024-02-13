@@ -14,7 +14,7 @@ import { DivelogsContext } from '../../App';
 
 export const StatisticsView = ({ route, navigation }:any) => {
     
-    const context = useContext(DivelogsContext);
+    const [context] = useContext(DivelogsContext);
     const imperial = context.userProfile?.imperial || false
 
     const [monthStats, setMonthStats] = useState<StatVal[]>([]);

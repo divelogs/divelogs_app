@@ -23,7 +23,7 @@ export const AggregationView = ({navigation, route, view}:any) => {
   const [filter, setFilter] = useState<string>("")
   const name = route.params.view.name
 
-  const context = useContext(DivelogsContext);
+  const [context] = useContext(DivelogsContext);
   const imperial = context.userProfile?.imperial || false
 
   useEffect(() => {

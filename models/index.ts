@@ -44,6 +44,10 @@ export type AppContext = {
   theme: string
 }
 
+export type UpdateableAppContext = [
+  AppContext, ((ctx:AppContext) => void)?
+]
+
 export type UserProfile = {
   imperial: boolean;
   startnumber: number;

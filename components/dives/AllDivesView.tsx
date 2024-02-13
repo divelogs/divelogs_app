@@ -14,7 +14,7 @@ const AllDivesView = ({navigation, route, sort}:any) => {
   const [dives, setDives] = useState<Dive[]>([]);
   const [search, setSearch] = useState<string>('');
 
-  const context = useContext(DivelogsContext);
+  const [context] = useContext(DivelogsContext);
   const imperial = context.userProfile?.imperial || false
 
   useEffect(() => {
