@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Text, StyleSheet, Dimensions, ScrollView, View, Pressable } from 'react-native';
-import { getDBConnection, getCoordinates } from '../services/db-service';
+import { getDBConnection, getCoordinates } from '../../services/db-service';
 import MapView, { Marker, Callout } from "react-native-maps";
-import { Dive, MapMarker } from '../models';
-import '../translation'
+import { Dive, MapMarker } from '../../models';
+import '../../translation'
 import { useTranslation } from 'react-i18next';
 
 export const MapsView = ({ route, navigation }:any) => { 
@@ -49,6 +49,10 @@ export const MapsView = ({ route, navigation }:any) => {
     }
   });
 
+  const showMarkerDives = (value:any) => {
+    navigation.navigate("Map.FilteredDives", {view: { aggregation: "byLatLng" }, filter: { lat: value.latitude, lng: value.longitude }})
+  }
+
   return (
     <View style={styles.container}> 
       <MapView style={styles.map}>
@@ -59,7 +63,7 @@ export const MapsView = ({ route, navigation }:any) => {
             <Callout>
                 <View>
                     <Text>{value.divesite}</Text>
-                    <Pressable onPress={() => {navigation.navigate("FilteredDives", {aggregation: "byLatLng", lat: value.latitude, lng: value.longitude})}}>
+                    <Pressable onPress={() => showMarkerDives(value)}>
                       <View style={styles.showdives}><Text style={styles.showdivestext}>{t('showdives')}</Text></View>
                     </Pressable>  
                 </View>

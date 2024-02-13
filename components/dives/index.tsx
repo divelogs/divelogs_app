@@ -10,9 +10,8 @@ import DiveDetail from '../divedetail'
 import { NavigationContainer, NavigationContext, StackRouter } from '@react-navigation/native';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-import Icon from "react-native-vector-icons";
 
-const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
+const DivesNavigation = ({navigation}:any) => {
 
   const { t } = useTranslation(); 
 
@@ -77,7 +76,7 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           }}
         >
 
-        <Stack.Screen name=" " options={{ 
+        <Stack.Screen name="DiveListSelection" options={{ 
           animation: "none",
         }}>
           {(props) => <DiveListSelection {...props}/>}
@@ -86,14 +85,13 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
         <Stack.Screen name="AllDives" 
           options={{ 
           headerShown: true,
-          headerTitle: () => <DivelogsHeader/>,
-          // headerLeft: () => (
-          //   (Platform.OS == 'ios' ? <>              
-          //     <Pressable onPress={()=>navigation.goBack()}>
-          //         <Text style={styles.text}>❮</Text>
-          //     </Pressable>           
-          //   </> : null)
-          // ),
+          headerLeft: () => (
+            (Platform.OS == 'ios' ? <>              
+              <Pressable onPress={()=>navigation.goBack()}>
+                  <Text style={styles.text}>←</Text>
+              </Pressable>           
+            </>            : null)
+          ),
           headerRight: () => (
             <>
             <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
@@ -111,8 +109,6 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
 
-
-
         <Stack.Screen name="FilteredDives" options={{ 
           title: "",
           headerRight: () => (
@@ -129,23 +125,23 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
             </>
           ),    
         }}>
-          {(props) => <AllDives {...props} sort={sort} refreshApiData={refreshApiData}/>}
+          {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
 
         <Stack.Screen name="DiveDetail" options={{ 
           headerBackTitleVisible: false       
         }}>
-          {(props) => <DiveDetail {...props} imperial={imperial}/>}
+          {(props) => <DiveDetail {...props}/>}
         </Stack.Screen>
 
         <Stack.Screen name="AggregatedView" options={{ 
-          // headerLeft: () => (
-          //   (Platform.OS == 'ios' ? <>              
-          //     <Pressable onPress={()=>navigation.goBack()}>
-          //         <Text style={styles.text}>❮</Text>
-          //     </Pressable>           
-          //   </>           : null)
-          //         ),
+          headerLeft: () => (
+            (Platform.OS == 'ios' ? <>              
+              <Pressable onPress={()=>navigation.goBack()}>
+                  <Text style={styles.text}>←</Text>
+              </Pressable>           
+            </>           : null)
+                  ),
           headerRight: () => (
             <>              
               <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>

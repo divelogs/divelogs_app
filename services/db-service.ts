@@ -169,11 +169,13 @@ export const getFilteredDives = async (db: SQLiteDatabase, column: string, filte
 };
 
 
-export const getDivesByLatLng = async (db: SQLiteDatabase, lat: number, lng:number, dir:string): Promise<Dive[]> => {
+export const getDivesByLatLng = async (db: SQLiteDatabase, lat: number, lng:number, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
     const Dives: Dive[] = [];
-    const where = "WHERE lat LIKE '"+lat+"%' AND lng LIKE '"+lng+"%'"
+    const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
+    const where = "WHERE lat LIKE '"+lat+"%' AND lng LIKE '"+lng+"%' " + search
     const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
+
     results.forEach((result: { rows: { length: number; item: (arg0: number) => Dive; }; }) => {
       for (let index = 0; index < result.rows.length; index++) {
         Dives.push(result.rows.item(index));
