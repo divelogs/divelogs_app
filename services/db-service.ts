@@ -133,7 +133,7 @@ export const getCoordinates = async (db: SQLiteDatabase): Promise<[]> => {
     CAST(CAST(lng*1000 as int) as REAL)/1000 as longitude, 
     CASE WHEN GROUP_CONCAT(DISTINCT divesite) = '' THEN '?' ELSE GROUP_CONCAT(DISTINCT divesite) END as divesite from dives
     WHERE lat != 0 AND lng != 0 
-    GROUP BY ROUND(lat*1000), ROUND(lng*1000)
+    GROUP BY CAST(lat*1000 as int), CAST(lng*1000 as int)
     order by divesite ASC
     `);
     results.forEach((result: { rows: { length: number; item: (arg0: number) => MapMarker; }; }) => {

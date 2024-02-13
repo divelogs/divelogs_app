@@ -75,7 +75,7 @@ const BottomNavigation = ({}:any)=> {
           tabBarLabelStyle: {fontSize: 14},
           tabBarIcon: ({size,focused,color}) => {
             return (
-              <SvgXml xml={globe} width="40" height="25"/>
+              <SvgXml xml={globe} width="25" height="25"/>
             );
           }
         }} />
