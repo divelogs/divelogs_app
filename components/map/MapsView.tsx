@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Text, StyleSheet, Dimensions, ScrollView, View, Pressable } from 'react-native';
-import { getDBConnection, getCoordinates } from '../../services/db-service';
-import MapView, { Marker, Callout } from "react-native-maps";
+import { getDBConnection, getCoordinates, getLastDiveWithCoordinates } from '../../services/db-service';
+import MapView, { Marker, Callout, Region } from "react-native-maps";
 import { Dive, MapMarker } from '../../models';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
@@ -11,12 +11,23 @@ export const MapsView = ({ route, navigation }:any) => {
   const { t } = useTranslation(); 
 
   const [markers, setMarkers] = useState<MapMarker[]>([]);
+  const [initial, setInitial] = useState<Region|undefined>()
 
   const loadData = useCallback(async () => {
     try {
         const db = await getDBConnection();
         const m = await getCoordinates(db);
+        const ld = await getLastDiveWithCoordinates(db);
         setMarkers(m);
+
+        if (ld){
+          const initial:Region = {latitude: ld.lat,
+                            longitude: ld.lng,
+                            latitudeDelta: 0.5922,
+                            longitudeDelta: 0.5421};
+          setInitial(initial)
+        }
+
     } catch (error) {
         console.error(error);
     }
@@ -55,7 +66,7 @@ export const MapsView = ({ route, navigation }:any) => {
 
   return (
     <View style={styles.container}> 
-      <MapView style={styles.map}>
+      <MapView style={styles.map} initialRegion={initial}>
 
        {Object.entries(markers).map(([key, value]) => {
           if(value.latitude != null) {
