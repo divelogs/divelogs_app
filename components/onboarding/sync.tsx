@@ -8,6 +8,7 @@ import { UserProfile } from '../../models'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { ProfilePictureWithLoader } from '../generic/userprofile';
+import { DivelogsContext } from '../../App'; 
 
 enum Recovery {
     Fail = 1,
@@ -79,8 +80,9 @@ const Sync = ({navigation}:any) => {
 
             if (buff != bag.profilePictureUrl)
                 setUserProfile(bag)
-              
-            updateUserprofileContext({...appContext, userProfile: bag})
+            
+            if (updateUserprofileContext)
+              updateUserprofileContext({...appContext, userProfile: bag})
         }},
         { name: "Save profile in database", recover: Recovery.RetryAndFail,
           action: async () => {           
