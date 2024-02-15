@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, Dimensions, ScrollView, View, TouchableOpacity, useWindowDimensions } from 'react-native';
 
 import DiveProfile from './DiveProfile';
@@ -10,12 +10,18 @@ export const DiveProfileModal = ({navigation, route}:any) => {
     const [dive] = useState(route.params.dive)
 
     const {width, height} = useWindowDimensions()
+
     const isLandscape = width > height
     const profileDim = { width: Math.max(width, height), height: Math.min(width, height) }
+
+
+    const [key, setKey] = useState<any>()
 
     const closeView = () => {
         navigation.pop()
     }
+
+    useEffect(() => {setKey(Math.random())}, [])
 
     const styles = StyleSheet.create({
         page: {
@@ -50,10 +56,9 @@ export const DiveProfileModal = ({navigation, route}:any) => {
 
     return <View style={styles.page}>
         <View style={style}>
-            <DiveProfile SampleData={sampleData} imperial={false} />
-            <DiveProfileOverlay sampleData={sampleData}/>
+            <DiveProfile SampleData={sampleData} imperial={false} key={key} />
+            <DiveProfileOverlay sampleData={sampleData} dive={dive} imperial={false}/>
         </View>
-
 
         <TouchableOpacity style={styles.close} onPress={closeView}>
             <Text style={{fontSize: 30}}>🦀</Text>
