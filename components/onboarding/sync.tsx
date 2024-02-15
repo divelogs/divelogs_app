@@ -8,6 +8,7 @@ import { UserProfile } from '../../models'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { ProfilePictureWithLoader } from '../generic/userprofile';
+import { DivelogsContext } from '../../App'; 
 
 enum Recovery {
     Fail = 1,
