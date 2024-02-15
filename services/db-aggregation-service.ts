@@ -1,11 +1,11 @@
 import { SQLiteDatabase } from 'react-native-sqlite-storage';
 import {  NativeModules, Platform } from 'react-native';
 import { StatVal } from '../models';
+import { readResultSet,readResultScalar } from './db-service';
 
 
 export const getMonthStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
   try {
-    let data:StatVal[] = [];
     const results = await db.executeSql(`SELECT * FROM
     (
     select '01' as sorter, count(1) as val, 'Jan' as bez FROM dives WHERE  strftime('%m', divedate) = '01' UNION 
@@ -22,12 +22,9 @@ export const getMonthStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
     select '12' as sorter, count(1), 'Dec' FROM dives WHERE   strftime('%m', divedate) = '12' 
     ) foo
     ORDER BY sorter ASC`);
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        data.push(result.rows.item(index));
-      }
-    });
-    return data;
+
+    return readResultSet<StatVal>(results)
+
   } catch (error) {
     console.error(error);
     throw Error('Failed to get MontStats');
@@ -36,7 +33,6 @@ export const getMonthStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
 
 export const getHourStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
   try {
-    let data:StatVal[] = [];
     const results = await db.executeSql(`SELECT * FROM
     (
     select count(1) as val, '00' as bez FROM dives WHERE  substr(divetime,1,2) = '00' UNION 
@@ -65,12 +61,8 @@ export const getHourStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
     select count(1), '23' FROM dives WHERE  substr(divetime,1,2) = '23'
     ) foo
     ORDER BY bez ASC`);
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        data.push(result.rows.item(index));
-      }
-    });
-    return data;
+
+    return readResultSet<StatVal>(results)
   } catch (error) {
     console.error(error);
     throw Error('Failed to get MontStats');
@@ -80,10 +72,8 @@ export const getHourStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
 export const getDiveCount = async (db: SQLiteDatabase): Promise<number> => {
   try {
     const results = await db.executeSql(`SELECT count(1) as val FROM dives`);
-    if (results[0].rows.length == 0)
-      return 0
-    return results[0].rows.item(0).val;
 
+    return readResultScalar<number>(results, "val") ?? 0
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Single Column Stats Stats');
@@ -121,30 +111,13 @@ export const getBragFacts = async (db: SQLiteDatabase): Promise<any> => {
   }
 };
 
-
-
-
-
-
-
-
-
-
-
 export const getSingleColumnStats = async (db: SQLiteDatabase, column: string, sort: string = 'ASC'): Promise<StatVal[]> => {
   try {
-    let data:StatVal[] = [];
-
     const results = await db.executeSql(`SELECT count(1) as val , TRIM(`+column+`) as bez FROM dives
     GROUP BY TRIM(`+column+`)
     ORDER BY TRIM(`+column+`) `+sort);
-
-    results.forEach((result: { rows: { length: number; item: (arg0: number) => StatVal; }; }) => {
-      for (let index = 0; index < result.rows.length; index++) {
-        data.push(result.rows.item(index));
-      }
-    });
-    return data;
+    
+    return readResultSet<StatVal>(results)
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Single Column Stats');
