@@ -56,7 +56,7 @@ const App = () => {
   // if (dbversion < 1) 
   //   return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>DBVersion: {dbversion}</Text></View>
 
-  return (<SafeAreaView style={{flex: 1, backgroundColor: '#3fb9f2'}}>
+  return (<View style={{flex: 1, backgroundColor: '#3fb9f2'}}>
         <DivelogsContext.Provider value={appContext}>
           <NavigationContainer
             onStateChange={(state) => {
@@ -66,7 +66,7 @@ const App = () => {
           </NavigationContainer>
           <Diver loaded={firstLoad} style={{position: 'absolute', top:0, left:0, width: '100%', height: window.height}}/>
         </DivelogsContext.Provider>
-      </SafeAreaView>)
+      </View>)
 };
 
 export default App; 

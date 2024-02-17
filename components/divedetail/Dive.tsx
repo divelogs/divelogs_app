@@ -12,7 +12,8 @@ import { DivelogsContext } from '../../App';
 
 const DiveDetail = ({navigation, dive}:any) => {
 
-  const { width } = Dimensions.get('window')
+  const width = Dimensions.get('window').width
+
   const [ divepagestyles, setDivepagestyles ] = useState<any>(getDivePageStyles(width))
 
   const [context] = useContext(DivelogsContext);

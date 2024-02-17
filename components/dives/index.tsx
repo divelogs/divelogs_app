@@ -39,27 +39,28 @@ const DivesNavigation = ({navigation}:any) => {
     return unsubscribe;
   }, []);
 
-  const listenRouteChange = (e:any) => {
-    const lastRoute = e.data?.state?.routes?.at(-1)
-    console.log(e.data);
-    if (!lastRoute)
-      return;
+  // Not used any more?
+  // const listenRouteChange = (e:any) => {
+  //   const lastRoute = e.data?.state?.routes?.at(-1)
+  //   console.log(e.data);
+  //   if (!lastRoute)
+  //     return;
 
-    lastView.current = {"name": lastRoute.name }
+  //   lastView.current = {"name": lastRoute.name }
 
-    switch (lastRoute.name){
-      case "AggregatedView":
-      case "AllDives":
-      case "FilteredDives":
-        lastListView.current = {"name": lastRoute.name, "params": lastRoute.params}
-        break;
-      case "DiveListSelection":
-        lastListView.current = null
-        break;
-    }
+  //   switch (lastRoute.name){
+  //     case "AggregatedView":
+  //     case "AllDives":
+  //     case "FilteredDives":
+  //       lastListView.current = {"name": lastRoute.name, "params": lastRoute.params}
+  //       break;
+  //     case "DiveListSelection":
+  //       lastListView.current = null
+  //       break;
+  //   }
 
-    console.log(lastListView.current?.name, " ---> " ,lastView.current?.name)
-  }
+  //   console.log(lastListView.current?.name, " ---> " ,lastView.current?.name)
+  // }
 
   const Stack = createNativeStackNavigator();
 
@@ -75,8 +76,8 @@ const DivesNavigation = ({navigation}:any) => {
             headerTitleAlign: 'center'
           }}
         >
-
-        <Stack.Screen name="DiveListSelection" options={{ 
+        
+        <Stack.Screen name=" " options={{ // Leave name empty, so it does not show in back button when Alldives are shown
           animation: "none",
         }}>
           {(props) => <DiveListSelection {...props}/>}
@@ -85,13 +86,14 @@ const DivesNavigation = ({navigation}:any) => {
         <Stack.Screen name="AllDives" 
           options={{ 
           headerShown: true,
-          headerLeft: () => (
-            (Platform.OS == 'ios' ? <>              
-              <Pressable onPress={()=>navigation.goBack()}>
-                  <Text style={styles.text}>←</Text>
-              </Pressable>           
-            </>            : null)
-          ),
+          // headerLeft: () => (
+          //   (Platform.OS == 'ios' ? <>              
+          //     <Pressable onPress={()=>navigation.goBack()}>
+          //         <Text style={styles.text}>←</Text>
+          //     </Pressable>           
+          //   </>            : null)
+          // ),
+          headerBackTitle: ' ',
           headerRight: () => (
             <>
             <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
@@ -135,13 +137,13 @@ const DivesNavigation = ({navigation}:any) => {
         </Stack.Screen>
 
         <Stack.Screen name="AggregatedView" options={{ 
-          headerLeft: () => (
-            (Platform.OS == 'ios' ? <>              
-              <Pressable onPress={()=>navigation.goBack()}>
-                  <Text style={styles.text}>←</Text>
-              </Pressable>           
-            </>           : null)
-                  ),
+          // headerLeft: () => (
+          //   (Platform.OS == 'ios' ? <>              
+          //     <Pressable onPress={()=>navigation.goBack()}>
+          //         <Text style={styles.text}>←</Text>
+          //     </Pressable>           
+          //   </>           : null)
+          //         ),
           headerRight: () => (
             <>              
               <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
