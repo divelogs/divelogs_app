@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     },
     oneliner: {
       flexDirection: 'row',
+      paddingRight: 15
     },
     desc: {
       flex: 2,
