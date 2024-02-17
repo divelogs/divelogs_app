@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, StyleSheet, Dimensions, ScrollView, View, Pressable } from 'react-native';
+import { Text, StyleSheet, View, Pressable } from 'react-native';
 import { getDBConnection, getCoordinates, getLastDiveWithCoordinates } from '../../services/db-service';
 import MapView, { Marker, Callout, Region } from "react-native-maps";
-import { Dive, MapMarker } from '../../models';
+import { MapMarker } from '../../models';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 

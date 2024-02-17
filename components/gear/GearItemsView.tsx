@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Dimensions, View, FlatList, Text } from 'react-native';
+import { Dimensions, View, FlatList, Text } from 'react-native';
 import { getDBConnection, getGearItems } from '../../services/db-service';
 import { GearItem } from '../../models';
 import { Gear } from './GearItem'

@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Text, View, StyleSheet, Vibration, Platform } from 'react-native';
 import { getDBConnection, getDives, getBearerToken, getProfile, saveDives, saveStatistics, writeBearerToken, saveCertifications, resetSyncForced, saveGearItems, saveSettings, saveProfile, } from '../../services/db-service';
 import { Api } from '../../services/api-service'
-import { Certification, UpdateableAppContext } from '../../models';
+import { Certification } from '../../models';
 import { UserProfile } from '../../models'
 import '../../translation'
 import { useTranslation } from 'react-i18next';

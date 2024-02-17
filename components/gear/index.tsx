@@ -1,4 +1,3 @@
-
 import GearView from "./GearItemsView"
 
 const Gear = () => {

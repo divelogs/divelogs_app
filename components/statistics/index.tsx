@@ -1,4 +1,3 @@
-
 import StatisticsView from "./StatisticsView"
 
 const Statistics = () => {

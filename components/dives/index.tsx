@@ -1,13 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, Pressable, Text, StyleSheet, Platform } from 'react-native';
-import { SvgXml } from 'react-native-svg';
+import { View, Pressable, Text, StyleSheet, Platform } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
 import DivelogsHeader from '../generic/divelogsheader'
 import { AggregationView } from './Aggregation'
 import DiveListSelection from './DiveListSelection'
 import AllDives from './AllDivesView'
 import DiveDetail from '../divedetail'
-import { NavigationContainer, NavigationContext, StackRouter } from '@react-navigation/native';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 

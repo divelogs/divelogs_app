@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Text, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
+import React from 'react';
+import { Text, StyleSheet, View } from 'react-native';
 
 const GearLines = ({children, style, label}:any) => {
 

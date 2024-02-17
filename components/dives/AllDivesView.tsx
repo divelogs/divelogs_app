@@ -1,8 +1,6 @@
 
 import { View, Text } from 'react-native';
 import { Dive } from '../../models';
-import '../../translation'
-import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useContext } from 'react';
 import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getDivesByLatLng } from '../../services/db-service';
 import DivesList from './DivesList';

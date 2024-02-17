@@ -1,6 +1,6 @@
 
 import { StyleSheet, Text, View} from 'react-native';
-import { Dive } from '../../models'
+import { Dive, AppContext, UpdateableAppContext } from '../../models'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useContext } from 'react';
