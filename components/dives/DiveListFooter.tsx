@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View} from 'react-native';
-import { Dive, AppContext, UpdateableAppContext } from '../../models'
+import { Dive } from '../../models'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useContext } from 'react';
@@ -14,7 +14,7 @@ const DiveListFooterStats = ({dives}:any) => {
   const [statistics, setStatistics] = useState<Statistics>({})
   const { t } = useTranslation(); 
 
-  const context = useContext(DivelogsContext);
+  const [context] = useContext(DivelogsContext);
   const imperial = context.userProfile?.imperial || false
 
   useEffect(() => {
