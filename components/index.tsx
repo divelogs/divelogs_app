@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import React from 'react';
 import { SvgXml } from 'react-native-svg';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';

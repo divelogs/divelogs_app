@@ -1,4 +1,3 @@
-
 import { StyleSheet, Text, View} from 'react-native';
 import { Dive, AppContext, UpdateableAppContext } from '../../models'
 import '../../translation'

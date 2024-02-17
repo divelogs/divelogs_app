@@ -1,6 +1,5 @@
 import { enablePromise, openDatabase, ResultSet, SQLiteDatabase } from 'react-native-sqlite-storage';
 import { Dive, Certification, GearItem, APIDive, UserProfile, MapMarker } from '../models';
-import RNFetchBlob from "rn-fetch-blob";
 import { Platform } from 'react-native';
 import dbUpgrade from "./db-upgrade.json";
 import * as Keychain from "react-native-keychain";

@@ -1,4 +1,3 @@
-
 import React, {useState} from 'react';
 import { View, StyleSheet, Pressable, Platform, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

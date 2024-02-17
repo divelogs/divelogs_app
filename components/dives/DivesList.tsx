@@ -1,4 +1,3 @@
-
   import { Text, View,TouchableOpacity, FlatList } from 'react-native';
   import SearchBar from 'react-native-search-bar'; 
   import { Dive } from '../../models'

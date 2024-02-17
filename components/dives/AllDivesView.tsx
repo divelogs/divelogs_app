@@ -1,4 +1,3 @@
-
 import { View, Text } from 'react-native';
 import { Dive } from '../../models';
 import React, { useState, useEffect, useContext } from 'react';

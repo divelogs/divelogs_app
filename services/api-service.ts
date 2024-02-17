@@ -1,9 +1,8 @@
 
 import RNFetchBlob from "rn-fetch-blob";
-import {  NativeModules, Platform, PermissionsAndroid } from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 import { UserProfile } from "../models";
 import * as Keychain from "react-native-keychain";
-import FileSystem from 'react-native-fs';
 
 export type LoginResult = {
   success: boolean;

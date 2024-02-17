@@ -1,15 +1,13 @@
 /**
  * Divelogs App
 */
-import React, { useCallback, useEffect, useState, useLayoutEffect, createContext } from 'react';
+import React, { useEffect, useState, useLayoutEffect, createContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules } from 'react-native';
-
+import { View,Dimensions } from 'react-native';
 import { updateDB, getProfile, getDBConnection } from './services/db-service';
 import './translation'
 import Diver from './components/onboarding/diveranimation'
 import Index from './components'
-
 import { AppContext, UpdateableAppContext } from './models'
 
 export const DivelogsContext = createContext<UpdateableAppContext>([{ theme: "light", userProfile: null }]);
@@ -35,7 +33,7 @@ const App = () => {
   }, []);
 
   const updateContextState = (appContext:AppContext) => {
-    console.log("updating application context", appContext)
+    //console.log("updating application context", appContext)
     setAppContext([appContext, updateContextState])
   }
 
