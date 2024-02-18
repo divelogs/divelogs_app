@@ -326,7 +326,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
       // split string by , and ;
       // trim entries
       // sort array
-      var bdy = divedata.buddy.split(/[;,]+/).map(s => s.trim()).sort();
+      var bdy = (divedata.buddy != null ? divedata.buddy.split(/[;,]+/).map(s => s.trim()).sort() : []);
 
       const values = [
         divedata.id,
