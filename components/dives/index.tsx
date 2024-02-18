@@ -1,16 +1,18 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, Pressable, Text, StyleSheet, Platform } from 'react-native';
-import { SvgXml } from 'react-native-svg';
+import { View, Pressable, Text, StyleSheet, Platform } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
-import { filtericon } from '../../assets/svgs.js'
 import DivelogsHeader from '../generic/divelogsheader'
 import { AggregationView } from './Aggregation'
 import DiveListSelection from './DiveListSelection'
 import AllDives from './AllDivesView'
 import DiveProfileModal from '../divedetail/DiveProfileModal';
 import DiveDetail from '../divedetail'
+import '../../translation'
+import { useTranslation } from 'react-i18next';
 
-const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
+const DivesNavigation = ({navigation}:any) => {
+
+  const { t } = useTranslation(); 
 
   const [sort, setSort] = useState<string>("DESC");
   let lastListView = useRef<any|null>({"name": "AllDives" })
@@ -31,31 +33,33 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
     
       if (lastListView.current?.name == undefined) navigation.navigate("AllDives");
       else navigation.navigate(lastListView.current.name, lastListView.current.params)
+
     });
     return unsubscribe;
   }, []);
 
-  const listenRouteChange = (e:any) => {
-    const lastRoute = e.data?.state?.routes?.at(-1)
-    if (!lastRoute)
-      return;
+  // Not used any more?
+  // const listenRouteChange = (e:any) => {
+  //   const lastRoute = e.data?.state?.routes?.at(-1)
+  //   console.log(e.data);
+  //   if (!lastRoute)
+  //     return;
 
-    lastView.current = {"name": lastRoute.name }
+  //   lastView.current = {"name": lastRoute.name }
 
-    switch (lastRoute.name){
-      case "AggregatedView":
-      case "AllDives":
-      case "FilteredDives":
-        lastListView.current = {"name": lastRoute.name, "params": lastRoute.params}
-        break;
-      case "DiveListSelection":
-        lastListView.current = null
-        break;
-    }
+  //   switch (lastRoute.name){
+  //     case "AggregatedView":
+  //     case "AllDives":
+  //     case "FilteredDives":
+  //       lastListView.current = {"name": lastRoute.name, "params": lastRoute.params}
+  //       break;
+  //     case "DiveListSelection":
+  //       lastListView.current = null
+  //       break;
+  //   }
 
-    console.log(lastListView.current?.name, " ---> " ,lastView.current?.name)
-
-  }
+  //   console.log(lastListView.current?.name, " ---> " ,lastView.current?.name)
+  // }
 
   const Stack = createNativeStackNavigator();
 
@@ -71,8 +75,8 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
             headerTitleAlign: 'center'
           }}
         >
-
-        <Stack.Screen name="DiveListSelection" options={{ 
+        
+        <Stack.Screen name=" " options={{ // Leave name empty, so it does not show in back button when Alldives are shown
           animation: "none",
         }}>
           {(props) => <DiveListSelection {...props}/>}
@@ -81,13 +85,14 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
         <Stack.Screen name="AllDives" 
           options={{ 
           headerShown: true,
-          headerLeft: () => (
-            (Platform.OS == 'ios' ? <>              
-              <Pressable onPress={()=>navigation.goBack()}>
-                  <Text style={styles.text}>←</Text>
-              </Pressable>           
-            </>            : null)
-          ),
+          // headerLeft: () => (
+          //   (Platform.OS == 'ios' ? <>              
+          //     <Pressable onPress={()=>navigation.goBack()}>
+          //         <Text style={styles.text}>←</Text>
+          //     </Pressable>           
+          //   </>            : null)
+          // ),
+          headerBackTitle: ' ',
           headerRight: () => (
             <>
             <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
@@ -105,8 +110,6 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
           {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
 
-
-
         <Stack.Screen name="FilteredDives" options={{ 
           title: "",
           headerRight: () => (
@@ -123,23 +126,23 @@ const DivesNavigation = ({navigation, refreshApiData, imperial}:any) => {
             </>
           ),    
         }}>
-          {(props) => <AllDives {...props} sort={sort} refreshApiData={refreshApiData}/>}
+          {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
 
         <Stack.Screen name="DiveDetail" options={{ 
           headerBackTitleVisible: false       
         }}>
-          {(props) => <DiveDetail {...props} imperial={imperial}/>}
+          {(props) => <DiveDetail {...props}/>}
         </Stack.Screen>
 
         <Stack.Screen name="AggregatedView" options={{ 
-          headerLeft: () => (
-            (Platform.OS == 'ios' ? <>              
-              <Pressable onPress={()=>navigation.goBack()}>
-                  <Text style={styles.text}>←</Text>
-              </Pressable>           
-            </>           : null)
-                  ),
+          // headerLeft: () => (
+          //   (Platform.OS == 'ios' ? <>              
+          //     <Pressable onPress={()=>navigation.goBack()}>
+          //         <Text style={styles.text}>←</Text>
+          //     </Pressable>           
+          //   </>           : null)
+          //         ),
           headerRight: () => (
             <>              
               <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>

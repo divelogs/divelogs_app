@@ -39,6 +39,15 @@ export type Dive = {
   lng: number;
 };
 
+export type AppContext = {
+  userProfile: UserProfile | null
+  theme: string
+}
+
+export type UpdateableAppContext = [
+  AppContext, ((ctx:AppContext) => void)?
+]
+
 export type UserProfile = {
   imperial: boolean;
   startnumber: number;

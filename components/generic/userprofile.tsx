@@ -6,7 +6,6 @@ import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { getDBConnection, getProfile, } from '../../services/db-service';
 import Loader from './loader';
-import FileSystem from 'react-native-fs';
 
 export const ProfilePicture = ({userprofile, style, imageSize}:any) : any => 
 {

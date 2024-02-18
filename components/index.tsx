@@ -1,34 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import React from 'react';
 import { SvgXml } from 'react-native-svg';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { diveicon, certicon, staticon, gearicon, globe } from '../assets/svgs.js'
 import '../translation'
 import { useTranslation } from 'react-i18next';
-import StatisticsView from './StatisticsView';
-import MapsView from './MapsView';
+import StatisticsView from './statistics';
+import MapsView from './map';
 import Certifications from './certifications';
 import Dives from './dives'
-import GearView from './GearItemsView';
+import GearView from './gear';
 import Onboarding from './onboarding';
 import AppHeader from './generic/divelogsheader'
-import { getImperial } from '../services/db-service';
 
 const BottomNavigation = ({}:any)=> {
 
   const Tab = createBottomTabNavigator();
   const { t } = useTranslation(); 
-
-  const [imperial, setImperial] = useState<boolean>(false);
-
-  useEffect(() => {
-    (async () => {
-      const imp = await getImperial();
-      setImperial(imp);
-    })()
-    return () => {  }
-  }, []);
 
   return (<>
     <Tab.Navigator screenOptions={{
@@ -49,7 +37,7 @@ const BottomNavigation = ({}:any)=> {
           );
         }
       }}>
-        {(props) => <Dives {...props} imperial={imperial}/>}
+        {(props) => <Dives {...props}/>}
       </Tab.Screen>
       <Tab.Screen name="Certifications"  
         component={Certifications} 
@@ -75,13 +63,12 @@ const BottomNavigation = ({}:any)=> {
           tabBarLabelStyle: {fontSize: 14},
           tabBarIcon: ({size,focused,color}) => {
             return (
-              <SvgXml xml={globe} width="40" height="25"/>
+              <SvgXml xml={globe} width="25" height="25"/>
             );
           }
         }} />
       <Tab.Screen name="Statistics" 
         component={StatisticsView} 
-        initialParams={{ imperial: imperial }}
         options={{ 
           title: t("statistics"),
           headerShown: true, 

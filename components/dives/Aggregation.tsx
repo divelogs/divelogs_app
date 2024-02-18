@@ -1,14 +1,13 @@
-
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import SearchBar from 'react-native-search-bar'; 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { getDBConnection } from '../../services/db-service';
 import { getSingleColumnStats, getDepthStats, getDurationStats, getPrecalcedStats } from '../../services/db-aggregation-service';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { StatVal } from '../../models';
 import divelogsStyles from '../../stylesheets/styles'
-
+import { DivelogsContext } from '../../App'; 
 
 const StatRow = ({item, label}:any) => (<View
       style={styles.statRowStyle}>
@@ -16,13 +15,16 @@ const StatRow = ({item, label}:any) => (<View
       <View style={styles.countlabel}><Text style={styles.countlabeltext}>{item.val}</Text></View>
     </View>) 
 
-export const AggregationView = ({navigation, route, view, imperial}:any) => {
+export const AggregationView = ({navigation, route, view}:any) => {
 
   const { t } = useTranslation();
   const [stats, setStats] = useState<StatVal[]>([])
   const [filteredStats, setFilteredStats] = useState<StatVal[]>([])
   const [filter, setFilter] = useState<string>("")
   const name = route.params.view.name
+
+  const [context] = useContext(DivelogsContext);
+  const imperial = context.userProfile?.imperial || false
 
   useEffect(() => {
     (async () => {

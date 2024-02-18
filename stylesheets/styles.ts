@@ -1,4 +1,3 @@
-
 import { StyleSheet , Dimensions} from 'react-native';
 
 const windowdim = Dimensions.get('window');

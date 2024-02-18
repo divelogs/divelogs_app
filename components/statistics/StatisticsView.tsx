@@ -1,28 +1,22 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { Text, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
-import { getDBConnection, getImperial } from '../services/db-service';
-import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats, getBragFacts } from '../services/db-aggregation-service';
+import { getDBConnection } from '../../services/db-service';
+import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats, getBragFacts } from '../../services/db-aggregation-service';
 import { Statistic } from './Statistic';
-import Oneliner from './generic/ValueView';
-import { StatVal, BragFacts } from '../models';
-import '../translation'
+import Oneliner from '../generic/ValueView';
+import { StatVal, BragFacts } from '../../models/index.ts';
+import '../../translation'
 import { useTranslation } from 'react-i18next';
-import { rendertemp, renderdepth, secondstotimeHMS } from './functions.ts'
-import divelogsStyles from '../stylesheets/styles'
+import { rendertemp, renderdepth, secondstotimeHMS } from '../functions'
+import divelogsStyles from '../../stylesheets/styles.ts'
+import { DivelogsContext } from '../../App'; 
 
 
 export const StatisticsView = ({ route, navigation }:any) => {
-
-    const [imperial, setImperial] = useState<boolean>(false);
-
-    useEffect(() => {
-      (async () => {
-        const imp = await getImperial();
-        setImperial(imp);
-      })()
-      return () => {  }
-    }, []);
     
+    const [context] = useContext(DivelogsContext);
+    const imperial = context.userProfile?.imperial || false
+
     const [monthStats, setMonthStats] = useState<StatVal[]>([]);
     const [hourStats, setHourStats] = useState<StatVal[]>([]);
     const [yearStats, setYearStats] = useState<StatVal[]>([]);

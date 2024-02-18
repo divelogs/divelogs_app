@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Text, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
+import React from 'react';
+import { Text, StyleSheet, View } from 'react-native';
 
 const GearLines = ({children, style, label}:any) => {
 
@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     },
     oneliner: {
       flexDirection: 'row',
+      paddingRight: 15
     },
     desc: {
       flex: 2,
