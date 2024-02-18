@@ -37,11 +37,11 @@ export default {
     sum_duration: "Durée ∑",
     nodives: "Aucune plongée trouvée",
     nocerts: "Aucune certification trouvée",
-    nogear: "Aucun eequipement trouvé",
+    nogear: "Aucun équipement trouvé",
     maps: "Carte",
 
     weather: "Météo",
-    vizibility: "Visibilité",
+    vizibility: "Visibilité",             // TODO: fix EN version into viSibility
     weights: "Lestage",
     si: "SI",
 
@@ -78,7 +78,7 @@ export default {
     bySite: "Par Site",
     byBoat: "Par bateau",
     byDepth: "Par profondeur",
-    byDuration: "par durée",
+    byDuration: "Par durée",
     showdives: "Voir les plongées",
 
     and: "et",

@@ -1,5 +1,5 @@
 export default { 
-    divesite: "Punto d'immersione",
+    divesite: "Punto tuffo",
     location: "Luogo",
     buddy: "Compagno",
     boat: "Barca",
@@ -43,15 +43,15 @@ export default {
     weather: "Meteo",
     vizibility: "Visibilità",
     weights: "Pesi",
-    si: "Intervallo superficie",
+    si: "Interv.Sup.",
 
-    start_pressure: "Press. iniziale",
-    end_pressure: "Press. finale",
+    start_pressure: "Press.Iniziale",
+    end_pressure: "Press.Finale",
     tank: "Bombola",
     vol: "Vol",
-    wp: "WP",
+    wp: "Press.Esercizio",
     o2: "o2",
-    he: "he",
+    he: "He",
     sac: "SAC",
 
     month01: "Gennaio",
