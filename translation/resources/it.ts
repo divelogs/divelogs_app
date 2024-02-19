@@ -51,7 +51,7 @@ export default {
     vol: "Vol",
     wp: "Press.Esercizio",
     o2: "o2",
-    he: "He",
+    he: "he",
     sac: "SAC",
 
     month01: "Gennaio",
