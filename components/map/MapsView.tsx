@@ -65,50 +65,37 @@ export const MapsView = ({ route, navigation }:any) => {
   }
 
   // Android only allows onPress on Callout, while iOS allows a Pressable inside callout
-  if (Platform.OS == 'ios') {
-    return (
+  return (
     <View style={styles.container}> 
       <MapView style={styles.map} initialRegion={initial}>
 
        {Object.entries(markers).map(([key, value]) => {
           if(value.latitude != null) {
             return <Marker key={key} title={value.divesite} coordinate={{latitude: value.latitude, longitude: value.longitude}} > 
-            <Callout>
+            
+            {Platform.OS == 'ios' && <Callout>
                 <View>
                     <Text>{value.divesite}</Text>
                     <Pressable onPress={() => showMarkerDives(value)}>
                       <View style={styles.showdives}><Text style={styles.showdivestext}>{t('showdives')}</Text></View>
-                    </Pressable>  
+                    </Pressable>
                 </View>
-            </Callout>
-            </Marker>
-          }
-        })}
-
-      </MapView>
-    </View>
-  ) } else {
-    return (
-    <View style={styles.container}> 
-      <MapView style={styles.map} initialRegion={initial}>
-
-       {Object.entries(markers).map(([key, value]) => {
-          if(value.latitude != null) {
-            return <Marker key={key} title={value.divesite} coordinate={{latitude: value.latitude, longitude: value.longitude}} > 
-            <Callout onPress={() => showMarkerDives(value)}>
+            </Callout>}
+            
+            {Platform.OS == 'android' && <Callout onPress={() => showMarkerDives(value)}>
                 <View>
                     <Text>{value.divesite}</Text>
                       <View style={styles.showdives}><Text style={styles.showdivestext}>{t('showdives')}</Text></View>
                 </View>
-            </Callout>
+            </Callout>}
+
             </Marker>
           }
         })}
 
       </MapView>
     </View>
-  )
-  }
+  ) 
   
 };
 
