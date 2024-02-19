@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
       flex: 2,
       maxWidth: 130,
       color: '#39ade2',
-      textAlignVertical: "bottom",
+      textAlignVertical: "top",
     }
   });
 
