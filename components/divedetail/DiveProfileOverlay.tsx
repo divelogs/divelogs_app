@@ -22,10 +22,27 @@ type SpotlightSample = {
     speed: string
 }
 
+type ConcreteSample = {
+    index: number,
+    depth: number,
+
+    x: number,
+    y: number
+}
+
+type SpotlightArea = {
+    left: ConcreteSample,
+    right: ConcreteSample,
+    depth: number
+    duration: number
+    speed: number
+}
+
 
 export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: SampleData, dive: Dive, imperial: boolean}) => {
 
     const [position, setPosition] = useState<SpotlightSample|null>(null)
+    const [area, setArea] = useState<SpotlightArea|null>(null)
     const [samples, setSamples] = useState<number[]>([])
     const [calculated, setCalculated] = useState<Calculated|null>(null)
     const [timePerSample, setTimePerSample] = useState<number>(0)
@@ -55,47 +72,46 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
     }, [sampleData, duration])
 
     useEffect(() => { 
-
         if (!lpos) return
         const s = calculateSample(lpos)
         setPosition(s)
-
-
        }, [])
 
-    const calculateSample = (position:any) : SpotlightSample | null  => {
-
+    const getSelectedSample = (position:any) => {
         const padding = ProfileDimensions.padleft + ProfileDimensions.loffset // 27
         const width = 628
         
         if (position.x - padding < 0) return null;
         if (position.x - padding > width) return null;
         if (samples?.length < 1) return null;
-        if (!calculated) return null; 
-        
-        
+                
         const pick = (position.x - padding) / (width)
-
 
         const time = (samples.length-1) * pick
         const percent = (time) % 1
         const index = Math.floor(time)
 
-
-
-
         if (samples.length <= index) return null
 
-        const prevSample = samples[index - 1] ?? 0
         const theSample = samples[index]
         const nextSample = samples[index +1] ?? 0
 
         console.log(index , 'of' , samples.length-1, " --> " + theSample, "n:" + nextSample)
+        return {current: theSample, next: nextSample, index, percent}
+    }
+
+    const calculateSample = (position:any) : SpotlightSample | null  => {
+
+        if (!calculated) return null; 
+
+        const sam = getSelectedSample(position)
+        if (!sam) return null;
+
+        const {current: theSample, next: nextSample, index, percent } = sam!
 
         const actual = theSample + ((nextSample - theSample) * percent)
-        ///console.log(samples.length * pick, theSample, nextSample, actual, percent)
 
-        var mult = (height*0.9)/calculated.maxDepth
+        const mult = (height*0.9)/calculated.maxDepth
 
         var ycolumn = Math.ceil(actual * mult) //+ 5;
 
@@ -109,8 +125,65 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
             arrow = '↗'
 
         let currentSpeedLabel = `${arrow}${Math.abs(currentSpeed)}m/min`
+ 
+        return { 
+                 x: position.x, 
+                 y: ycolumn-1, 
+                 sample: theSample, 
+                 depth: `↓${(Math.round(actual*100)/100)}m`, 
+                 passedMinutes: passedLabel, 
+                 time: timeLabel, 
+                 speed: currentSpeedLabel }
+    }
+
+    const travel = (prevSample: number, position:number, direction:[boolean, boolean]) : number => 
+    {
+        const [down, right] = direction
+        const idxAdd = right ? +1 : -1;
+
+        const currIdx = position + idxAdd
+        if (currIdx >= samples.length || currIdx < 0)  return position
+
+        const currSample = samples[currIdx]
+
+        if (right)
+        console.log("cp:" , currSample, prevSample, "right:", direction, `(${currIdx})` )
+
+        const cb = ((currSample - prevSample) >= 0) 
         
-        return { x: position.x, y: ycolumn-1, sample: theSample, depth: `↓${(Math.round(actual*100)/100)}m`, passedMinutes: passedLabel, time: timeLabel, speed: currentSpeedLabel }
+        if (cb !== down) return position;
+        return travel(currSample, currIdx, direction);
+    }
+
+    const calculateAreaOfCurrentSample = (position:any) : SpotlightArea | null  => {
+
+        const sam = getSelectedSample(position)
+        if (!sam) return null;
+        if (!calculated) return null; 
+
+        const {current: theSample, next: nextSample, index } = sam!
+
+        if (theSample === nextSample) return null
+
+        const changeBy = (nextSample - theSample) > 0 // true === down
+
+        const right = travel(theSample, index, [changeBy, true])
+        
+        
+        const left = travel(theSample, index, [!changeBy, false])
+        
+        console.log("l", left, "r", right, samples)
+
+        const mult = (height*0.9)/calculated.maxDepth
+
+
+        return {
+            right: { index: right, depth: samples[right], x: 40, y: Math.ceil(samples[right] * mult)  },
+            left: { index: left, depth: samples[left], x: 100, y: Math.ceil(samples[left] * mult) },
+            depth: samples[right] - samples[left],
+            duration: (right - left) * timePerSample,
+            speed: (samples[right] - samples[left]) / ((right - left) * timePerSample)
+        }
     }
 
     const calculateSpeed = (samples: number[]) : number => {
@@ -138,14 +211,20 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
         setlpos(pos)
         const sample = calculateSample(pos)
         setPosition(sample)
+        setArea(null)
     } 
 
     const stopTapped = ({nativeEvent: evt}:any) => {
         tapped({nativeEvent: evt})
+
+        const pos = {x: evt.locationX, y: evt.locationY}
+        const area = calculateAreaOfCurrentSample(pos)
+        setArea(area)
+        console.log(area)
     } 
 
 
-    const svg = SvgOverlay(position, height, width)
+    const svg = SvgOverlay(position, area, height, width)
 
     return (<View style={{ flex: 1, position: 'absolute', top: 0, left: 0, height: 500}} onStartShouldSetResponder={() => true} onResponderMove={tapped} onTouchStart={tapped} onResponderEnd={stopTapped}>
 
@@ -179,9 +258,28 @@ const textOverlay = (sample:SpotlightSample | null, height:number, width:number)
     </g>`
 }
 
-const SvgOverlay = (sample:SpotlightSample | null, height:number, width:number) : string => {
+const areaOverlay = (area:SpotlightArea | null, height:number, width:number) : string => {
+    if (!area) return ""
+    const move:boolean = false;
+    const pointRadius = 8;
+    return `<g>
+        <line x1="${27}" y1="${area.left.y}" x2="${width}" y2="${area.left.y}" />
+
+        <g transform="${move ? "translate(-80,0)" : ""}">
+          <text x="${100}" y="${area.left.y + 12}" fill="#a8a8a8" style="font-size: 10px;">${area.left.depth}</text>
+          <text x="${100}" y="${area.right.y - 4}" fill="#a8a8a8" style="font-size: 10px;">${area.right.depth}</text>
+        </g>
+
+
+        <line x1="${27}" y1="${area.right.y}" x2="${width}" y2="${area.right.y}" />
+    </g>`
+}
+
+const SvgOverlay = (sample:SpotlightSample | null, samplearea: SpotlightArea | null, height:number, width:number) : string => {
 
     const content = textOverlay(sample, height, width);
+
+    const area = areaOverlay(samplearea, height, width)
 
     return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg
@@ -203,9 +301,8 @@ const SvgOverlay = (sample:SpotlightSample | null, height:number, width:number) 
   <path d="M 0 0 L 10 5 L 0 10 z" />
 </marker>
 </defs>
-
-
     ${content}
+    ${area}
 </svg>
     `
 }

@@ -94,15 +94,30 @@ function makeSVGprofile(samples: number[], duration: number, lines = true, imper
 		//koords.push((e+2)*horiz_mult+padleft+2 + ",0");
 		
 		
-		console.log(koords.join(" ") )
-		var vert_10minute_lines =(((rate/60)*samples.length) / 10) + 1;		
+		//console.log(koords.join(" ") )
+
+		let linePerMin = duration / 60 / 8
+		if (linePerMin > 60)
+			linePerMin = 60
+		else if (linePerMin > 30)
+			linePerMin = 30
+		else if (linePerMin > 15)
+			linePerMin = 15
+		else if (linePerMin > 8)
+			linePerMin = 10
+		else
+			linePerMin = 5
+		//else
+		//	linePerMin = Math.round(linePerMin / 5 * 10) / 10
+
+		var vert_10minute_lines =(((rate/60)*samples.length) / linePerMin) + 1;		
 
 		var ret = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" style="font-family:Arial, Helvetica, sans-serif; width:100%; height: auto;" viewBox="0 0 ' + width + ' ' + height + '">'
 + '<linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">'
 + '      <stop offset="0%" style="stop-color:#ebf6fb;stop-opacity:1" />'
 + '      <stop offset="100%" style="stop-color:#88cee8;stop-opacity:1" />'
 + '</linearGradient>'
-+ '  <polygon points="' + koords.join(" ") + '" style="fill:url(#grad2);stroke:#63c5f3;stroke-width:.5" />';
++ '  <polygon points="' + koords.join(" ") + '" style="fill:url(#grad2);stroke:#000;stroke-width:.5" />';
 
 	if (lines) {
 		// horizontal line every 10 meters
@@ -125,16 +140,17 @@ function makeSVGprofile(samples: number[], duration: number, lines = true, imper
 		// vertical line every 10 minutes
 		for (var s=0; s< vert_10minute_lines; s++)
 		{
-			var iks = s*(60/rate*10)*horiz_mult+padleft-1;
-			var d = s*10;
+			var iks = s*(60/rate*linePerMin)*horiz_mult+padleft-1;
+			var d = s*linePerMin;
 
 			ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
-			ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + d + '</text>';
+			ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + (d >= 180 ? d / 60 + "h" : d) + '</text>';
 		}
 	
 		// "min:" bottom left
 		ret += '<text x="2" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">min:</text>';
 	}
+
 	ret += '</svg>';
 	return ret;
 }
