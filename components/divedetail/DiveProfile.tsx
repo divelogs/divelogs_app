@@ -7,15 +7,16 @@ export const DiveProfile: React.FC<{
     SampleData: SampleData,
 	imperial: boolean
 }> = ({ SampleData: {sampledata, samplerate, duration, width, height, lines = true, forlist = false}, imperial }) => {
-  var samples = (sampledata != null && sampledata.length > 5 ? sampledata.split(",") : []);
-  if (samples.length > 0) {
+	var sampledatajson = "["+sampledata+"]";
+	var samples = (sampledata != null && sampledata.length > 5 ? JSON.parse(sampledatajson) : []);
+	if (samples.length > 0) {
 	var profileSVG = makeSVGprofile(samples, samplerate, duration, lines, imperial);
 	return (
 		<View style={forlist ? styles.forlist : styles.flex}>
 			<SvgXml xml={profileSVG} width={width} height={height} />
 		</View>
 	)
-  } else {
+	} else {
 	return (
 		<View>
 			<Image
@@ -24,7 +25,7 @@ export const DiveProfile: React.FC<{
 			/>
 		</View>
 	)
-  }
+	}
 };
 
 const styles = StyleSheet.create({
