@@ -10,7 +10,7 @@ export const DiveProfile: React.FC<{
   
 	
 	if (sampledata?.length > 5) {
-		var samples = sampledata.split(",").map(parseFloat);
+		var samples = JSON.parse("["+sampledata+"]");
 		var profileSVG = makeSVGprofile(samples, duration, lines, imperial);
 		return (
 			<View style={forlist ? styles.forlist : styles.flex}>
@@ -52,7 +52,7 @@ export const ProfileDimensions = {
 	loffset:2,	
 }
 
-function makeSVGprofile(samples: number[], duration: number, lines = true, imperial = false)
+function makeSVGprofile(samples: any[], duration: number, lines = true, imperial = false)
 {
 		const {width, height, padleft, loffset} = ProfileDimensions;
 
@@ -66,15 +66,42 @@ function makeSVGprofile(samples: number[], duration: number, lines = true, imper
 		// get the hoizontal multiplier
 		var horiz_mult = (width-padleft-8)/(samples.length-1);	
 
+		var tempcolor = '#FF0000';
+
 		// maximum depth
-		var maxdepth = Math.max(...samples);
+		var depthsonly = samples.map(function(entry){return parseFloat(typeof entry=="object" ? entry.d : entry)});
+		var maxdepth = Math.max(...depthsonly);
 		var tens = Math.floor(maxdepth/10)+1;
+
+		var alltemps:any = [];
+		var hastemps = false;
+		// temps
+		for (const [index, val] of samples.entries()) {
+			if (typeof val=="object") {
+				alltemps.push(val.t);
+				hastemps = true;
+			}
+			else {
+				var lasttemp = parseFloat(alltemps.slice(-1));
+				alltemps.push((isNaN(lasttemp) ? Infinity : lasttemp));
+			};
+		};
+		var maxtemp = Math.max(...alltemps.filter(Number.isFinite))
+		var mintemp = Math.min(...alltemps.filter(Number.isFinite))
+		var tempdiff = maxtemp - mintemp;
+		var lasttemp_y = 0;
+		var tempmult = 15;
+		var padtempsfromtop = 45;
+
+		console.log(mintemp);
+		console.log(maxtemp);
 
 		// vertical multiplier
 		var mult = (maxdepth > 0 ? (height*0.9)/maxdepth : 60);	
 
 		// array for polygon points
 		var koords = [];
+		var tempkoords = [];
 		
 		//first coordinates for start of dive
 		//koords.push(padleft + ",0");
@@ -82,12 +109,24 @@ function makeSVGprofile(samples: number[], duration: number, lines = true, imper
 		// write all coordinates to array
 		for (var e=0;e<samples.length;e++)
 		{
+			var lasample = samples[e], 
+			ycolumn;			
 			// transform samples to coordinates (in Pixels)
 			var xcolumn = (e)*horiz_mult+padleft;
-			var ycolumn = Math.floor(samples[e]*mult)
+			if (typeof lasample == "object") ycolumn = Math.floor(lasample.d*mult);
+			else ycolumn = Math.floor(lasample*mult);
+			
 		
 			// push both values comma-separated to array
 			koords.push(Math.round(xcolumn) + "," + Math.round(ycolumn));
+
+			if (alltemps[e] != Infinity) {
+				var tempxcolumn = (e+1)*horiz_mult+padleft;
+				var tempycolumn = Math.floor((Math.round(maxtemp)-Math.round(alltemps[e]))*tempmult)+padtempsfromtop;		
+				// Wertepaare in das Array schreiben
+				tempkoords.push(Math.round(tempxcolumn) + "," + Math.round(tempycolumn));
+				lasttemp_y = Math.round(tempycolumn);
+			}
 		}
 
 		// end of dive coordinate (Depth 0m)
@@ -119,6 +158,9 @@ function makeSVGprofile(samples: number[], duration: number, lines = true, imper
 + '</linearGradient>'
 + '  <polygon points="' + koords.join(" ") + '" style="fill:url(#grad2);stroke:#000;stroke-width:.5" />';
 
+	// Temperaturkurve
+	if (hastemps && lines) ret += "<polyline points='" + tempkoords.join(" ") + "' fill='none' stroke='"+tempcolor+"70' />";
+
 	if (lines) {
 		// horizontal line every 10 meters
 		// more lines for imperial
@@ -149,6 +191,15 @@ function makeSVGprofile(samples: number[], duration: number, lines = true, imper
 	
 		// "min:" bottom left
 		ret += '<text x="2" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">min:</text>';
+	}
+
+	// Temperaturlegende
+	if (hastemps && lines) {
+		for (var l=0; l<=tempdiff; l++) {
+			ret += '<text x="'+(width-30)+'" y="'+((l*tempmult)-3+padtempsfromtop)+'" fill="'+tempcolor+'70" style="font-size: 10px;">'+(maxtemp-l)+' °C</text>';
+		}
+		// line for min temp
+		ret += '<line x1="'+padleft+'" y1="'+(tempdiff*tempmult)+padtempsfromtop+'" x2="'+(width)+'" y2="'+(tempdiff*tempmult)+padtempsfromtop+'" style="stroke:'+tempcolor+'70;stroke-width:.5" />';  
 	}
 
 	ret += '</svg>';
