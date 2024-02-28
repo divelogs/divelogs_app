@@ -82,8 +82,7 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 				hastemps = true;
 			}
 			else {
-				var lasttemp = parseFloat(alltemps.slice(-1));
-				alltemps.push((isNaN(lasttemp) ? Infinity : lasttemp));
+				alltemps.push(null);
 			};
 		};
 		var maxtemp = Math.max(...alltemps.filter(Number.isFinite))
@@ -120,12 +119,11 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 			// push both values comma-separated to array
 			koords.push(Math.round(xcolumn) + "," + Math.round(ycolumn));
 
-			if (alltemps[e] != Infinity) {
+			if (alltemps[e] != Infinity && alltemps[e] != null) {
 				var tempxcolumn = (e+1)*horiz_mult+padleft;
 				var tempycolumn = Math.floor((Math.round(maxtemp)-Math.round(alltemps[e]))*tempmult)+padtempsfromtop;		
 				// Wertepaare in das Array schreiben
 				tempkoords.push(Math.round(tempxcolumn) + "," + Math.round(tempycolumn));
-				lasttemp_y = Math.round(tempycolumn);
 			}
 		}
 
