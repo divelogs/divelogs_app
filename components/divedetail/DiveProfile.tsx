@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { SampleData } from '../../models';
 
@@ -45,9 +45,12 @@ const styles = StyleSheet.create({
 	}
   });
 
+const dimensions = Dimensions.get('window');
+console.log(dimensions);
+
 export const ProfileDimensions = {
-	width:700,
-	height:400,
+	width:dimensions.width,
+	height:dimensions.height,
 	padleft:25,
 	loffset:2,	
 }
@@ -185,8 +188,10 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 			var iks = s*(60/rate*linePerMin)*horiz_mult+padleft-1;
 			var d = s*linePerMin;
 
-			ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
-			ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + (d >= 180 ? d / 60 + "h" : d) + '</text>';
+			if (iks <= width) {
+				ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
+				ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + (d >= 180 ? d / 60 + "h" : d) + '</text>';
+			}
 		}
 	
 		// "min:" bottom left

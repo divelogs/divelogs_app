@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image, Text, Pressable } from 'react-native';
+import { View, StyleSheet, Image, Text, Pressable, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 import {ProfileDimensions} from './DiveProfile'
@@ -38,6 +38,7 @@ type SpotlightArea = {
     speed: number
 }
 
+const dimensions = Dimensions.get('window');
 
 export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: SampleData, dive: Dive, imperial: boolean}) => {
 
@@ -78,8 +79,8 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
        }, [])
 
     const getSelectedSample = (position:any) => {
-        const padding = ProfileDimensions.padleft + ProfileDimensions.loffset // 27
-        const width = 628
+        const padding = ProfileDimensions.padleft // 27
+        const width = dimensions.width - ProfileDimensions.padleft - 10
         
         if (position.x - padding < 0) return null;
         if (position.x - padding > width) return null;
