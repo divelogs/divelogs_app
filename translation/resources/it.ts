@@ -6,7 +6,7 @@ export default {
     notes: "Note",
     dives: "Immersioni",
     certifications: "Brevetti",
-    statistics: "Statistiche",
+    statistics: "Statistica",
     loading: "Carica dati da divelogs...",
     login: "Accedi a divelogs",
     depths: "Profondità",
@@ -51,7 +51,7 @@ export default {
     vol: "Vol",
     wp: "Press.Esercizio",
     o2: "o2",
-    he: "he",
+    he: "He",
     sac: "SAC",
 
     month01: "Gennaio",
