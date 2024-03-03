@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Dimensions, View, FlatList, Text } from 'react-native';
-import { getDBConnection, getGearItems } from '../services/db-service';
-import { GearItem } from '../models';
+import { Dimensions, View, FlatList, Text } from 'react-native';
+import { getDBConnection, getGearItems } from '../../services/db-service';
+import { GearItem } from '../../models';
 import { Gear } from './GearItem'
-import '../translation'
+import '../../translation'
 import { useTranslation } from 'react-i18next';
-
-import divelogsStyles from '../stylesheets/styles'
+import divelogsStyles from '../../stylesheets/styles'
 
 export const GearView = () => {
 
@@ -42,25 +41,9 @@ export const GearView = () => {
     })
   }, []);
 
-  const styles = StyleSheet.create({
-    appTitleView: {
-      justifyContent: 'center',
-      flexDirection: 'row',
-      backgroundColor: '#3fb9f2'
-    },
-    listHeader: {
-      fontSize: 25,    
-      fontWeight: '700',
-      marginTop: 20,
-      marginLeft: 10,
-      marginBottom: 15,
-      color: '#3eb8f1'
-    },
-  });
-
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-      <Text style={styles.listHeader}>{t('gearitems')}</Text>
+      <Text style={divelogsStyles.viewHeader}>{t('gearitems')}</Text>
             <FlatList
               ListEmptyComponent={<View style={[divelogsStyles.noListContent]}><Text style={[divelogsStyles.noListContentText]}>{t('nogear')}</Text></View>}  
                 data={gearitems} 

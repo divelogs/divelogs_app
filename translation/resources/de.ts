@@ -38,6 +38,7 @@ export default {
     nodives: "Keine Tauchgänge gefunden",
     nocerts: "Keine Brevets gefunden",
     nogear: "Keine Ausrüstung gefunden",
+    maps: "Karte",
 
     weather: "Wetter",
     vizibility: "Sicht",
@@ -78,6 +79,7 @@ export default {
     byBoat: "Nach Schiffen",
     byDepth: "Nach Tiefen",
     byDuration: "Nach Tauchdauer",
+    showdives: "Zeige Tauchgänge",
 
     and: "und",
 

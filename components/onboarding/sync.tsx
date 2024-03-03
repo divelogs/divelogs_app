@@ -1,6 +1,6 @@
 
-import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Vibration } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { Text, View, StyleSheet, Vibration, Platform } from 'react-native';
 import { getDBConnection, getDives, getBearerToken, getProfile, saveDives, saveStatistics, writeBearerToken, saveCertifications, resetSyncForced, saveGearItems, saveSettings, saveProfile, } from '../../services/db-service';
 import { Api } from '../../services/api-service'
 import { Certification } from '../../models';
@@ -8,6 +8,7 @@ import { UserProfile } from '../../models'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { ProfilePictureWithLoader } from '../generic/userprofile';
+import { DivelogsContext } from '../../App'; 
 
 enum Recovery {
     Fail = 1,
@@ -29,6 +30,7 @@ const Sync = ({navigation}:any) => {
     const [currentStep, setCurrentStep] = useState<number>(0)
     const [retry, setRetry] = useState<number>(0)
     const [userprofile, setUserProfile] = useState<UserProfile|null>()
+    const [appContext, updateUserprofileContext ] = useContext(DivelogsContext)
     const [diveCount, setDiveCount] = useState(0)
     const [bag, setBag] = useState<any>()
 
@@ -68,6 +70,7 @@ const Sync = ({navigation}:any) => {
 
             setBag(profile)
             setUserProfile(profile)
+            console.log(profile);
         }},
         { name: "Download profile picture", recover: Recovery.RetryAndSkip,
           action: async () => {
@@ -77,6 +80,9 @@ const Sync = ({navigation}:any) => {
 
             if (buff != bag.profilePictureUrl)
                 setUserProfile(bag)
+            
+            if (updateUserprofileContext)
+              updateUserprofileContext({...appContext, userProfile: bag})
         }},
         { name: "Save profile in database", recover: Recovery.RetryAndFail,
           action: async () => {           
@@ -130,10 +136,11 @@ const Sync = ({navigation}:any) => {
             const db = await getDBConnection(); 
             const gearitems = await Api.getGear()
             await saveGearItems(db, gearitems);
-        }},                
+        }}
+        ,                
         { name: "Vibrate and done!", recover: Recovery.Fail,
           action: async () => {
-            Vibration.vibrate(150);
+            if (Platform.OS == 'ios') Vibration.vibrate(150);
             resetSyncForced();
             navigation.reset({index: 0, routes: [{ name: 'Home'}]})
         }}

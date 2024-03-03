@@ -1,40 +1,22 @@
 /**
  * Divelogs App
 */
-import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useLayoutEffect, createContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import {SafeAreaView,Text,TextInput,View,Dimensions, ActivityIndicator, Alert, Modal, Pressable, NativeModules } from 'react-native';
-
-import { Dive } from './models';
-import { getDBConnection, getDives, getBearerToken, saveDives, writeBearerToken, saveCertifications, updateDB, saveGearItems, saveSettings, saveStatistics, getImperial } from './services/db-service';
-import { SvgXml } from 'react-native-svg';
-import { divelogs_logo, diveicon, certicon, staticon, gearicon } from './assets/svgs.js'
-import { StatisticsView } from './components/StatisticsView';
-import { Certifications } from './components/Certifications';
-import { GearView} from './components/GearItemsView';
+import { View,Dimensions } from 'react-native';
+import { updateDB, getProfile, getDBConnection } from './services/db-service';
 import './translation'
-import { useTranslation } from 'react-i18next';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
 import Diver from './components/onboarding/diveranimation'
-
-import { Api } from './services/api-service'
-import Dives from './components/dives'
-import Onboarding from './components/onboarding'
-import DiveDetail from './components/divedetail'
-
-
 import Index from './components'
+import { AppContext, UpdateableAppContext } from './models'
 
-import styles from './stylesheets/styles'
-import DiverAnimation from './components/onboarding/diveranimation';
-
+export const DivelogsContext = createContext<UpdateableAppContext>([{ theme: "light", userProfile: null }]);
 
 const App = () => {
 
+  const [appContext, setAppContext] = useState<UpdateableAppContext>([{ theme: "light", userProfile: null }])
   const [firstLoad, setFirstLoad] = useState<string|undefined>("")
   const [dbversion, setDbVersion] = useState<number>(0);
-
 
   const DBCheck = async () => {
     try {
@@ -45,24 +27,44 @@ const App = () => {
     }
   };
 
-    // This gets called before the component renders. In case DB Updates are needed
-    useLayoutEffect(() => {
-      DBCheck();
-    }, []);
+  // This gets called before the component renders. In case DB Updates are needed
+  useLayoutEffect(() => {
+    DBCheck();
+  }, []);
 
-  if (dbversion < 1) 
-    return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>{dbversion}</Text></View>
+  const updateContextState = (appContext:AppContext) => {
+    //console.log("updating application context", appContext)
+    setAppContext([appContext, updateContextState])
+  }
+
+  useEffect(() => {
+    ;(async () => {
+      const db = await getDBConnection()
+      const profile = await getProfile(db)
+
+      const [appCtx] = appContext
+      const ctx:AppContext = {...appCtx, userProfile: profile}
+      updateContextState(ctx);
+    })()
+  }, [])
+
+    const window = Dimensions.get('window');
+
+  // this shows briefly on Android, even if the DB is ok
+  // if (dbversion < 1) 
+  //   return <View style={{flex: 1, backgroundColor: '#3fb9f2'}}><Text>DBVersion: {dbversion}</Text></View>
 
   return (<View style={{flex: 1, backgroundColor: '#3fb9f2'}}>
-      <NavigationContainer
-        onStateChange={(state) => {
-          setFirstLoad(state?.routes[0].name)
-          }}> 
-        <Index/>
-      </NavigationContainer>
-      <Diver loaded={firstLoad} style={{position: 'absolute', top:0, left:0, width: '100%', height: '100%'}}/>
-
-    </View>)
+        <DivelogsContext.Provider value={appContext}>
+          <NavigationContainer
+            onStateChange={(state) => {
+              setFirstLoad(state?.routes[0].name)
+              }}> 
+            <Index/>
+          </NavigationContainer>
+          <Diver loaded={firstLoad} style={{position: 'absolute', top:0, left:0, width: '100%', height: window.height}}/>
+        </DivelogsContext.Provider>
+      </View>)
 };
 
 export default App; 

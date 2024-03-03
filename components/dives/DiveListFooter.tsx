@@ -1,18 +1,21 @@
-
 import { StyleSheet, Text, View} from 'react-native';
 import { Dive } from '../../models'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { DivelogsContext } from '../../App'; 
 
 interface Statistics {
   [key: string]: number;
 }
 
-const DiveListFooterStats = ({dives, imperial}:any) => {
+const DiveListFooterStats = ({dives}:any) => {
 
   const [statistics, setStatistics] = useState<Statistics>({})
   const { t } = useTranslation(); 
+
+  const [context] = useContext(DivelogsContext);
+  const imperial = context.userProfile?.imperial || false
 
   useEffect(() => {
     let s:Statistics = {};

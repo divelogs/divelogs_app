@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { StatData, StatVal } from '../models';
+import { StatData, StatVal } from '../../models';
 
 export const Statistic: React.FC<{
     StatData: StatData;

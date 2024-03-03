@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { getDBConnection } from '../../services/db-service';
 import { getDiveCount } from '../../services/db-aggregation-service'
 import { View, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
+import divelogsStyles from '../../stylesheets/styles'
+
 
 const ListItem = ({name, label}:any) => {
   return <View style={[
@@ -32,8 +34,12 @@ const DiveListSelection = ({navigation, route}:any) => {
     return () => {  }
   }, []);
 
+  // useEffect(() => {
+  //   navigation.navigate("AllDivesNoAnimation")
+  // }, [])
+
   useEffect(() => {
-    navigation.navigate("AllDivesNoAnimation")
+    navigation.navigate("AllDives")
   }, [])
 
   const views:any = [
@@ -123,7 +129,7 @@ const DiveListSelection = ({navigation, route}:any) => {
   //if (!diveCount) return;
 
   return <View style={{flex:1}}>
-            <Text style={styles.listHeader}>{t('choosefilter')}:</Text>
+            <Text style={divelogsStyles.viewHeader}>{t('choosefilter')}:</Text>
             <SectionList
               sections={views}
               keyExtractor={(item, index) => item.location + index}
@@ -142,13 +148,6 @@ const DiveListSelection = ({navigation, route}:any) => {
 export default DiveListSelection
 
 const styles = StyleSheet.create({
-  listHeader: {
-    fontSize: 25,    
-    fontWeight: '700',
-    marginTop: 5,
-    marginLeft: 10,
-    color: '#3eb8f1'
-  },
   countlabel: {    
     paddingHorizontal: 5, 
     marginLeft: 20, 

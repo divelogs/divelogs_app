@@ -1,4 +1,3 @@
-
 import { Animated, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import React, { useState, useEffect, useRef } from 'react';
@@ -15,7 +14,7 @@ const DiverAnimation = ({style, loaded}:any) => {
   
   const diverZooooom = () : any => {
 
-    const delay = 300
+    const delay = 600
 
     const anim = Animated.sequence([
             Animated.parallel([

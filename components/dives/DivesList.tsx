@@ -1,23 +1,26 @@
-
   import { Text, View,TouchableOpacity, FlatList } from 'react-native';
   import SearchBar from 'react-native-search-bar'; 
   import { Dive } from '../../models'
   import '../../translation'
   import { useTranslation } from 'react-i18next';
-  import React, { useState, useEffect } from 'react';
+  import React, { useState, useEffect, useContext } from 'react';
   import { DiveListItem } from './DiveListItem';
   import DiveListFooterStats from './DiveListFooter';
   import styles from '../../stylesheets/styles'
+  import { DivelogsContext } from '../../App'; 
 
   interface Statistics {
     [key: string]: number;
   }
 
-  const DiveList = ({navigation, dives, doSearch, selectDive, imperial}:any) => {
+  const DiveList = ({navigation, dives, doSearch, selectDive, frommap}:any) => {
 
     const [searchText, setSearchText] = useState<string>('');
     const [statistics, setStatistics] = useState<Statistics>({})
     const { t } = useTranslation(); 
+
+    const [context] = useContext(DivelogsContext);
+    const imperial = context.userProfile?.imperial || false
 
     useEffect(() => {
       let s:Statistics = {};
@@ -79,7 +82,7 @@
               </TouchableOpacity>
             )}
             ListFooterComponent={({item}) => (
-              <DiveListFooterStats {...item} dives={dives} imperial={imperial} />
+              <DiveListFooterStats {...item} dives={dives}/>
             )}
             ListEmptyComponent={<View style={[styles.noListContent]}><Text style={[styles.noListContentText]}>{t('nodives')}</Text></View>}
           />

@@ -66,25 +66,33 @@ const styles = StyleSheet.create({
     flex: 0.63
   },  
   divelistrightcontainer: {
-    marginTop:15,
+    marginTop:20,
     flex: 0.15
   },
   diveNumber: {
-    fontSize: 22,
+    fontSize: 24,
     position: 'absolute',
     paddingLeft: 5,
-    paddingTop: 3
+    paddingTop: 10,
+    fontWeight: '900',
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.7)',
+    textShadowOffset: {width: 0, height: 0},
+    textShadowRadius: 2,
   },
   divedate: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '500',
     lineHeight:20
   },
   
   divelistLocationContainer: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '400',
+    marginLeft: 0
   }, 
   divelistDetailContainer: {
     fontSize: 12,
+    marginTop: 3
   }
 });

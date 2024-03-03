@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,7 +18,8 @@ export const Certifications = () => {
         <Stack.Navigator screenOptions={{
           headerStyle: { backgroundColor: '#3fb9f2'},
           headerTitle: () => <AppHeader/>,
-          headerTintColor: '#fff'
+          headerTintColor: '#fff',
+          headerTitleAlign: 'center'
         }}>
           <Stack.Screen name="CertificationHome" component={Overview} options={{ 
             headerShown: true,
@@ -32,26 +32,6 @@ export const Certifications = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  bold: {
-    fontWeight: "700"
-  },
-  appTitleView: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#3fb9f2'
-  },
-  listHeader: {
-    fontSize: 25,    
-    fontWeight: '700',
-    marginTop: 5,
-    marginLeft: 0,
-    marginBottom: 15,
-    color: '#3eb8f1'
-  },
-});
-
 
 export default Certifications
 

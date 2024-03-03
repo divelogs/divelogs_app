@@ -1,4 +1,5 @@
-import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList } from 'react-native';
+import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList, Platform } from 'react-native';
+import React, { useContext } from 'react';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, renderweights, secondstotimeHMS } from '../functions.ts'
@@ -7,15 +8,23 @@ import DiveProfile from './DiveProfile'
 import { TankView } from './TankView'
 import { Tank } from '../../models'
 import { useState } from 'react';
+import { DivelogsContext } from '../../App'; 
 
-const DiveDetail = ({navigation, dive, imperial}:any) => {
+const DiveDetail = ({navigation, dive}:any) => {
 
-  const { width } = Dimensions.get('window')
+  const width = Dimensions.get('window').width
+
   const [ divepagestyles, setDivepagestyles ] = useState<any>(getDivePageStyles(width))
 
+  const [context] = useContext(DivelogsContext);
+  const imperial = context.userProfile?.imperial || false
+
   const { t } = useTranslation(); 
-  const locale = (NativeModules.SettingsManager.settings.AppleLocale ||
-               NativeModules.SettingsManager.settings.AppleLanguages[0]).replace("_","-");
+  const locale =
+    (Platform.OS === 'ios'
+      ? NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
+      : NativeModules.I18nManager.localeIdentifier).replace("_","-");
 
   let tanks = (dive.tanks != null ? JSON.parse(dive.tanks) : []);
 

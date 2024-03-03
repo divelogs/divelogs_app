@@ -7,15 +7,16 @@ export const DiveProfile: React.FC<{
     SampleData: SampleData,
 	imperial: boolean
 }> = ({ SampleData: {sampledata, samplerate, duration, width, height, lines = true, forlist = false}, imperial }) => {
-  var samples = (sampledata != null && sampledata.length > 5 ? sampledata.split(",") : []);
-  if (samples.length > 0) {
+	var sampledatajson = "["+sampledata+"]";
+	var samples = (sampledata != null && sampledata.length > 5 ? JSON.parse(sampledatajson) : []);
+	if (samples.length > 0) {
 	var profileSVG = makeSVGprofile(samples, samplerate, duration, lines, imperial);
 	return (
 		<View style={forlist ? styles.forlist : styles.flex}>
 			<SvgXml xml={profileSVG} width={width} height={height} />
 		</View>
 	)
-  } else {
+	} else {
 	return (
 		<View>
 			<Image
@@ -24,7 +25,7 @@ export const DiveProfile: React.FC<{
 			/>
 		</View>
 	)
-  }
+	}
 };
 
 const styles = StyleSheet.create({
@@ -44,12 +45,12 @@ const styles = StyleSheet.create({
 
 function makeSVGprofile(samples: string | any[], rate: number, duration: number, lines = true, imperial = false)
 {
-		var width = 700, height = 400, padleft = 25, loffset = 2;
+		var width = 700, height = 400, padleft = 25, padright = 25, loffset = 2;
 
 		rate = duration / samples.length;
 
 		// get the hoizontal multiplier
-		var horiz_mult = (width-padleft-8)/(samples.length+1);		
+		var horiz_mult = (width-padleft-padright)/(samples.length+1);		
 
 		// maximum depth
 		var maxdepth = Math.max(...samples);
@@ -105,14 +106,36 @@ function makeSVGprofile(samples: string | any[], rate: number, duration: number,
 			}
 		}
 
-		// vertical line every 10 minutes
-		for (var s=0; s< vert_10minute_lines; s++)
-		{
-			var iks = s*(60/rate*10)*horiz_mult+padleft-1;
-			var d = s*10;
+		var l = 0,ten_mult;
 
-			ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
-			ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + d + '</text>';
+		// Cope with very long dives
+		if (vert_10minute_lines > 60) {
+			l = Math.ceil(vert_10minute_lines / 6);
+			horiz_mult = horiz_mult * 6;
+			ten_mult = 6;
+		} else if (vert_10minute_lines > 40) {
+			l = Math.ceil(vert_10minute_lines / 4);
+			horiz_mult = horiz_mult * 4;
+			ten_mult = 4;
+		} else if (vert_10minute_lines > 20) {
+			l = Math.ceil(vert_10minute_lines / 2);
+			horiz_mult = horiz_mult * 2;
+			ten_mult = 2;
+		} else {
+			l = vert_10minute_lines;
+			ten_mult = 1;
+		}
+
+		// vertical line every 10 minutes
+		for (var s=0; s< l; s++)
+		{
+			var iks = s*(60/rate*10)*horiz_mult+padleft;
+			var d = s*10*ten_mult;
+
+			if (iks <= width) {
+				ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
+				ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + (d >= 180 ? d / 60 + "h" : d) + '</text>';
+			}
 		}
 	
 		// "min:" bottom left
