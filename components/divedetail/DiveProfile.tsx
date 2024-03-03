@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { SampleData } from '../../models';
 
@@ -45,12 +45,9 @@ const styles = StyleSheet.create({
 	}
   });
 
-const dimensions = Dimensions.get('window');
-console.log(dimensions);
-
 export const ProfileDimensions = {
-	width:dimensions.width,
-	height:dimensions.height,
+	width:700,
+	height:400,
 	padleft:25,
 	loffset:2,	
 }
@@ -85,7 +82,8 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 				hastemps = true;
 			}
 			else {
-				alltemps.push(null);
+				var lasttemp = parseFloat(alltemps.slice(-1));
+				alltemps.push((isNaN(lasttemp) ? Infinity : lasttemp));
 			};
 		};
 		var maxtemp = Math.max(...alltemps.filter(Number.isFinite))
@@ -122,11 +120,12 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 			// push both values comma-separated to array
 			koords.push(Math.round(xcolumn) + "," + Math.round(ycolumn));
 
-			if (alltemps[e] != Infinity && alltemps[e] != null) {
+			if (alltemps[e] != Infinity) {
 				var tempxcolumn = (e+1)*horiz_mult+padleft;
 				var tempycolumn = Math.floor((Math.round(maxtemp)-Math.round(alltemps[e]))*tempmult)+padtempsfromtop;		
 				// Wertepaare in das Array schreiben
 				tempkoords.push(Math.round(tempxcolumn) + "," + Math.round(tempycolumn));
+				lasttemp_y = Math.round(tempycolumn);
 			}
 		}
 
@@ -186,10 +185,8 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 			var iks = s*(60/rate*linePerMin)*horiz_mult+padleft-1;
 			var d = s*linePerMin;
 
-			if (iks <= width) {
-				ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
-				ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + (d >= 180 ? d / 60 + "h" : d) + '</text>';
-			}
+			ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
+			ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + (d >= 180 ? d / 60 + "h" : d) + '</text>';
 		}
 	
 		// "min:" bottom left
