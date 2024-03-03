@@ -41,7 +41,7 @@ export default {
     maps: "Map",
 
     weather: "Weather",
-    vizibility: "Vizibility",
+    vizibility: "Visibility",
     weights: "Weights",
     si: "SI",
 
@@ -49,10 +49,10 @@ export default {
     end_pressure: "End Press.",
     tank: "Tank",
     vol: "Vol",
-    wp: "WP",
+    wp: "WP", // Short for "workingpressure"
     o2: "o2",
     he: "he",
-    sac: "SAC",
+    sac: "SAC", // Short for Surface Air Consumption
 
     month01: "January",
     month02: "February",

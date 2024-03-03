@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, StyleSheet, View, Pressable } from 'react-native';
+import { Text, StyleSheet, View, Pressable, Platform } from 'react-native';
 import { getDBConnection, getCoordinates, getLastDiveWithCoordinates } from '../../services/db-service';
 import MapView, { Marker, Callout, Region } from "react-native-maps";
 import { MapMarker } from '../../models';
@@ -64,6 +64,7 @@ export const MapsView = ({ route, navigation }:any) => {
     navigation.navigate("Map.FilteredDives", {view: { aggregation: "byLatLng" }, filter: { lat: value.latitude, lng: value.longitude }})
   }
 
+  // Android only allows onPress on Callout, while iOS allows a Pressable inside callout
   return (
     <View style={styles.container}> 
       <MapView style={styles.map} initialRegion={initial}>
@@ -71,21 +72,30 @@ export const MapsView = ({ route, navigation }:any) => {
        {Object.entries(markers).map(([key, value]) => {
           if(value.latitude != null) {
             return <Marker key={key} title={value.divesite} coordinate={{latitude: value.latitude, longitude: value.longitude}} > 
-            <Callout>
+            
+            {Platform.OS == 'ios' && <Callout>
                 <View>
                     <Text>{value.divesite}</Text>
                     <Pressable onPress={() => showMarkerDives(value)}>
                       <View style={styles.showdives}><Text style={styles.showdivestext}>{t('showdives')}</Text></View>
-                    </Pressable>  
+                    </Pressable>
                 </View>
-            </Callout>
+            </Callout>}
+            
+            {Platform.OS == 'android' && <Callout onPress={() => showMarkerDives(value)}>
+                <View>
+                    <Text>{value.divesite}</Text>
+                      <View style={styles.showdives}><Text style={styles.showdivestext}>{t('showdives')}</Text></View>
+                </View>
+            </Callout>}
+
             </Marker>
           }
         })}
 
       </MapView>
     </View>
-  );
+  ) 
   
 };
 

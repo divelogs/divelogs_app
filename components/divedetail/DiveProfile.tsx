@@ -4,7 +4,7 @@ import { SvgXml } from 'react-native-svg';
 import { SampleData } from '../../models';
 
 export const DiveProfile: React.FC<{
-    SampleData: SampleData,
+  SampleData: SampleData,
 	imperial: boolean,
 	formodal: boolean
 }> = ({ SampleData: {sampledata, duration, width, height, lines = true, forlist = false}, imperial, formodal }) => {
@@ -28,6 +28,7 @@ export const DiveProfile: React.FC<{
 			</View>
 		)
   	}
+
 };
 
 const styles = StyleSheet.create({
@@ -190,8 +191,12 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 			var iks = s*(60/rate*linePerMin)*horiz_mult+padleft-1;
 			var d = s*linePerMin;
 
-			ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
-			ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + (d >= 180 ? d / 60 + "h" : d) + '</text>';
+
+			if (iks <= width) {
+				ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
+				ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + (d >= 180 ? d / 60 + "h" : d) + '</text>';
+			}
+
 		}
 	
 		// "min:" bottom left

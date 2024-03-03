@@ -13,7 +13,7 @@ var language =
           NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
         : NativeModules.I18nManager.localeIdentifier).substr(0,2);
 
-const availablelanguages = ["de", "en"];
+const availablelanguages = ["de", "en", "fr", "it", "nl"];
 // Fallback to english if used language is not in available ones
 if (availablelanguages.indexOf(language)==-1) language = "en"
 
