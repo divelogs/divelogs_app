@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image, Text, Pressable, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
-import {ProfileDimensions} from './DiveProfile'
+//import {ProfileDimensions} from './DiveProfile'
 
 import { SampleData, Dive } from '../../models';
 
@@ -79,8 +79,8 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
        }, [])
 
     const getSelectedSample = (position:any) => {
-        const padding = ProfileDimensions.padleft // 27
-        const width = dimensions.width - ProfileDimensions.padleft - 10
+        const padding = 25
+        const width = (Math.max(dimensions.width, dimensions.height)) - 25 - 10
         
         if (position.x - padding < 0) return null;
         if (position.x - padding > width) return null;

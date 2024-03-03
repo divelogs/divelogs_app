@@ -1,17 +1,18 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { SampleData } from '../../models';
 
 export const DiveProfile: React.FC<{
     SampleData: SampleData,
-	imperial: boolean
-}> = ({ SampleData: {sampledata, duration, width, height, lines = true, forlist = false}, imperial }) => {
+	imperial: boolean,
+	formodal: boolean
+}> = ({ SampleData: {sampledata, duration, width, height, lines = true, forlist = false}, imperial, formodal }) => {
   
 	
 	if (sampledata?.length > 5) {
 		var samples = JSON.parse("["+sampledata+"]");
-		var profileSVG = makeSVGprofile(samples, duration, lines, imperial);
+		var profileSVG = makeSVGprofile(samples, duration, lines, imperial, formodal);
 		return (
 			<View style={forlist ? styles.forlist : styles.flex}>
 				<SvgXml xml={profileSVG} width={width} height={height} />
@@ -52,9 +53,13 @@ export const ProfileDimensions = {
 	loffset:2,	
 }
 
-function makeSVGprofile(samples: any[], duration: number, lines = true, imperial = false)
+function makeSVGprofile(samples: any[], duration: number, lines = true, imperial = false, formodal = false)
 {
-		const {width, height, padleft, loffset} = ProfileDimensions;
+		const {width, height, padleft, loffset} = (formodal ? {	
+			width: Math.max(Dimensions.get('window').width, Dimensions.get('window').height),
+			height: Math.min(Dimensions.get('window').width, Dimensions.get('window').height),
+			padleft:25,
+			loffset:2,} : ProfileDimensions);
 
 		// ensurs zero sample at top and bottom of dive
 		if (samples[0] != 0)

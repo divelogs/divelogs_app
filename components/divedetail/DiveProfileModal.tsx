@@ -56,7 +56,7 @@ export const DiveProfileModal = ({navigation, route}:any) => {
 
     return <View style={styles.page}>
         <View style={style}>
-            <DiveProfile SampleData={sampleData} imperial={false} key={key} />
+            <DiveProfile SampleData={sampleData} imperial={false} key={key} formodal={true}/>
             <DiveProfileOverlay sampleData={sampleData} dive={dive} imperial={false}/>
         </View>
 
