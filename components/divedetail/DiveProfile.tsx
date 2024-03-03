@@ -132,8 +132,10 @@ function makeSVGprofile(samples: string | any[], rate: number, duration: number,
 			var iks = s*(60/rate*10)*horiz_mult+padleft;
 			var d = s*10*ten_mult;
 
-			ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
-			ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + d + '</text>';
+			if (iks <= width) {
+				ret += '<line x1="' + iks + '" y1="0" x2="' + iks + '" y2="' + height + '" style="stroke:#a8a8a8;stroke-width:.5" />';
+				ret += '<text x="' + (iks+2) + '" y="' + (height-2) + '" fill="#a8a8a8" style="font-size: 10px;">' + (d >= 180 ? d / 60 + "h" : d) + '</text>';
+			}
 		}
 	
 		// "min:" bottom left
