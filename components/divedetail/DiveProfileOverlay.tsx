@@ -6,6 +6,7 @@ import { SvgXml } from 'react-native-svg';
 //import {ProfileDimensions} from './DiveProfile'
 
 import { SampleData, Dive } from '../../models';
+import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 
 
 type Calculated = {
@@ -40,6 +41,11 @@ type SpotlightArea = {
 
 const dimensions = Dimensions.get('window');
 
+function extractDepth(data:any) {
+    if (typeof data == "object") return data.d;
+    else return data;
+}
+
 export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: SampleData, dive: Dive, imperial: boolean}) => {
 
     const [position, setPosition] = useState<SpotlightSample|null>(null)
@@ -56,7 +62,9 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
     
     useEffect(() => {
         const sampledata = sampleData.sampledata;
-        const samples = (sampledata != null && sampledata.length > 5 ? sampledata.split(",") : []).map(parseFloat);
+        const samples = (sampledata != null && sampledata.length > 5 ? JSON.parse("["+sampledata+"]") : []).map(extractDepth);
+
+        //console.log(samples);
 
         if (samples[0] != 0)
             samples.unshift(0)
@@ -69,7 +77,7 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
 
         var calculated:Calculated = { maxDepth: Math.max(...samples)}
         setCalculated(calculated)
-        console.log(samples)
+        //console.log(samples)
     }, [sampleData, duration])
 
     useEffect(() => { 
@@ -97,7 +105,7 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
         const theSample = samples[index]
         const nextSample = samples[index +1] ?? 0
 
-        console.log(index , 'of' , samples.length-1, " --> " + theSample, "n:" + nextSample)
+        //console.log(index , 'of' , samples.length-1, " --> " + theSample, "n:" + nextSample)
         return {current: theSample, next: nextSample, index, percent}
     }
 
@@ -147,8 +155,7 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
 
         const currSample = samples[currIdx]
 
-        if (right)
-        console.log("cp:" , currSample, prevSample, "right:", direction, `(${currIdx})` )
+        //if (right) console.log("cp:" , currSample, prevSample, "right:", direction, `(${currIdx})` )
 
         const cb = ((currSample - prevSample) >= 0) 
         
@@ -173,7 +180,7 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
         
         const left = travel(theSample, index, [!changeBy, false])
         
-        console.log("l", left, "r", right, samples)
+        //console.log("l", left, "r", right, samples)
 
         const mult = (height*0.9)/calculated.maxDepth
 
@@ -195,33 +202,40 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
     }
 
     const makeTimeLabel = (index: number, percent: number) : [string, string] =>  {
+        //console.log(percent);
         var passed = (index) * timePerSample + timePerSample * percent
-        var seconds = Math.floor(60 * ((passed / 60) % 1))
+        //console.log('passed');
+        //console.log(passed);
+        var seconds = Math.floor(passed)
         var minutes = Math.floor(passed / 60)
-        var passedLabel = `${minutes}min ${seconds.toString().padStart(2, '0')}s`
+        var passedLabel = `${minutes}min ${(seconds-minutes*60).toString().padStart(2, '0')}s`
 
         const result = new Date(dive.divedate + " " + dive.divetime)
+        //console.log(result);
         result.setSeconds(seconds + result.getSeconds());
+        //console.log(result);
 
-        return [passedLabel, result.toTimeString().substring(0, 8)]
+        return [passedLabel, result.toLocaleString('de', {hour: 'numeric', minute: 'numeric', second: 'numeric'})]
     }
 
     const tapped = ({nativeEvent: evt}:any) => {
-        
+        //console.log('tapped');
         const pos = {x: evt.locationX, y: evt.locationY}
         setlpos(pos)
         const sample = calculateSample(pos)
         setPosition(sample)
+        //console.log(sample);
         setArea(null)
     } 
 
     const stopTapped = ({nativeEvent: evt}:any) => {
+        //console.log('stoptapped');
         tapped({nativeEvent: evt})
 
         const pos = {x: evt.locationX, y: evt.locationY}
         const area = calculateAreaOfCurrentSample(pos)
         setArea(area)
-        console.log(area)
+        //console.log(area)
     } 
 
 
@@ -261,6 +275,7 @@ const textOverlay = (sample:SpotlightSample | null, height:number, width:number)
 
 const areaOverlay = (area:SpotlightArea | null, height:number, width:number) : string => {
     if (!area) return ""
+    console.log(area);
     const move:boolean = false;
     const pointRadius = 8;
     return `<g>
@@ -281,6 +296,8 @@ const SvgOverlay = (sample:SpotlightSample | null, samplearea: SpotlightArea | n
     const content = textOverlay(sample, height, width);
 
     const area = areaOverlay(samplearea, height, width)
+
+    //console.log(area);
 
     return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg

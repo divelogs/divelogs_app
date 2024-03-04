@@ -112,7 +112,7 @@ const DiveDetail = ({navigation, dive}:any) => {
         </View>
         
         <TouchableOpacity onPress={() => focusDiveProfile()}>
-          <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} />
+          <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} formodal={false}/>
         </TouchableOpacity>
       </View>
     </ScrollView>)
