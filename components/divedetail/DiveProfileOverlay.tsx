@@ -151,7 +151,7 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
         const idxAdd = right ? +1 : -1;
 
         const currIdx = position + idxAdd
-        if (currIdx >= samples.length || currIdx < 0)  return position
+        if (currIdx >= samples.length || currIdx < 0)  return position
 
         const currSample = samples[currIdx]
 
@@ -233,9 +233,15 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
         tapped({nativeEvent: evt})
 
         const pos = {x: evt.locationX, y: evt.locationY}
-        const area = calculateAreaOfCurrentSample(pos)
-        setArea(area)
-        //console.log(area)
+        // const area = calculateAreaOfCurrentSample(pos)
+        // setArea(area)
+        // //console.log(area)
+
+        setlpos(pos)
+        const sample = calculateSample(pos)
+        setPosition(sample)
+        //console.log(sample);
+        setArea(null)
     } 
 
 
