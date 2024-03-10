@@ -99,9 +99,6 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 		var tempmult = 15;
 		var padtempsfromtop = 45;
 
-		console.log(mintemp);
-		console.log(maxtemp);
-
 		// vertical multiplier
 		var mult = (maxdepth > 0 ? (height*0.9)/maxdepth : 60);	
 
