@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 import SearchBar from 'react-native-search-bar'; 
 import React, { useState, useEffect, useContext } from 'react';
 import { getDBConnection } from '../../services/db-service';
@@ -9,13 +9,13 @@ import { StatVal } from '../../models';
 import divelogsStyles from '../../stylesheets/styles'
 import { DivelogsContext } from '../../App'; 
 
-const StatRow = ({item, label}:any) => (<View
-      style={styles.statRowStyle}>
-      <Text style={styles.statRowText}>{label?.length > 0 ? label : "?"}</Text>
-      <View style={styles.countlabel}><Text style={styles.countlabeltext}>{item.val}</Text></View>
-    </View>) 
-
 export const AggregationView = ({navigation, route, view}:any) => {
+
+  const StatRow = ({item, label}:any) => (<View
+    style={styles.statRowStyle}>
+    <Text style={styles.statRowText}>{label?.length > 0 ? label : "?"}</Text>
+    <View style={styles.countlabel}><Text style={styles.countlabeltext}>{item.val}</Text></View>
+  </View>) 
 
   const { t } = useTranslation();
   const [stats, setStats] = useState<StatVal[]>([])
@@ -127,8 +127,68 @@ export const AggregationView = ({navigation, route, view}:any) => {
       text={filter}
     /> 
   }
+  const theme = useColorScheme();
+  const styles = StyleSheet.create({
+    page: {
+      backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909' ),
+      color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
+      flex: 1
+    },
+    listHeader: {
+      fontSize: 25,    
+      fontWeight: '700',
+      marginTop: 5,
+      marginLeft: 10,
+      color: '#3eb8f1'
+    },
+    countlabel: {
+      height: 22,
+      paddingHorizontal: 5, 
+      marginLeft: 20, 
+      borderRadius: 10, 
+      borderColor: "#3fb9f2", 
+      paddingTop:1,
+  
+      backgroundColor: '#3fb9f2',
+      borderWidth: 1,
+      minWidth:40,    
+    },
+    countlabeltext: {
+      fontSize: 14, 
+      fontWeight: '700',
+      color: "#FFFFFF", 
+      textAlign:"center"
+    },
+    statRowStyle: {
+      flex:1,
+      padding:10,
+      marginTop: 10,
+      flexDirection: 'row',
+    },
+    statRowText: {
+      flex: 3,
+      fontSize: 18,
+      color: (theme == 'light' ? "#000000": "#FFFFFF"), 
+    },
+    tinyLogo: {
+      width:150,
+      height:34
+    },
+    safeArea: {
+      flex: 1,
+      backgroundColor: '#FFFFFF'
+    },
+    bold: {
+      fontWeight: "700"
+    },
+    appTitleView: {
+      justifyContent: 'center',
+      flexDirection: 'row',
+      backgroundColor: '#3fb9f2'
+    },
+  });
 
-  return <View style={{flex: 1}}>
+  return <View style={styles.page}>
           <FlatList
             ListHeaderComponent={() => <>
               <Filter/>
@@ -147,61 +207,6 @@ export const AggregationView = ({navigation, route, view}:any) => {
 }
 
 
-const styles = StyleSheet.create({
-  listHeader: {
-    fontSize: 25,
-    
-    fontWeight: '700',
-    marginTop: 5,
-    marginLeft: 10,
-    color: '#3eb8f1'
-  },
-  countlabel: {
-    height: 22,
-    paddingHorizontal: 5, 
-    marginLeft: 20, 
-    borderRadius: 10, 
-    borderColor: "#3fb9f2", 
-    paddingTop:1,
 
-    backgroundColor: '#3fb9f2',
-    borderWidth: 1,
-    minWidth:40,
-    
-    
-  },
-  countlabeltext: {
-    fontSize: 14, 
-    fontWeight: '700',
-    color: "#FFFFFF", 
-    textAlign:"center"
-  },
-  statRowStyle: {
-    flex:1,
-    padding:10,
-    marginTop: 10,
-    flexDirection: 'row',
-  },
-  statRowText: {
-    flex: 3,
-    fontSize: 18,
-  },
-  tinyLogo: {
-    width:150,
-    height:34
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#FFFFFF'
-  },
-  bold: {
-    fontWeight: "700"
-  },
-  appTitleView: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#3fb9f2'
-  },
-});
 
 

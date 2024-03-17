@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, NativeModules, StyleSheet, TouchableOpacity, Image, Platform, ScrollView, Dimensions } from 'react-native';
+import { View, Text, FlatList, NativeModules, StyleSheet, TouchableOpacity, Image, Platform, ScrollView, Dimensions, useColorScheme } from 'react-native';
 import { Certification } from '../../models';
 import { getDBConnection, getCertifications } from '../../services/db-service';
 import RNFetchBlob from "rn-fetch-blob";
@@ -28,6 +28,35 @@ export const Overview = ({navigation}:any) => {
     const { config, fs } = RNFetchBlob;
     const PictureDir = fs.dirs.DocumentDir;
 
+    const theme = useColorScheme();
+    const styles = StyleSheet.create({
+      page: {
+        backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909' ),
+        color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
+        flex: 1,
+        paddingBottom: 0, 
+        paddingRight: 0
+      },
+      text: {
+        color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
+      },
+      bold: {
+        fontWeight: "700"
+      },
+      desc: {
+        fontSize: 16,
+        fontWeight: '500',
+        width: '70%',
+        flex: 3,
+        marginBottom: 4,
+        color: (theme == 'light' ? '#000000' : '#FFFFFF' )
+      },
+      date: {
+        flex: 1,
+        color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
+        marginBottom: 10
+      }
+    });
 
   
     const loadCertifications = async () => {
@@ -53,7 +82,7 @@ export const Overview = ({navigation}:any) => {
 
       return (
 
-        <View style={{ flex: 1, paddingBottom: 0, paddingRight: 0, backgroundColor: '#FFFFFF' }}>     
+        <View style={styles.page}>     
         <Text style={divelogsStyles.viewHeader}>{t('certifications')}</Text>  
           <FlatList
             style={{paddingHorizontal: 10}}
@@ -87,23 +116,7 @@ export const Overview = ({navigation}:any) => {
 
       )
   };
-
-  const styles = StyleSheet.create({
-    bold: {
-      fontWeight: "700"
-    },
-    desc: {
-      fontSize: 16,
-      fontWeight: '500',
-      width: '70%',
-      flex: 3,
-      marginBottom: 4
-    },
-    date: {
-      flex: 1,
-      marginBottom: 10
-    }
-  });
+  
   
 
 export default Overview

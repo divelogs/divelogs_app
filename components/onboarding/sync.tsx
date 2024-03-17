@@ -70,7 +70,7 @@ const Sync = ({navigation}:any) => {
 
             setBag(profile)
             setUserProfile(profile)
-            console.log(profile);
+            //console.log(profile);
         }},
         { name: "Download profile picture", recover: Recovery.RetryAndSkip,
           action: async () => {
@@ -155,7 +155,7 @@ const Sync = ({navigation}:any) => {
         
         (async () => {
             const step = SYNC_STEPS[currentStep]
-            console.log(`Sync step: ${currentStep+1}/${SYNC_STEPS.length}: ${step.name}`)
+            //console.log(`Sync step: ${currentStep+1}/${SYNC_STEPS.length}: ${step.name}`)
             
             await Promise.all([makeFakeDelay(200), step.action()])
             .then(r => setCurrentStep(currentStep+1) )

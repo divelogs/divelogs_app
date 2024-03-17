@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Dimensions, View, FlatList, Text } from 'react-native';
+import { Dimensions, View, FlatList, Text, useColorScheme, StyleSheet } from 'react-native';
 import { getDBConnection, getGearItems } from '../../services/db-service';
 import { GearItem } from '../../models';
 import { Gear } from './GearItem'
@@ -41,8 +41,17 @@ export const GearView = () => {
     })
   }, []);
 
+  const theme = useColorScheme();
+  const styles = StyleSheet.create({
+    page: {
+      backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909' ),
+      color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
+      flex: 1
+    }
+  });
+
   return (
-    <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+    <View style={styles.page}>
       <Text style={divelogsStyles.viewHeader}>{t('gearitems')}</Text>
             <FlatList
               ListEmptyComponent={<View style={[divelogsStyles.noListContent]}><Text style={[divelogsStyles.noListContentText]}>{t('nogear')}</Text></View>}  

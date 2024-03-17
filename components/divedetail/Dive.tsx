@@ -1,10 +1,9 @@
 
-import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList, Platform, TouchableOpacity } from 'react-native';
+import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList, Platform, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 import React, { useContext } from 'react';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
 import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, renderweights, secondstotimeHMS } from '../functions.ts'
-import { getDivePageStyles } from './styles'
 import DiveProfile from './DiveProfile'
 import { TankView } from './TankView'
 import { Tank } from '../../models'
@@ -13,11 +12,118 @@ import { DivelogsContext } from '../../App';
 
 const DiveDetail = ({navigation, dive}:any) => {
 
+  // console.log(dive);
+
   const width = Dimensions.get('window').width
-
-  const [ divepagestyles, setDivepagestyles ] = useState<any>(getDivePageStyles(width))
-
   const [context] = useContext(DivelogsContext);
+  //const [ divepagestyles, setDivepagestyles ] = useState<any>(getDivePageStyles(width))
+  const theme = useColorScheme();
+
+  const divepagestyles = StyleSheet.create({ 
+    child: { width: width, justifyContent: 'center', padding: 5 },
+    profileblock: {
+      width:350,
+      height:200,
+      marginLeft:5,
+      marginTop:20,
+      marginBottom: 20,
+    },
+    profileitem: {
+      position: 'absolute'
+    },
+    profileback: {
+      width:350,
+      height:200
+    },
+    bg: {
+      backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909'),
+      color: (theme == 'light' ? '#000000' : '#FFFFFF'),
+    },
+    locationbox: {
+      width: width-190
+    },
+    numberdatebox: {
+      borderRadius: 5,
+      backgroundColor: (theme == "light" ? '#eaf3f7' : '#444'),
+      position: 'absolute',
+      right: 10,
+      top: 10,
+      height: 60,
+      width: 170,
+      justifyContent: 'center',
+      textAlign: 'center',
+      paddingRight: 50
+    },
+  
+    entry: {
+      marginTop: 5,
+      marginBottom: 5,
+      paddingLeft: 5,
+      flexDirection: 'row',
+      color: (theme == 'light' ? '#000000' : '#FFFFFF'),
+      flex: 1,
+    },
+    twocolumn: {
+      flexDirection: 'row',
+      color: (theme == 'light' ? '#000000' : '#FFFFFF'),
+      flex: 1
+    },  
+    halfentry: {
+      marginTop: 5,
+      marginBottom: 5,
+      paddingLeft: 5,
+      flexDirection: 'row',
+      color: (theme == 'light' ? '#000000' : '#FFFFFF'),
+      width: width*.49
+    },
+    desc: {
+      color: '#39ade2',     
+    },
+    text: {
+      flexWrap: 'wrap',
+      flexShrink: 1,
+      color: (theme == 'light' ? '#000000' : '#FFFFFF')
+    },
+    fullwidthentry: {
+      marginTop: 10,
+      paddingLeft: 5,
+      paddingRight: 10,
+      width: width-10
+    },
+    datetext1: {
+      textAlign: 'center',
+      color: '#39ade2'
+    },
+    datetext2: {
+      textAlign: 'center',
+      color: (theme == 'light' ? '#000000' : '#FFFFFF')
+    },
+    datetext3: {
+      textAlign: 'center',
+      color: '#39ade2',
+      fontSize: 17,
+      fontWeight: '500'
+    },
+    numberbox : {
+      borderRadius: 4,
+      backgroundColor: '#39ade2',
+      position: 'absolute',
+      right: 3,
+      top: 3,
+      height: 54,
+      width: 50,
+      justifyContent: 'center',
+      textAlign: 'center'
+    },
+    white: {
+      width: 50,
+      color: '#FFFFFF',
+      justifyContent: 'center',
+      textAlign: 'center',
+      fontSize: 18
+    }
+  });
+
   const imperial = context.userProfile?.imperial || false
 
   const { t } = useTranslation(); 
@@ -35,7 +141,7 @@ const DiveDetail = ({navigation, dive}:any) => {
     navigation.push("DiveProfilFocus", {dive: dive});
   }
 
-  return (<ScrollView>
+  return (<ScrollView style={divepagestyles.bg}>
       <View style={[divepagestyles.bg, divepagestyles.child]}>                
         <View style={divepagestyles.numberdatebox}>
           <View style={divepagestyles.numberbox}>
@@ -91,14 +197,14 @@ const DiveDetail = ({navigation, dive}:any) => {
         </View>
         <View style={divepagestyles.profileblock} >
           <Image style={divepagestyles.profileback} source={require('../../assets/profile.png')} />
-          <Text style={{position: 'absolute', top:6, left:18}}>{dive.divetime.substr(0,5)}</Text>
-          <Text style={{position: 'absolute', top:6, left:299}}>{makeendtime(dive.divetime, dive.duration)}</Text>
-          <Text style={{position: 'absolute', top:80, left:18}}>{renderdepth(dive.maxdepth, imperial)} </Text>
-          <Text style={{position: 'absolute', top:104, left:18}}>{renderdepth(dive.meandepth, imperial)}</Text>
-          <Text style={{position: 'absolute', top:6, left:140}}>{rendertemp(dive.airtemp, imperial)}</Text>
-          <Text style={{position: 'absolute', top:51, left:140}}>{rendertemp(dive.surfacetemp, imperial)}</Text>
-          <Text style={{position: 'absolute', top:150, left:140}}>{rendertemp(dive.depthtemp, imperial)}</Text>
-          <Text style={{position: 'absolute', top:176, left:115}}>{secondstotime(dive.duration)}</Text>
+          <Text style={[{position: 'absolute', top:6, left:18}, divepagestyles.text]}>{dive.divetime.substr(0,5)}</Text>
+          <Text style={[{position: 'absolute', top:6, left:299}, divepagestyles.text]}>{makeendtime(dive.divetime, dive.duration)}</Text>
+          <Text style={[{position: 'absolute', top:80, left:18}, divepagestyles.text]}>{renderdepth(dive.maxdepth, imperial)} </Text>
+          <Text style={[{position: 'absolute', top:104, left:18}, divepagestyles.text]}>{renderdepth(dive.meandepth, imperial)}</Text>
+          <Text style={[{position: 'absolute', top:6, left:140}, divepagestyles.text]}>{rendertemp(dive.airtemp, imperial)}</Text>
+          <Text style={[{position: 'absolute', top:51, left:140}]}>{rendertemp(dive.surfacetemp, imperial)}</Text>
+          <Text style={[{position: 'absolute', top:150, left:140}]}>{rendertemp(dive.depthtemp, imperial)}</Text>
+          <Text style={[{position: 'absolute', top:176, left:115}, divepagestyles.text]}>{secondstotime(dive.duration)}</Text>
 
         </View>
         <View>
@@ -108,11 +214,11 @@ const DiveDetail = ({navigation, dive}:any) => {
               <TankView Tank={item} imperial={imperial}/>
             )}
           />
-        <View style={divepagestyles.fullwidthentry}><Text style={divepagestyles.desc}>{t("notes")}: </Text><Text>{dive.notes}</Text></View>    
+        <View style={divepagestyles.fullwidthentry}><Text style={divepagestyles.desc}>{t("notes")}: </Text><Text style={divepagestyles.text}>{dive.notes}</Text></View>    
         </View>
         
         <TouchableOpacity onPress={() => focusDiveProfile()}>
-          <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} />
+          <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} formodal={false}/>
         </TouchableOpacity>
       </View>
     </ScrollView>)

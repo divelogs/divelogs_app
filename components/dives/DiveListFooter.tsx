@@ -96,8 +96,7 @@ const styles = StyleSheet.create({
     footerContainer: {
         marginTop: 15,
         padding: 5,
-        paddingBottom: 40,
-       
+        paddingBottom: 40
     },
     footerDives: {
         textAlign: "center",

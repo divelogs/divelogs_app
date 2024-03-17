@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, Pressable, Text, StyleSheet, Platform } from 'react-native';
-import React, { useState, useRef, useEffect } from 'react';
+import { View, Pressable, Text, StyleSheet, Platform, useColorScheme } from 'react-native';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import DivelogsHeader from '../generic/divelogsheader'
 import { AggregationView } from './Aggregation'
 import DiveListSelection from './DiveListSelection'
@@ -9,8 +9,11 @@ import DiveProfileModal from '../divedetail/DiveProfileModal';
 import DiveDetail from '../divedetail'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
+import { DivelogsContext } from '../../App'; 
 
 const DivesNavigation = ({navigation}:any) => {
+
+  const [context] = useContext(DivelogsContext);
 
   const { t } = useTranslation(); 
 
@@ -61,14 +64,31 @@ const DivesNavigation = ({navigation}:any) => {
   //   console.log(lastListView.current?.name, " ---> " ,lastView.current?.name)
   // }
 
+  const theme = useColorScheme();
+  const styles = StyleSheet.create({
+    page: {
+      backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909' ),
+      color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
+      flex: 1
+    },
+    button: {
+      backgroundColor: '#3fb9f2' 
+    },
+    text: {
+      fontSize: (Platform.OS === 'ios' ? 20 : 26),
+      color: '#FFFFFF',
+      fontWeight: (Platform.OS === 'ios' ? '400' : '900'),
+    }
+  });
+
   const Stack = createNativeStackNavigator();
 
   return (
-    <View style={{flex:1, backgroundColor: '#FFFFFF'}}>
+    <View style={styles.page}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
-              backgroundColor: '#3fb9f2',
+              backgroundColor: '#3fb9f2'
             },
             headerTintColor: '#fff',
             headerTitle: () => <DivelogsHeader/>,
@@ -84,29 +104,29 @@ const DivesNavigation = ({navigation}:any) => {
 
         <Stack.Screen name="AllDives" 
           options={{ 
-          headerShown: true,
-          // headerLeft: () => (
-          //   (Platform.OS == 'ios' ? <>              
-          //     <Pressable onPress={()=>navigation.goBack()}>
-          //         <Text style={styles.text}>←</Text>
-          //     </Pressable>           
-          //   </>            : null)
-          // ),
-          headerBackTitle: ' ',
-          headerRight: () => (
-            <>
-            <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
-              <Text style={styles.text}>↺</Text>
-            </Pressable>             
-              
-            <View style={{width: 20}}></View>
-
-            <Pressable style={styles.button} onPress={toggleSort}>
-              <Text style={styles.text}>{sortindicator}</Text>
-            </Pressable>          
-            </>
-          ),       
-        }}>
+            headerShown: true,
+            // headerLeft: () => (
+            //   (Platform.OS == 'ios' ? <>              
+            //     <Pressable onPress={()=>navigation.goBack()}>
+            //         <Text style={styles.text}>←</Text>
+            //     </Pressable>           
+            //   </>            : null)
+            // ),
+            headerBackTitle: ' ',
+            headerRight: () => (
+              <>
+              <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+                <Text style={styles.text}>↺</Text>
+              </Pressable>             
+                
+              <View style={{width: 20}}></View>
+  
+              <Pressable style={styles.button} onPress={toggleSort}>
+                <Text style={styles.text}>{sortindicator}</Text>
+              </Pressable>          
+              </>
+            ),       
+          }}>
           {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
 
@@ -168,17 +188,6 @@ const DivesNavigation = ({navigation}:any) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#3fb9f2' 
-  },
-  text: {
-    fontSize: (Platform.OS === 'ios' ? 20 : 26),
-    color: '#FFFFFF',
-    fontWeight: (Platform.OS === 'ios' ? '400' : '900'),
-  }
-});
 
 export default DivesNavigation
 

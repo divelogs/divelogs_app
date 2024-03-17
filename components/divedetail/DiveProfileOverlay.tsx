@@ -1,11 +1,11 @@
-
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image, Text, Pressable, Dimensions } from 'react-native';
+import { View, StyleSheet, Image, Text, Pressable, Dimensions, useColorScheme } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 //import {ProfileDimensions} from './DiveProfile'
 
 import { SampleData, Dive } from '../../models';
+//import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 
 
 type Calculated = {
@@ -19,7 +19,8 @@ type SpotlightSample = {
     depth: string,
     passedMinutes: string,
     time: string,
-    speed: string
+    speed: string,
+    temp: number,
 }
 
 type ConcreteSample = {
@@ -40,11 +41,19 @@ type SpotlightArea = {
 
 const dimensions = Dimensions.get('window');
 
+function extractDepth(data:any) {
+    if (typeof data == "object") return data.d;
+    else return data;
+}
+
 export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: SampleData, dive: Dive, imperial: boolean}) => {
+
+    //console.log('imp:'+imperial);
 
     const [position, setPosition] = useState<SpotlightSample|null>(null)
     const [area, setArea] = useState<SpotlightArea|null>(null)
     const [samples, setSamples] = useState<number[]>([])
+    const [temps, setTemps] = useState<number[]>([])
     const [calculated, setCalculated] = useState<Calculated|null>(null)
     const [timePerSample, setTimePerSample] = useState<number>(0)
 
@@ -56,20 +65,44 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
     
     useEffect(() => {
         const sampledata = sampleData.sampledata;
-        const samples = (sampledata != null && sampledata.length > 5 ? sampledata.split(",") : []).map(parseFloat);
+        const samplejson = (sampledata != null && sampledata.length > 5 ? JSON.parse("["+sampledata+"]") : []);
 
-        if (samples[0] != 0)
+        var temps:any = [];
+        var samples:any = [];
+		var hastemps = false;
+		// Data extraction
+		for (const [index, val] of samplejson.entries()) {
+			if (typeof val=="object") {
+				samples.push(val.d);
+                temps.push(val.t);
+				hastemps = true;
+			}
+			else {
+				var lasttemp = parseFloat(temps.slice(-1));
+				temps.push((isNaN(lasttemp) ? Infinity : lasttemp));
+                samples.push(val);
+			};
+		};
+
+        //console.log(samples);
+
+        if (samples[0] != 0) {
             samples.unshift(0)
-        if (samples[samples.length-1] !== 0)
+            temps.unshift(Infinity)
+        }            
+        if (samples[samples.length-1] !== 0) {
             samples.push(0)
+            temps.push(Infinity)
+        }
 
         setSamples(samples)
+        setTemps(temps)
 
         setTimePerSample(duration / samples.length)
 
         var calculated:Calculated = { maxDepth: Math.max(...samples)}
         setCalculated(calculated)
-        console.log(samples)
+        //console.log(samples)
     }, [sampleData, duration])
 
     useEffect(() => { 
@@ -96,9 +129,10 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
 
         const theSample = samples[index]
         const nextSample = samples[index +1] ?? 0
+        const temp = temps[index]
 
-        console.log(index , 'of' , samples.length-1, " --> " + theSample, "n:" + nextSample)
-        return {current: theSample, next: nextSample, index, percent}
+        //console.log(index , 'of' , samples.length-1, " --> " + theSample, "n:" + nextSample)
+        return {current: theSample, next: nextSample, index, percent, temp: temp}
     }
 
     const calculateSample = (position:any) : SpotlightSample | null  => {
@@ -108,7 +142,7 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
         const sam = getSelectedSample(position)
         if (!sam) return null;
 
-        const {current: theSample, next: nextSample, index, percent } = sam!
+        const {current: theSample, next: nextSample, index, percent, temp: temp } = sam!
 
         const actual = theSample + ((nextSample - theSample) * percent)
 
@@ -125,16 +159,17 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
         if (currentSpeed > 0)
             arrow = '↗'
 
-        let currentSpeedLabel = `${arrow}${Math.abs(currentSpeed)}m/min`
- 
+        let currentSpeedLabel = (imperial ? `${arrow}${Math.abs((Math.round(currentSpeed/0.3048)))}ft/min` : `${arrow}${Math.abs(currentSpeed)}m/min`);
+
         return { 
                  x: position.x, 
                  y: ycolumn-1, 
                  sample: theSample, 
-                 depth: `↓${(Math.round(actual*100)/100)}m`, 
+                 depth: `${(Math.round(actual*100)/100)}`, 
                  passedMinutes: passedLabel, 
                  time: timeLabel, 
-                 speed: currentSpeedLabel }
+                 speed: currentSpeedLabel,
+                 temp: temp }
     }
 
     const travel = (prevSample: number, position:number, direction:[boolean, boolean]) : number => 
@@ -143,12 +178,11 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
         const idxAdd = right ? +1 : -1;
 
         const currIdx = position + idxAdd
-        if (currIdx >= samples.length || currIdx < 0)  return position
+        if (currIdx >= samples.length || currIdx < 0)  return position
 
         const currSample = samples[currIdx]
 
-        if (right)
-        console.log("cp:" , currSample, prevSample, "right:", direction, `(${currIdx})` )
+        //if (right) console.log("cp:" , currSample, prevSample, "right:", direction, `(${currIdx})` )
 
         const cb = ((currSample - prevSample) >= 0) 
         
@@ -173,7 +207,7 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
         
         const left = travel(theSample, index, [!changeBy, false])
         
-        console.log("l", left, "r", right, samples)
+        //console.log("l", left, "r", right, samples)
 
         const mult = (height*0.9)/calculated.maxDepth
 
@@ -195,80 +229,95 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
     }
 
     const makeTimeLabel = (index: number, percent: number) : [string, string] =>  {
+        //console.log(percent);
         var passed = (index) * timePerSample + timePerSample * percent
-        var seconds = Math.floor(60 * ((passed / 60) % 1))
+        //console.log('passed');
+        //console.log(passed);
+        var seconds = Math.floor(passed)
         var minutes = Math.floor(passed / 60)
-        var passedLabel = `${minutes}min ${seconds.toString().padStart(2, '0')}s`
+        var passedLabel = `${minutes}min ${(seconds-minutes*60).toString().padStart(2, '0')}s`
 
         const result = new Date(dive.divedate + " " + dive.divetime)
+        //console.log(result);
         result.setSeconds(seconds + result.getSeconds());
+        //console.log(result);
 
-        return [passedLabel, result.toTimeString().substring(0, 8)]
+        return [passedLabel, result.toLocaleString('de', {hour: 'numeric', minute: 'numeric', second: 'numeric'})]
     }
 
     const tapped = ({nativeEvent: evt}:any) => {
-        
+        //console.log('tapped');
         const pos = {x: evt.locationX, y: evt.locationY}
         setlpos(pos)
         const sample = calculateSample(pos)
         setPosition(sample)
+        //console.log(sample);
         setArea(null)
     } 
 
     const stopTapped = ({nativeEvent: evt}:any) => {
+        //console.log('stoptapped');
         tapped({nativeEvent: evt})
 
         const pos = {x: evt.locationX, y: evt.locationY}
-        const area = calculateAreaOfCurrentSample(pos)
-        setArea(area)
-        console.log(area)
+        // const area = calculateAreaOfCurrentSample(pos)
+        // setArea(area)
+        // //console.log(area)
+
+        setlpos(pos)
+        const sample = calculateSample(pos)
+        setPosition(sample)
+        //console.log(sample);
+        setArea(null)
     } 
 
 
-    const svg = SvgOverlay(position, area, height, width)
+    const svg = SvgOverlay(position, area, height, width, imperial)
 
     return (<View style={{ flex: 1, position: 'absolute', top: 0, left: 0, height: 500}} onStartShouldSetResponder={() => true} onResponderMove={tapped} onTouchStart={tapped} onResponderEnd={stopTapped}>
 
-            <SvgXml xml={svg} width={width} height={height} />
+        <SvgXml xml={svg} width={width} height={height} />      
 
     </View>)
 
 }
 
-const textOverlay = (sample:SpotlightSample | null, height:number, width:number) : string => {
+const textOverlay = (sample:SpotlightSample | null, height:number, width:number, imperial:boolean) : string => {
     if (!sample) return ""
     const move:boolean = (width - 80) < sample!.x 
     const pointRadius = 8;
     return `<g>
-        <line x1="${sample.x}" y1="0" x2="${sample.x}" y2="${sample.y-pointRadius}" />
-        <circle r="${pointRadius}" cx="${sample.x}" cy="${sample.y}" stroke-width="1" fill="none" />
-        <line x1="${sample.x}" y1="${sample.y+pointRadius}" x2="${sample.x}" y2="${height}" />
+        <line x1="${sample.x}" y1="0" x2="${sample.x}" y2="${sample.y-pointRadius}" stroke="#666" />
+        <circle r="${pointRadius}" cx="${sample.x}" cy="${sample.y}" stroke-width="1" fill="none"  stroke="#666"/>
+        <line x1="${sample.x}" y1="${sample.y+pointRadius}" x2="${sample.x}" y2="${height}"  stroke="#666"/>
         <g transform="${move ? "translate(-80,0)" : ""}">
-            <text x="${sample.x + pointRadius + 4}" y="${sample.y-0}" fill="#a8a8a8" style="font-size: 10px;">${sample.depth}</text>
-            <text x="${sample.x + pointRadius + 4}" y="${sample.y+10}" fill="#a8a8a8" style="font-size: 10px;">${sample.speed}</text>
+            <text x="${sample.x + pointRadius + 4}" y="${sample.y-5}" stroke="#666" style="font-size: 10px;">↓${(imperial ? Math.round(parseFloat(sample.depth)/0.3048*10)/10 : sample.depth)}${(imperial ? ' ft' : ' m')}</text>
+            <text x="${sample.x + pointRadius + 4}" y="${sample.y+5}" stroke="#666" style="font-size: 10px;">${sample.speed}</text>
+            <text x="${sample.x + pointRadius + 4}" y="${sample.y+15}" stroke="#666" style="font-size: 10px;">${(isFinite(sample.temp) ? (imperial ? ( Math.round( (9/5)*sample.temp+32 )) + ' °F'  : sample.temp + '°C') : '')} </text>
         </g>
         <line style="opacity:0.3" x1="${sample.x}" y1="${sample.y-7}" x2="${sample.x}" y2="${sample.y+7}" />
         <!--
         <line style="opacity:0.3" x1="${sample.x-20}" y1="${sample.y}" x2="${sample.x+20}" y2="${sample.y}" />
         -->
-        <line x1="0" x2="${sample.x-10}" y1="${height-20}" y2="${height-20}" marker-end="url(#triangle)" />  
+        <line x1="0" x2="${sample.x-10}" y1="${height-20}" y2="${height-20}" stroke="#666" fill="#666"  marker-end="url(#triangle)" />  
         <g transform="${move ? "translate(-80,-15)" : ""}">       
-            <text x="${sample.x + pointRadius + 4}" y="${height-20}" fill="#a8a8a8" style="font-size: 10px;">${sample.passedMinutes}</text>
-            <text x="${sample.x + pointRadius + 4}" y="${height-10}" fill="#a8a8a8" style="font-size: 10px;">${sample.time}</text>
+            <text x="${sample.x + pointRadius + 4}" y="${height-20}" stroke="#666" style="font-size: 10px;">${sample.passedMinutes}</text>
+            <text x="${sample.x + pointRadius + 4}" y="${height-10}" stroke="#666" style="font-size: 10px;">${sample.time}</text>
         </g>
     </g>`
 }
 
 const areaOverlay = (area:SpotlightArea | null, height:number, width:number) : string => {
     if (!area) return ""
+
     const move:boolean = false;
     const pointRadius = 8;
     return `<g>
-        <line x1="${27}" y1="${area.left.y}" x2="${width}" y2="${area.left.y}" />
+        <line x1="${27}" y1="${area.left.y}" x2="${width}" y2="${area.left.y}"  color="#666" />
 
         <g transform="${move ? "translate(-80,0)" : ""}">
-          <text x="${100}" y="${area.left.y + 12}" fill="#a8a8a8" style="font-size: 10px;">${area.left.depth}</text>
-          <text x="${100}" y="${area.right.y - 4}" fill="#a8a8a8" style="font-size: 10px;">${area.right.depth}</text>
+        <text x="${100}" y="${area.left.y + 12}" stroke="#666" style="font-size: 10px;">${area.left.depth}</text>
+        <text x="${100}" y="${area.right.y - 4}" stroke="#666" style="font-size: 10px;">${area.right.depth}</text>
         </g>
 
 
@@ -276,11 +325,13 @@ const areaOverlay = (area:SpotlightArea | null, height:number, width:number) : s
     </g>`
 }
 
-const SvgOverlay = (sample:SpotlightSample | null, samplearea: SpotlightArea | null, height:number, width:number) : string => {
+const SvgOverlay = (sample:SpotlightSample | null, samplearea: SpotlightArea | null, height:number, width:number, imperial:boolean) : string => {
 
-    const content = textOverlay(sample, height, width);
+    const content = textOverlay(sample, height, width, imperial);
 
     const area = areaOverlay(samplearea, height, width)
+
+    //console.log(area);
 
     return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg
@@ -299,7 +350,7 @@ const SvgOverlay = (sample:SpotlightSample | null, samplearea: SpotlightArea | n
   markerWidth="10"
   markerHeight="10"
   orient="auto">
-  <path d="M 0 0 L 10 5 L 0 10 z" />
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
 </marker>
 </defs>
     ${content}

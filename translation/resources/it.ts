@@ -26,7 +26,7 @@ export default {
     reset: "Tutto",
     gearitems: "Attrezzatura",
     purchasedate: "Data di acquisto",
-    discarded: "Scartata",
+    discarded: "Scadenza",
     last_servicedate: "Ultima revisione",
     service_overdue: "Scadenza revisione",
     next_service: "Prossima revisione",
