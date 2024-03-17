@@ -190,14 +190,14 @@ const downloadImage = (image_URL:string, subfolder:string = '') : Promise<string
                                       .reduce((a,b) => a + "/" + b, "")
 
     let DocumentDir = RNFetchBlob.fs.dirs.DocumentDir;
-    console.log(DocumentDir);
+    //console.log(DocumentDir);
 
     RNFetchBlob
       .config({ path: DocumentDir + imagePath, fileCache: true })
       .fetch('GET', image_URL)
       .then((res) => {
-        console.log(res);
-        console.log('The file saved to ', res.path())
+        //console.log(res);
+        //console.log('The file saved to ', res.path())
         resolve(imagePath);
       })
 

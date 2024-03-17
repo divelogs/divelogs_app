@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Image } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, useColorScheme } from 'react-native';
 import RNFetchBlob from "rn-fetch-blob";
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 
@@ -34,8 +34,17 @@ export const Scanslider = ({navigation, route}: any) => {
    const thekey = route.params.thekey
    const allScans = route.params.allScans
 
+   const theme = useColorScheme();
+   const styles = StyleSheet.create({
+     page: {
+       backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909' ),
+       color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
+       flex: 1
+     }
+   });
+
    return (
-     <View style={{ flex: 1, }}>       
+     <View style={styles.page}>       
        <SwiperFlatList key={orientation} index={thekey} renderAll={true} data={allScans} renderItem={({ item }) => (
            <View style={{ justifyContent: 'center'}}>
              <Image style={sliderstyles.image} resizeMode={'contain'} source = {{uri: "file://" + PictureDir + item}}/>

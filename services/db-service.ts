@@ -239,8 +239,11 @@ export const getCertifications = async (db: SQLiteDatabase): Promise<Certificati
  
 export const getProfile = async (db: SQLiteDatabase): Promise<UserProfile|null> => {
   try {
-    const results = await db.executeSql("SELECT * FROM profile");
-    return readResultSingle<UserProfile>(results)
+    const results = await db.executeSql("SELECT username, firstname, profilePictureUrl, imperial FROM profile JOIN settings");
+    let r:any = readResultSingle<UserProfile>(results);
+    // translate db 1:0 to true:false
+    r.imperial = (r.imperial == 1 ? true : false);
+    return r;
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Bearer Token');
@@ -328,6 +331,11 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
       // sort array
       var bdy = (divedata.buddy != null ? divedata.buddy.split(/[;,]+/).map(s => s.trim()).sort() : []);
 
+      const makejson = (data:any) => {
+        if (typeof data == 'object') return JSON.stringify(data);
+        else return data;
+      }
+
       const values = [
         divedata.id,
         divedata.divenumber,
@@ -350,12 +358,12 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
         divedata.notes,
         (gi.length > 0 ? gi.join(",") : null),
         divedata.samplerate,
-        (divedata.sampledata != null ? divedata.sampledata.join(",") : ''),
+        (divedata.sampledata != null ? divedata.sampledata.map(a=>makejson(a)).join(",") : ''),
         JSON.stringify(divedata.tanks),
         divedata.lat,
         divedata.lng
       ]
-     
+
       try {
         db.executeSql(insertQuery, values);
 

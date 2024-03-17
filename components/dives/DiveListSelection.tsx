@@ -3,11 +3,38 @@ import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { getDBConnection } from '../../services/db-service';
 import { getDiveCount } from '../../services/db-aggregation-service'
-import { View, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, SectionList, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 import divelogsStyles from '../../stylesheets/styles'
 
 
 const ListItem = ({name, label}:any) => {
+
+  const theme = useColorScheme();
+
+  const styles = StyleSheet.create({
+    countlabel: {    
+      paddingHorizontal: 5, 
+      marginLeft: 20, 
+      borderRadius: 10, 
+      borderColor: "#3fb9f2", 
+      paddingTop:3,
+      backgroundColor: '#3fb9f2',
+      borderWidth: 1,
+      color: (theme == "light" ? "#000000" : "#FFFFFF"),
+      minWidth:40,
+    },
+    countlabeltext: {
+      fontSize: 14, 
+      fontWeight: '700',
+      color: (theme == "light" ? "#000000" : "#FFFFFF"),
+      textAlign:"center"
+    },
+    text: {
+      color: (theme == "light" ? "#000000" : "#FFFFFF"),
+      fontSize: 20
+    }
+  });
+
   return <View style={[
     {
       flex:1,
@@ -15,7 +42,7 @@ const ListItem = ({name, label}:any) => {
       paddingLeft: 30,
       flexDirection:'row',
     },]}>
-      <Text style={[{fontSize: 20}]}>{name}</Text>
+      <Text style={styles.text}>{name}</Text>
       {label ? <View style={styles.countlabel}><Text style={styles.countlabeltext}>{label}</Text></View> : null }
     </View>
 }
@@ -128,7 +155,17 @@ const DiveListSelection = ({navigation, route}:any) => {
 
   //if (!diveCount) return;
 
-  return <View style={{flex:1}}>
+  const theme = useColorScheme();
+
+  const style = StyleSheet.create({
+    page: {
+      backgroundColor: (theme == "light" ? "#FFFFFF" : "#090909"),
+      color: (theme == "light" ? "#000000" : "#FFFFFF"),
+      flex: 1
+    }
+  })
+
+  return <View style={style.page}>
             <Text style={divelogsStyles.viewHeader}>{t('choosefilter')}:</Text>
             <SectionList
               sections={views}
@@ -147,21 +184,4 @@ const DiveListSelection = ({navigation, route}:any) => {
 
 export default DiveListSelection
 
-const styles = StyleSheet.create({
-  countlabel: {    
-    paddingHorizontal: 5, 
-    marginLeft: 20, 
-    borderRadius: 10, 
-    borderColor: "#3fb9f2", 
-    paddingTop:3,
-    backgroundColor: '#3fb9f2',
-    borderWidth: 1,
-    minWidth:40,
-  },
-  countlabeltext: {
-    fontSize: 14, 
-    fontWeight: '700',
-    color: "#FFFFFF", 
-    textAlign:"center"
-  }
-});
+

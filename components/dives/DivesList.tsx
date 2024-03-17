@@ -1,4 +1,4 @@
-  import { Text, View,TouchableOpacity, FlatList } from 'react-native';
+  import { Text, View,TouchableOpacity, FlatList, useColorScheme } from 'react-native';
   import SearchBar from 'react-native-search-bar'; 
   import { Dive } from '../../models'
   import '../../translation'
@@ -14,6 +14,8 @@
   }
 
   const DiveList = ({navigation, dives, doSearch, selectDive, frommap}:any) => {
+
+    
 
     const [searchText, setSearchText] = useState<string>('');
     const [statistics, setStatistics] = useState<Statistics>({})

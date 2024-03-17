@@ -3,18 +3,18 @@
 */
 import React, { useEffect, useState, useLayoutEffect, createContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { View,Dimensions } from 'react-native';
+import { View, Dimensions, Appearance } from 'react-native';
 import { updateDB, getProfile, getDBConnection } from './services/db-service';
 import './translation'
 import Diver from './components/onboarding/diveranimation'
 import Index from './components'
 import { AppContext, UpdateableAppContext } from './models'
 
-export const DivelogsContext = createContext<UpdateableAppContext>([{ theme: "light", userProfile: null }]);
+export const DivelogsContext = createContext<UpdateableAppContext>([{ theme: (Appearance.getColorScheme()=='dark' ? 'dark' : 'light'), userProfile: null }]);
 
 const App = () => {
 
-  const [appContext, setAppContext] = useState<UpdateableAppContext>([{ theme: "light", userProfile: null }])
+  const [appContext, setAppContext] = useState<UpdateableAppContext>([{ theme: (Appearance.getColorScheme()=='dark' ? 'dark' : 'light'), userProfile: null }])
   const [firstLoad, setFirstLoad] = useState<string|undefined>("")
   const [dbversion, setDbVersion] = useState<number>(0);
 
@@ -41,9 +41,10 @@ const App = () => {
     ;(async () => {
       const db = await getDBConnection()
       const profile = await getProfile(db)
+      
 
       const [appCtx] = appContext
-      const ctx:AppContext = {...appCtx, userProfile: profile}
+      const ctx:AppContext = {...appCtx, theme: (Appearance.getColorScheme()=='dark' ? 'dark' : 'light'), userProfile: profile}
       updateContextState(ctx);
     })()
   }, [])

@@ -13,7 +13,7 @@ import { DivelogsContext } from '../../App';
 
 
 export const StatisticsView = ({ route, navigation }:any) => {
-    
+
     const [context] = useContext(DivelogsContext);
     const imperial = context.userProfile?.imperial || false
 
@@ -75,6 +75,11 @@ export const StatisticsView = ({ route, navigation }:any) => {
   }, []);
 
   const styles = StyleSheet.create({
+    page: {
+      backgroundColor: (context.theme == 'light' ? '#FFFFFF' : '#090909' ),
+      color: (context.theme == 'light' ? '#000000' : '#FFFFFF' ),
+      flex: 1
+    },
     tinyLogo: {
       width:150,
       height:34
@@ -110,7 +115,7 @@ export const StatisticsView = ({ route, navigation }:any) => {
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+    <View style={styles.page}>
            <Text style={divelogsStyles.viewHeader}>{t('statistics')}</Text>
 
         <ScrollView style={{padding: 10}}> 

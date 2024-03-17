@@ -2,11 +2,13 @@
   "name": "divelogs",
   "displayName": "divelogs",
   "expo": {
+    "userInterfaceStyle": "automatic",
     "ios": {
-     "infoPlist": {
-       "UIUserInterfaceStyle": "Light"
-     }
-   }
+      "userInterfaceStyle": "automatic"
+    },
+    "android": {
+      "userInterfaceStyle": "automatic"
+    }
   }
 }
 

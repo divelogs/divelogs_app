@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet,  Text,  View, NativeModules, Dimensions, Platform } from 'react-native';
+import { StyleSheet,  Text,  View, NativeModules, Dimensions, Platform, useColorScheme } from 'react-native';
 import { GearItem } from '../../models';
 import GearImages from './GearImages'
 import { SvgXml } from 'react-native-svg';
@@ -22,6 +22,27 @@ export const Gear: React.FC<{
   var pd = new Date(gi.purchasedate);
   var dd = new Date(gi.discarddate);
   var ls = new Date(gi.last_servicedate);
+
+  const theme = useColorScheme();
+  const { width } = Dimensions.get('window');
+const styles = StyleSheet.create({
+    page: {
+        backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909' ),
+        color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
+        flex: 1
+    },
+    gearblock: {minHeight: 106, borderBottomColor: '#c0c0c0', borderBottomWidth: 1},
+    texts: {
+        left:110, 
+        width: width-110,
+        color: (theme == 'light' ? '#000000' : '#FFFFFF' )
+    },
+    bold: {fontWeight:'500', fontSize: 16, marginBottom: 4, color: (theme == 'light' ? '#000000' : '#FFFFFF' )},
+    gearitem: { width:90, height: 90 },
+    icon: {position: 'absolute', left: 10},
+    overdue: {color: '#FF0000'},
+    notoverdue: {color: '#019149'}
+});
 
 
   return (
@@ -46,13 +67,8 @@ export const Gear: React.FC<{
     </View>
   );
 };
-const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
-    gearblock: {minHeight: 106, borderBottomColor: '#c0c0c0', borderBottomWidth: 1},
-    texts: {left:110, width: width-110},
-    bold: {fontWeight:'500', fontSize: 16, marginBottom: 4},
-    gearitem: { width:90, height: 90 },
-    icon: {position: 'absolute', left: 10},
     overdue: {color: '#FF0000'},
     notoverdue: {color: '#019149'}
 });

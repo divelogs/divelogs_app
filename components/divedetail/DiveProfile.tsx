@@ -9,9 +9,9 @@ export const DiveProfile: React.FC<{
 	formodal: boolean
 }> = ({ SampleData: {sampledata, duration, width, height, lines = true, forlist = false}, imperial, formodal }) => {
   
-	
 	if (sampledata?.length > 5) {
 		var samples = JSON.parse("["+sampledata+"]");
+
 		var profileSVG = makeSVGprofile(samples, duration, lines, imperial, formodal);
 		return (
 			<View style={forlist ? styles.forlist : styles.flex}>
@@ -84,7 +84,7 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 		// temps
 		for (const [index, val] of samples.entries()) {
 			if (typeof val=="object") {
-				alltemps.push(val.t);
+				alltemps.push( (imperial ? (Math.round(((9/5)*val.t+32)*10))/10 : val.t ) );
 				hastemps = true;
 			}
 			else {
@@ -92,12 +92,14 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 				alltemps.push((isNaN(lasttemp) ? Infinity : lasttemp));
 			};
 		};
-		var maxtemp = Math.max(...alltemps.filter(Number.isFinite))
-		var mintemp = Math.min(...alltemps.filter(Number.isFinite))
+
+		// console.log(hastemps);
+		var maxtemp = Math.ceil(Math.max(...alltemps.filter(Number.isFinite)))
+		var mintemp = Math.floor(Math.min(...alltemps.filter(Number.isFinite)))
 		var tempdiff = maxtemp - mintemp;
 		var lasttemp_y = 0;
-		var tempmult = 15;
-		var padtempsfromtop = 45;
+		var tempmult = (imperial ? (tempdiff > 10 ? 8 : 12) : 15);
+		var padtempsfromtop = (imperial ? 25 : 45);
 
 		// vertical multiplier
 		var mult = (maxdepth > 0 ? (height*0.9)/maxdepth : 60);	
@@ -105,9 +107,6 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 		// array for polygon points
 		var koords = [];
 		var tempkoords = [];
-		
-		//first coordinates for start of dive
-		//koords.push(padleft + ",0");
 
 		// write all coordinates to array
 		for (var e=0;e<samples.length;e++)
@@ -132,12 +131,6 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 			}
 		}
 
-		// end of dive coordinate (Depth 0m)
-		//koords.push((e+2)*horiz_mult+padleft+2 + ",0");
-		
-		
-		//console.log(koords.join(" ") )
-
 		let linePerMin = duration / 60 / 8
 		if (linePerMin > 60)
 			linePerMin = 60
@@ -145,16 +138,15 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 			linePerMin = 30
 		else if (linePerMin > 15)
 			linePerMin = 15
-		else if (linePerMin > 8)
+		else (linePerMin > 8)
 			linePerMin = 10
-		else
-			linePerMin = 5
+		
 		//else
 		//	linePerMin = Math.round(linePerMin / 5 * 10) / 10
 
 		var vert_10minute_lines =(((rate/60)*samples.length) / linePerMin) + 1;		
 
-		var ret = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" style="font-family:Arial, Helvetica, sans-serif; width:100%; height: auto;" viewBox="0 0 ' + width + ' ' + height + '">'
+		var ret = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" style="font-family:Helvetica, sans-serif; width:100%; height: auto;" viewBox="0 0 ' + width + ' ' + height + '">'
 + '<linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">'
 + '      <stop offset="0%" style="stop-color:#ebf6fb;stop-opacity:1" />'
 + '      <stop offset="100%" style="stop-color:#88cee8;stop-opacity:1" />'
@@ -202,8 +194,10 @@ function makeSVGprofile(samples: any[], duration: number, lines = true, imperial
 
 	// Temperaturlegende
 	if (hastemps && lines) {
+		const skipper = (tempdiff < 20 ? false : true) ; // skip every second value if there are too many
 		for (var l=0; l<=tempdiff; l++) {
-			ret += '<text x="'+(width-30)+'" y="'+((l*tempmult)-3+padtempsfromtop)+'" fill="'+tempcolor+'70" style="font-size: 10px;">'+(maxtemp-l)+' °C</text>';
+			if (skipper && l%2==1) continue;
+			ret += '<text x="'+(width-30)+'" y="'+((l*tempmult)-3+padtempsfromtop)+'" fill="'+tempcolor+'70" style="font-size: 10px;">'+(maxtemp-l)+' '+(imperial ? '°F' : '°C')+'</text>';
 		}
 		// line for min temp
 		ret += '<line x1="'+padleft+'" y1="'+(tempdiff*tempmult)+padtempsfromtop+'" x2="'+(width)+'" y2="'+(tempdiff*tempmult)+padtempsfromtop+'" style="stroke:'+tempcolor+'70;stroke-width:.5" />';  

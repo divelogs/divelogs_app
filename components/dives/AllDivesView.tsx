@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, useColorScheme, StyleSheet } from 'react-native';
 import { Dive } from '../../models';
 import React, { useState, useEffect, useContext } from 'react';
 import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getDivesByLatLng } from '../../services/db-service';
@@ -73,8 +73,16 @@ const AllDivesView = ({navigation, route, sort}:any) => {
     navigation.navigate('DiveDetail', {dive: dive, diveId: dive.id, dives: dives});
   } 
 
+  const theme = useColorScheme();
+  const styles = StyleSheet.create({
+    page: {
+      backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909' ),
+      flex: 1
+    }
+  })
+
   return (
-    <View style={{flex:1}}>
+    <View style={styles.page}>
       <DivesList navigation={navigation} selectDive={selectDive} dives={dives} doSearch={doSearch}/>
     </View>
   );

@@ -9,7 +9,7 @@ const DiveSwipe = ({navigation, route}:any) => {
   const [orientation, setOrientation] = useState('');
   const dives = route.params.dives
   const diveindex = dives.findIndex((obj: { id: any; }) => obj.id === route.params.diveId);
-
+  
   useEffect(() => {
     Dimensions.addEventListener('change', ({window:{width,height}})=>{
       if (width<height) {
