@@ -148,7 +148,6 @@ export const AggregationView = ({navigation, route, view}:any) => {
       borderRadius: 10, 
       borderColor: "#3fb9f2", 
       paddingTop:1,
-  
       backgroundColor: '#3fb9f2',
       borderWidth: 1,
       minWidth:40,    

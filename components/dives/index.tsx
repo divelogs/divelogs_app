@@ -92,12 +92,12 @@ const DivesNavigation = ({navigation}:any) => {
             },
             headerTintColor: '#fff',
             headerTitle: () => <DivelogsHeader/>,
-            headerTitleAlign: 'center'
-          }}
+            headerTitleAlign: 'center'           
+          }}          
         >
         
         <Stack.Screen name=" " options={{ // Leave name empty, so it does not show in back button when Alldives are shown
-          animation: "none",
+          animation: "none"
         }}>
           {(props) => <DiveListSelection {...props}/>}
         </Stack.Screen>
@@ -179,11 +179,14 @@ const DivesNavigation = ({navigation}:any) => {
         }}>
           {(props) => <AggregationView {...props}/>}
         </Stack.Screen>
+        
         <Stack.Screen
           name="DiveProfilFocus"
           component={DiveProfileModal}
-          options={{ presentation: 'transparentModal', headerShown: false }}
-        />   
+          options={{ presentation: 'modal', headerShown: false }}
+          
+        />     
+
       </Stack.Navigator>   
     </View>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState, useContext } from 'react';
-import { Text, StyleSheet, Dimensions, ScrollView, View, TouchableOpacity, useWindowDimensions, useColorScheme } from 'react-native';
+import { Text, StyleSheet, Dimensions, ScrollView, View, TouchableOpacity, useWindowDimensions, useColorScheme, Button } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { close } from '../../assets/svgs.js';
 import DiveProfile from './DiveProfile';
@@ -58,7 +58,7 @@ export const DiveProfileModal = ({navigation, route}:any) => {
         lines: true, 
         forlist: false 
     }
-console.log(context);
+
     return <View style={styles.page}>
         <View style={style}>
             <DiveProfile SampleData={sampleData} imperial={context.userProfile?.imperial || false} key={key} formodal={true}/>

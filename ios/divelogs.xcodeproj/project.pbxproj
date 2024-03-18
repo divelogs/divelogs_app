@@ -14,6 +14,8 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-divelogs-divelogsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-divelogs-divelogsTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		D518844E2BA7256E00B876FB /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D518844D2BA6366D00B876FB /* PrivacyInfo.xcprivacy */; };
+		D518844F2BA7257C00B876FB /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D518844D2BA6366D00B876FB /* PrivacyInfo.xcprivacy */; };
 		D54E99E52B42F0300022F927 /* www in Resources */ = {isa = PBXBuildFile; fileRef = D54E99E42B42F0300022F927 /* www */; };
 		D5727BD92B42F347008C4848 /* www in Resources */ = {isa = PBXBuildFile; fileRef = D5727BD82B42F347008C4848 /* www */; };
 /* End PBXBuildFile section */
@@ -45,7 +47,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-divelogs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-divelogs.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = divelogs/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-divelogs-divelogsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-divelogs-divelogsTests.release.xcconfig"; path = "Target Support Files/Pods-divelogs-divelogsTests/Pods-divelogs-divelogsTests.release.xcconfig"; sourceTree = "<group>"; };
-		D518844D2BA6366D00B876FB /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		D518844D2BA6366D00B876FB /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text; name = PrivacyInfo.xcprivacy; path = /Users/rainer/apps/divelogs/ios/../PrivacyInfo.xcprivacy; sourceTree = "<absolute>"; };
 		D54E99E42B42F0300022F927 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../www; sourceTree = "<group>"; };
 		D5727BD82B42F347008C4848 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../www; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -95,6 +97,7 @@
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				D518844D2BA6366D00B876FB /* PrivacyInfo.xcprivacy */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -122,7 +125,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				D518844D2BA6366D00B876FB /* PrivacyInfo.xcprivacy */,
 				D5727BD82B42F347008C4848 /* www */,
 				13B07FAE1A68108700A75B9A /* divelogs */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -244,6 +246,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D518844F2BA7257C00B876FB /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,6 +257,7 @@
 				D5727BD92B42F347008C4848 /* www in Resources */,
 				D54E99E52B42F0300022F927 /* www in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				D518844E2BA7256E00B876FB /* PrivacyInfo.xcprivacy in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

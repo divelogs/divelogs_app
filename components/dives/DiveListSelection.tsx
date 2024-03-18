@@ -20,13 +20,12 @@ const ListItem = ({name, label}:any) => {
       paddingTop:3,
       backgroundColor: '#3fb9f2',
       borderWidth: 1,
-      color: (theme == "light" ? "#000000" : "#FFFFFF"),
       minWidth:40,
     },
     countlabeltext: {
       fontSize: 14, 
       fontWeight: '700',
-      color: (theme == "light" ? "#000000" : "#FFFFFF"),
+      color: "#FFFFFF",
       textAlign:"center"
     },
     text: {

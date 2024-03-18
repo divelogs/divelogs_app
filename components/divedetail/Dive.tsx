@@ -1,5 +1,5 @@
 
-import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList, Platform, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
+import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList, Platform, TouchableOpacity, StyleSheet, useColorScheme, Button } from 'react-native';
 import React, { useContext } from 'react';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
@@ -140,6 +140,7 @@ const DiveDetail = ({navigation, dive}:any) => {
   const focusDiveProfile = () => {
     navigation.push("DiveProfilFocus", {dive: dive});
   }
+
 
   return (<ScrollView style={divepagestyles.bg}>
       <View style={[divepagestyles.bg, divepagestyles.child]}>                

@@ -11,7 +11,8 @@ import Certifications from './certifications';
 import Dives from './dives'
 import GearView from './gear';
 import Onboarding from './onboarding';
-import AppHeader from './generic/divelogsheader'
+import AppHeader from './generic/divelogsheader';
+import DiveProfileModal from './divedetail/DiveProfileModal';
 
 const BottomNavigation = ({}:any)=> {
 
@@ -112,7 +113,8 @@ const AppNavigation = () => {
             </Stack.Screen>  
             <Stack.Screen name="Home">
                 {(props) => <BottomNavigation {...props}/>}
-            </Stack.Screen>          
+            </Stack.Screen>     
+            
         </Stack.Navigator>
     </>
 }
