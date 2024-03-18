@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Platform, Text,TextInput, Linking, Pressable,StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import {Platform, Text,TextInput, Linking, Pressable,StyleSheet, TouchableOpacity, KeyboardAvoidingView, useColorScheme } from 'react-native';
 import { getDBConnection, writeBearerToken } from '../../services/db-service';
 import { Api } from '../../services/api-service'
 import AppHeader from '../generic/divelogsheader'
@@ -50,7 +50,53 @@ const Login = ({navigation}:any) => {
         navigation.navigate("Sync")
       }
     
+    const theme = useColorScheme();
 
+    const style = StyleSheet.create({
+        text: {
+            color: 'white',
+            fontSize: 18,
+            marginBottom: 20,
+        },
+        logo: {
+            marginBottom: -5,
+            width:260,
+            height:94
+        },
+        logininputs: {
+            width:240,
+            fontSize:16,
+            borderRadius: 5,
+            borderWidth:1,
+            color: '#a0a0a0',
+            borderColor: '#0598DF',
+            marginBottom:5,
+            padding: 10,
+            paddingVertical: 8,
+            backgroundColor: (theme == "light" ? '#FFFFFF' : '#121212'),
+        },
+        login: {
+            borderRadius: 5,
+            backgroundColor: 'none',
+            padding: 10,
+            elevation: 2,
+        },
+        account: {
+            fontSize: 14,
+            position: 'absolute',
+            bottom: 40, 
+            color: '#C8ECFD'
+        },
+        getOne:{
+            color: '#fff', 
+            fontWeight: '600'
+        },
+        error:{
+            fontWeight: '600',
+            color: '#fff',
+            height: 20,
+        }
+    })
 
 
     return (<KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[divelogsStyle.centeredView, {backgroundColor:'#3fb9f2'}]}>
@@ -78,49 +124,6 @@ const Login = ({navigation}:any) => {
     </KeyboardAvoidingView>)
 }
 
-const style = StyleSheet.create({
-    text: {
-        color: 'white',
-        fontSize: 18,
-        marginBottom: 20,
-    },
-    logo: {
-        marginBottom: -5,
-        width:260,
-        height:94
-    },
-    logininputs: {
-        width:240,
-        fontSize:16,
-        borderRadius: 5,
-        borderWidth:1,
-        borderColor: '#0598DF',
-        marginBottom:5,
-        padding: 10,
-        paddingVertical: 8,
-        backgroundColor: '#fff',
-    },
-    login: {
-        borderRadius: 5,
-        backgroundColor: 'none',
-        padding: 10,
-        elevation: 2,
-    },
-    account: {
-        fontSize: 14,
-        position: 'absolute',
-        bottom: 40, 
-        color: '#C8ECFD'
-    },
-    getOne:{
-        color: '#fff', 
-        fontWeight: '600'
-    },
-    error:{
-        fontWeight: '600',
-        color: '#fff',
-        height: 20,
-    }
-})
+
 
 export default Login
