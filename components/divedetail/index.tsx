@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
-import { View, Dimensions } from 'react-native';
+import { View, Dimensions, useColorScheme, StyleSheet } from 'react-native';
 import DiveDetail from './Dive'
 
 const DiveSwipe = ({navigation, route}:any) => {
@@ -20,9 +20,17 @@ const DiveSwipe = ({navigation, route}:any) => {
     })
   }, []);
 
+  const theme = useColorScheme();
+  const style = StyleSheet.create({
+    page: {
+      backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909'),
+      flex: 1
+    }
+  })
+
   return (
     <>
-       <View style={{ flex: 1, backgroundColor: 'white' }} key={diveindex}>
+       <View style={style.page} key={diveindex}>
         <SwiperFlatList key={orientation} index={diveindex} renderAll={false} data={dives}
           renderItem={({ item }) => (             
             <DiveDetail navigation={navigation} dive={item}/>
