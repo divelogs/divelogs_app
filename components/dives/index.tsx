@@ -179,11 +179,7 @@ const DivesNavigation = ({navigation}:any) => {
         }}>
           {(props) => <AggregationView {...props}/>}
         </Stack.Screen>
-        <Stack.Screen
-          name="DiveProfilFocus"
-          component={DiveProfileModal}
-          options={{ presentation: 'transparentModal', headerShown: false }}
-        />   
+          
       </Stack.Navigator>   
     </View>
   );
