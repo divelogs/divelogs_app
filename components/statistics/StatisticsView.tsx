@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
-import { Text, StyleSheet, Dimensions, ScrollView, View } from 'react-native';
+import { Text, StyleSheet, Dimensions, ScrollView, View, useColorScheme } from 'react-native';
 import { getDBConnection } from '../../services/db-service';
 import { getMonthStats, getHourStats, getYearStats, getWeekdayStats, getDepthStats, getDurationStats, getBragFacts } from '../../services/db-aggregation-service';
 import { Statistic } from './Statistic';
@@ -73,11 +73,11 @@ export const StatisticsView = ({ route, navigation }:any) => {
       }
     })
   }, []);
-
+  const theme = useColorScheme();
   const styles = StyleSheet.create({
     page: {
-      backgroundColor: (context.theme == 'light' ? '#FFFFFF' : '#090909' ),
-      color: (context.theme == 'light' ? '#000000' : '#FFFFFF' ),
+      backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909' ),
+      color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
       flex: 1
     },
     tinyLogo: {
@@ -116,7 +116,7 @@ export const StatisticsView = ({ route, navigation }:any) => {
 
   return (
     <View style={styles.page}>
-           <Text style={divelogsStyles.viewHeader}>{t('statistics')}</Text>
+        <Text style={divelogsStyles.viewHeader}>{t('statistics')}</Text>
 
         <ScrollView style={{padding: 10}}> 
 
@@ -152,8 +152,6 @@ export const StatisticsView = ({ route, navigation }:any) => {
         </ScrollView>
     </View>
   );
-
-  
 };
 
 export default StatisticsView

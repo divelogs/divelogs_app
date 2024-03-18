@@ -34,7 +34,6 @@ function makeSVGStat(values: StatVal[], xname: string, yname:string, width:numbe
 
 	var ret = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" style="font-family:Arial, Helvetica, sans-serif; width:100%; height: auto;" viewBox="0 0 ' + width + ' ' + height + '">';
 
-	const unit = "m";
 	let loffset = 2;
 	
 	var buchst = 0;

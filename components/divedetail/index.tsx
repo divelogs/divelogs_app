@@ -10,7 +10,6 @@ const DiveSwipe = ({navigation, route}:any) => {
   const dives = route.params.dives
   const diveindex = dives.findIndex((obj: { id: any; }) => obj.id === route.params.diveId);
   
-
   useEffect(() => {
     Dimensions.addEventListener('change', ({window:{width,height}})=>{
       if (width<height) {

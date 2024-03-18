@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import { StyleSheet,  Text,  View, Dimensions, useColorScheme } from 'react-native';
 import { Tank } from '../../models';
 import { renderpressure, rendervolume } from '../functions.ts'
@@ -6,7 +6,6 @@ import { singletank, doubletank } from '../../assets/svgs.js'
 import { SvgXml } from 'react-native-svg';
 import '../../translation'
 import { useTranslation } from 'react-i18next';
-import { DivelogsContext } from '../../App'; 
 
 export const TankView: React.FC<{
   Tank: Tank,
@@ -14,7 +13,6 @@ export const TankView: React.FC<{
 }> = ({ Tank: {id,index,tank,tankname,vol,wp,start_pressure,end_pressure,o2,he,dbltank}, imperial } ) => {
 
   const { t } = useTranslation(); 
-  const [context] = useContext(DivelogsContext);
 
   const theme = useColorScheme();
 

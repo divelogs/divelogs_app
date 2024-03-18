@@ -5,7 +5,6 @@ import DivelogsHeader from '../generic/divelogsheader'
 import { AggregationView } from './Aggregation'
 import DiveListSelection from './DiveListSelection'
 import AllDives from './AllDivesView'
-import DiveProfileModal from '../divedetail/DiveProfileModal';
 import DiveDetail from '../divedetail'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
@@ -156,13 +155,7 @@ const DivesNavigation = ({navigation}:any) => {
         </Stack.Screen>
 
         <Stack.Screen name="AggregatedView" options={{ 
-          // headerLeft: () => (
-          //   (Platform.OS == 'ios' ? <>              
-          //     <Pressable onPress={()=>navigation.goBack()}>
-          //         <Text style={styles.text}>←</Text>
-          //     </Pressable>           
-          //   </>           : null)
-          //         ),
+
           headerRight: () => (
             <>              
               <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>

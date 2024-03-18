@@ -15,7 +15,7 @@ const GearLines = ({children, style, label}:any) => {
     },
     desc: {
       flex: 2,
-      maxWidth: 130,
+      maxWidth: 140,
       color: '#39ade2',
       textAlignVertical: "top",
     }

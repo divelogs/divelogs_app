@@ -1,4 +1,4 @@
-import { View, Text, useColorScheme, StyleSheet } from 'react-native';
+import { View, useColorScheme, StyleSheet } from 'react-native';
 import { Dive } from '../../models';
 import React, { useState, useEffect, useContext } from 'react';
 import { getDBConnection, getDives, getFilteredDives, getFilteredDivesByPrecalcedStatistics, getDivesByLatLng } from '../../services/db-service';

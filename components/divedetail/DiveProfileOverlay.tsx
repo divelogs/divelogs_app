@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image, Text, Pressable, Dimensions, useColorScheme } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-
-//import {ProfileDimensions} from './DiveProfile'
-
 import { SampleData, Dive } from '../../models';
-//import { Float } from 'react-native/Libraries/Types/CodegenTypes';
-
 
 type Calculated = {
     maxDepth:number
@@ -84,8 +79,6 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
 			};
 		};
 
-        //console.log(samples);
-
         if (samples[0] != 0) {
             samples.unshift(0)
             temps.unshift(Infinity)
@@ -102,7 +95,7 @@ export const DiveProfileOverlay = ({sampleData, dive, imperial}:{sampleData: Sam
 
         var calculated:Calculated = { maxDepth: Math.max(...samples)}
         setCalculated(calculated)
-        //console.log(samples)
+
     }, [sampleData, duration])
 
     useEffect(() => { 

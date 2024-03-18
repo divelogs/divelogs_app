@@ -109,12 +109,10 @@ const Login = ({navigation}:any) => {
               <Text style={[divelogsStyle.textStyle, {fontSize: 16}]}>Login</Text>
             </Pressable>
 
-            
                 <Text style={style.error}>
                     {errorMessage.length == 0 ? null : `⚠ ${errorMessage}`}
                 </Text>
-            
-            
+
             <Text style={style.account}>
                 {t('noaccount')}
                 <TouchableOpacity style={{marginTop: -3}} onPress={() => Linking.openURL("https://divelogs.de/register.php")}>
@@ -123,7 +121,5 @@ const Login = ({navigation}:any) => {
             </Text>
     </KeyboardAvoidingView>)
 }
-
-
 
 export default Login

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Text, View, Image, StyleSheet, Platform } from 'react-native';
+import { Text, View, Image, StyleSheet } from 'react-native';
 import { UserProfile } from '../../models';
 import RNFetchBlob from "rn-fetch-blob";
 import '../../translation'

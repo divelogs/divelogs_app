@@ -113,10 +113,7 @@ export const Overview = ({navigation}:any) => {
             )}
           />
         </View>
-
       )
   };
-  
-  
 
 export default Overview

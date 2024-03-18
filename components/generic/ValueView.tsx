@@ -1,22 +1,21 @@
 import React, {useContext} from 'react';
-import { Text, StyleSheet, View } from 'react-native';
-import { DivelogsContext } from '../../App'; 
+import { Text, StyleSheet, View, useColorScheme } from 'react-native';
+
 
 const ValueView = ({children, label}:any) => {
 
-  const [context] = useContext(DivelogsContext);
-
+  const theme = useColorScheme()
   const styles = StyleSheet.create({
     value: {
       fontSize: 16,
-      color: (context.theme=='dark' ? '#FFFFFF' : '#000000')
+      color: (theme=='dark' ? '#FFFFFF' : '#000000')
     },
     oneliner: {
       flexDirection: 'row',
       height: 30,
     },
     desc: {
-      minWidth: 140,
+      minWidth: 170,
       color: '#39ade2',
       textAlignVertical: "bottom",
       height: 30,
@@ -32,5 +31,4 @@ const ValueView = ({children, label}:any) => {
   </View>  
 }
 
-
-  export default ValueView
+export default ValueView

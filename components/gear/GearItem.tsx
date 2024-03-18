@@ -25,7 +25,7 @@ export const Gear: React.FC<{
 
   const theme = useColorScheme();
   const { width } = Dimensions.get('window');
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
     page: {
         backgroundColor: (theme == 'light' ? '#FFFFFF' : '#090909' ),
         color: (theme == 'light' ? '#000000' : '#FFFFFF' ),
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     icon: {position: 'absolute', left: 10},
     overdue: {color: '#FF0000'},
     notoverdue: {color: '#019149'}
-});
+  });
 
 
   return (

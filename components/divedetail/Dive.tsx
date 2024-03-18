@@ -7,7 +7,6 @@ import { makeDateObj, rendertemp, renderdepth, makeendtime, secondstotime, rende
 import DiveProfile from './DiveProfile'
 import { TankView } from './TankView'
 import { Tank } from '../../models'
-import { useState } from 'react';
 import { DivelogsContext } from '../../App'; 
 
 const DiveDetail = ({navigation, dive}:any) => {
@@ -16,7 +15,7 @@ const DiveDetail = ({navigation, dive}:any) => {
 
   const width = Dimensions.get('window').width
   const [context] = useContext(DivelogsContext);
-  //const [ divepagestyles, setDivepagestyles ] = useState<any>(getDivePageStyles(width))
+
   const theme = useColorScheme();
 
   const divepagestyles = StyleSheet.create({ 
