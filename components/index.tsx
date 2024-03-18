@@ -113,8 +113,12 @@ const AppNavigation = () => {
             </Stack.Screen>  
             <Stack.Screen name="Home">
                 {(props) => <BottomNavigation {...props}/>}
-            </Stack.Screen>     
-            
+            </Stack.Screen>  
+            <Stack.Screen
+              name="DiveProfilFocus"
+              component={DiveProfileModal}
+              options={{ headerShown: false, animation:'slide_from_bottom' }}              
+            />         
         </Stack.Navigator>
     </>
 }

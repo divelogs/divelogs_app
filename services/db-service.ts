@@ -242,7 +242,7 @@ export const getProfile = async (db: SQLiteDatabase): Promise<UserProfile|null> 
     const results = await db.executeSql("SELECT username, firstname, profilePictureUrl, imperial FROM profile JOIN settings");
     let r:any = readResultSingle<UserProfile>(results);
     // translate db 1:0 to true:false
-    r.imperial = (r.imperial == 1 ? true : false);
+    if(r) r.imperial = (r.imperial == 1 ? true : false);
     return r;
   } catch (error) {
     console.error(error);
