@@ -15,11 +15,12 @@ const ValueView = ({children, label}:any) => {
       height: 30,
     },
     desc: {
+      fontSize: 15,
       minWidth: 170,
       color: '#39ade2',
-      textAlignVertical: "bottom",
+      //textAlignVertical: "bottom",
       height: 30,
-      marginTop: 1,
+      //marginTop: 1,
       textAlign: 'right',
       marginRight: 5
     }
