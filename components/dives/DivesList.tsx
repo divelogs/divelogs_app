@@ -56,6 +56,8 @@
         cancelSearch()
     }
 
+    const colorScheme = useColorScheme();
+
     const Filter = () => {
       if (!!doSearch)
         return <SearchBar
@@ -67,6 +69,7 @@
                 showsCancelButton={true}
                 autoCapitalize={'none'}
                 text={searchText}
+                style={{backgroundColor: (colorScheme == 'light' ? '#FFFFFF' : '#090909' ), height: 40}}                
               /> 
       return null
     }

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, StyleSheet, View, Pressable, Platform } from 'react-native';
+import { Text, StyleSheet, View, Pressable, Platform, useColorScheme } from 'react-native';
 import { getDBConnection, getCoordinates, getLastDiveWithCoordinates } from '../../services/db-service';
 import MapView, { Marker, Callout, Region } from "react-native-maps";
 import { MapMarker } from '../../models';
@@ -12,6 +12,8 @@ export const MapsView = ({ route, navigation }:any) => {
 
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [initial, setInitial] = useState<Region|undefined>()
+
+  const colorScheme = useColorScheme();
 
   const loadData = useCallback(async () => {
     try {
@@ -56,7 +58,10 @@ export const MapsView = ({ route, navigation }:any) => {
       alignItems: 'center',
     },
     showdivestext: {
-      color: '#FFF',
+      color: '#FFF'
+    },
+    divesitename: {
+      color: '#000000'
     }
   });
 
@@ -84,7 +89,7 @@ export const MapsView = ({ route, navigation }:any) => {
             
             {Platform.OS == 'android' && <Callout onPress={() => showMarkerDives(value)}>
                 <View>
-                    <Text>{value.divesite}</Text>
+                    <Text style={styles.divesitename}>{value.divesite}</Text>
                       <View style={styles.showdives}><Text style={styles.showdivestext}>{t('showdives')}</Text></View>
                 </View>
             </Callout>}

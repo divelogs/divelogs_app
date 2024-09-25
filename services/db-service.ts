@@ -358,7 +358,7 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
         divedata.notes,
         (gi.length > 0 ? gi.join(",") : null),
         divedata.samplerate,
-        (divedata.sampledata != null ? divedata.sampledata.map(a=>makejson(a)).join(",") : ''),
+        (divedata.sampledata != undefined ? divedata.sampledata.map(a=>makejson(a)).join(",") : ''),
         JSON.stringify(divedata.tanks),
         divedata.lat,
         divedata.lng
