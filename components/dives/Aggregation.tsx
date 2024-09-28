@@ -20,7 +20,7 @@ export const AggregationView = ({navigation, route, view}:any) => {
   const { t } = useTranslation();
   const [stats, setStats] = useState<StatVal[]>([])
   const [filteredStats, setFilteredStats] = useState<StatVal[]>([])
-  const [filter, setFilter] = useState<string>("")
+  const [filterText, setFilterText] = useState<string>("")
   const name = route.params.view.name
 
   const [context] = useContext(DivelogsContext);
@@ -39,20 +39,19 @@ export const AggregationView = ({navigation, route, view}:any) => {
   }, [view]);
 
   useEffect(() => {
-    if (filter.length <= 0){
+    if (filterText.length <= 0 || filterText == null){
       setFilteredStats(stats)
       return
     }
-    const filtered = stats.filter(a => a.bez.toLowerCase().indexOf(filter.toLowerCase()) >= 0)
+    const filtered = stats.filter(a => a.bez.toLowerCase().indexOf(filterText.toLowerCase()) >= 0)
                           .map(a => ({...a}))
     setFilteredStats(filtered)
-  }, [filter])
+  }, [filterText])
 
 
   const loadData = async () : Promise<StatVal[]> => {
     try {
       const db = await getDBConnection();
-
       switch (route.params.view.aggregation){
         case "byDepth":
           return await getDepthStats(db, imperial)
@@ -108,23 +107,33 @@ export const AggregationView = ({navigation, route, view}:any) => {
     }
   }
 
-  const startSearch = (searchFor:string) => {
-    setFilter(searchFor)
+  const startSearch = (searchtext:string) => {
+    setFilterText(searchtext);
   }
 
-  const cancelSearch = () => setFilter('')
+  const cancelSearch = (  ) => {
+    setFilterText('');
+  }
+
+  const colorScheme = useColorScheme();
+
+  const changeSearch = (searchFor:string) => {
+    if (searchFor.length == 0 && filterText.length != 0)
+      cancelSearch()
+  }
 
   const Filter = () => {
     if (!route.params.view.search) return null
     return <SearchBar
       placeholder={t('search')}
-      onChangeText={cancelSearch}
+      onChangeText={changeSearch}
       onSearchButtonPress={startSearch}
       cancelButtonText={t('reset')}
       onCancelButtonPress={cancelSearch}
       showsCancelButton={true}
       autoCapitalize={'none'}
-      text={filter}
+      text={filterText}
+      style={{backgroundColor: (colorScheme == 'light' ? '#FFFFFF' : '#090909' ), height: 40}}     
     /> 
   }
   const theme = useColorScheme();

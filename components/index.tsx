@@ -106,7 +106,10 @@ const AppNavigation = () => {
     return <>
         <Stack.Navigator screenOptions={{
             headerShown: false,
-            animation: "none"
+            animation: "none",
+ 
+              headerBackTitleVisible: false
+
         }}>
             <Stack.Screen name="Onboarding">
                 {(props) => <Onboarding {...props}/>}

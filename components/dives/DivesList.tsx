@@ -15,8 +15,6 @@
 
   const DiveList = ({navigation, dives, doSearch, selectDive, frommap}:any) => {
 
-    
-
     const [searchText, setSearchText] = useState<string>('');
     const [statistics, setStatistics] = useState<Statistics>({})
     const { t } = useTranslation(); 
@@ -60,6 +58,7 @@
 
     const Filter = () => {
       if (!!doSearch)
+
         return <SearchBar
                 placeholder={t('search')}
                 onChangeText={changeSearch}

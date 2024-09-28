@@ -77,6 +77,10 @@ const DivesNavigation = ({navigation}:any) => {
       fontSize: (Platform.OS === 'ios' ? 20 : 26),
       color: '#FFFFFF',
       fontWeight: (Platform.OS === 'ios' ? '400' : '900'),
+    },
+    backbutton: {
+      fontSize: (Platform.OS === 'ios' ? 16 : 26),
+      color: '#FFFFFF',
     }
   });
 
@@ -96,18 +100,19 @@ const DivesNavigation = ({navigation}:any) => {
         >
         
         <Stack.Screen name=" " options={{ // Leave name empty, so it does not show in back button when Alldives are shown
-          animation: "none"
+          animation: "none",
         }}>
           {(props) => <DiveListSelection {...props}/>}
         </Stack.Screen>
 
-        <Stack.Screen name="AllDives" 
+        <Stack.Screen  name="AllDives" 
           options={{ 
             headerShown: true,
+            headerBackTitleVisible: false,
             // headerLeft: () => (
             //   (Platform.OS == 'ios' ? <>              
             //     <Pressable onPress={()=>navigation.goBack()}>
-            //         <Text style={styles.text}>←</Text>
+            //         <Text style={styles.backbutton}>Filter</Text>
             //     </Pressable>           
             //   </>            : null)
             // ),
@@ -129,8 +134,9 @@ const DivesNavigation = ({navigation}:any) => {
           {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
 
-        <Stack.Screen name="FilteredDives" options={{ 
+        <Stack.Screen name="FilteredDives"  options={{ 
           title: "",
+          headerBackTitleVisible: false,
           headerRight: () => (
             <>              
               <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
@@ -155,7 +161,7 @@ const DivesNavigation = ({navigation}:any) => {
         </Stack.Screen>
 
         <Stack.Screen name="AggregatedView" options={{ 
-
+          headerBackTitleVisible: false,
           headerRight: () => (
             <>              
               <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
