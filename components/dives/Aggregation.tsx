@@ -43,7 +43,7 @@ export const AggregationView = ({navigation, route, view}:any) => {
       setFilteredStats(stats)
       return
     }
-    const filtered = stats.filter(a => a.bez.toLowerCase().indexOf(filterText.toLowerCase()) >= 0)
+    const filtered = stats.filter(a => a.bez && a.bez.toLowerCase().indexOf(filterText.toLowerCase()) >= 0)
                           .map(a => ({...a}))
     setFilteredStats(filtered)
   }, [filterText])
