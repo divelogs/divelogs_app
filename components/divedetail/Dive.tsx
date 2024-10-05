@@ -1,4 +1,3 @@
-
 import { Image, View, ScrollView, Text, Dimensions, NativeModules, FlatList, Platform, TouchableOpacity, StyleSheet, useColorScheme, Button } from 'react-native';
 import React, { useContext } from 'react';
 import '../../translation'
@@ -10,8 +9,6 @@ import { Tank } from '../../models'
 import { DivelogsContext } from '../../App'; 
 
 const DiveDetail = ({navigation, dive}:any) => {
-
-  // console.log(dive);
 
   const width = Dimensions.get('window').width
   const [context] = useContext(DivelogsContext);
@@ -120,6 +117,16 @@ const DiveDetail = ({navigation, dive}:any) => {
       justifyContent: 'center',
       textAlign: 'center',
       fontSize: 18
+    },
+    smallimage: {
+      width: ((width-26)/4),
+      height: ((width-28)/4),
+      resizeMode: 'cover',
+      margin: 2,
+      borderRadius: 5
+    },
+    margintop: {
+      marginTop: 10
     }
   });
 
@@ -140,6 +147,15 @@ const DiveDetail = ({navigation, dive}:any) => {
     navigation.push("DiveProfilFocus", {dive: dive});
   }
 
+  const focusPictures = (index:number) => {
+    navigation.push("PictureSwiper", {allPictures: dive.pictures, thekey: index});
+  }
+
+  const focusVideos = (index:number) => {
+    navigation.push("VideoSwiper", {allvideos: dive.videos, thekey: index});
+  }
+
+  //console.log(dive);
 
   return (<ScrollView style={divepagestyles.bg}>
       <View style={[divepagestyles.bg, divepagestyles.child]}>                
@@ -220,6 +236,42 @@ const DiveDetail = ({navigation, dive}:any) => {
         <TouchableOpacity onPress={() => focusDiveProfile()}>
           <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} formodal={false}/>
         </TouchableOpacity>
+        <Text style={[divepagestyles.desc, divepagestyles.margintop]}>Pictures: </Text>
+        <FlatList style={{display: 'flex', flexDirection: "row", flexWrap: 'wrap'}}
+            horizontal
+            showsHorizontalScrollIndicator={false} 
+            data={dive.pictures}
+            renderItem={ ({ item, index }) => ( 
+              <View key={index}>
+                <TouchableOpacity onPress={() => focusPictures(index)}>                     
+                  <Image source={{
+                      uri: item
+                    }}                
+                    style={divepagestyles.smallimage}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+      
+      <Text style={[divepagestyles.desc, divepagestyles.margintop]}>Videos: </Text>
+        <FlatList style={{display: 'flex', flexDirection: "row", flexWrap: 'wrap'}}
+            horizontal
+            showsHorizontalScrollIndicator={false} 
+            data={dive.videos}
+            renderItem={ ({ item, index }) => ( 
+              <View key={index}>
+                <TouchableOpacity onPress={() => focusVideos(index)}>                     
+                  <Image source={{
+                      uri: item.thumbnail
+                    }}                
+                    style={divepagestyles.smallimage}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+
       </View>
     </ScrollView>)
   }

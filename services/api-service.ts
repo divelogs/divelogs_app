@@ -1,6 +1,6 @@
 
 import RNFetchBlob from "rn-fetch-blob";
-import { PermissionsAndroid } from 'react-native';
+import { PermissionsAndroid, Platform } from 'react-native';
 import { UserProfile } from "../models";
 import * as Keychain from "react-native-keychain";
 
@@ -35,7 +35,7 @@ export const CheckFilePermissions = async (platform:any) => {
 };
 
 const apiUrl = "https://divelogs.de/api/"
-const clientString = "Divelogs App v.2.0"
+const clientString = "Divelogs App v.2.0 (" + Platform.OS + ")"
 
 var bearerToken: string | null = null;
 

@@ -13,6 +13,8 @@ import GearView from './gear';
 import Onboarding from './onboarding';
 import AppHeader from './generic/divelogsheader';
 import DiveProfileModal from './divedetail/DiveProfileModal';
+import PictureSlider from './divedetail/PictureSlider'
+import VideoSlider from './divedetail/VideoSlider'
 
 const BottomNavigation = ({}:any)=> {
 
@@ -121,7 +123,17 @@ const AppNavigation = () => {
               name="DiveProfilFocus"
               component={DiveProfileModal}
               options={{ headerShown: false, animation:'slide_from_bottom' }}              
-            />         
+            />
+            <Stack.Screen
+              name="PictureSwiper"
+              component={PictureSlider}
+              options={{ headerShown: false, animation:'slide_from_bottom' }}              
+            />  
+            <Stack.Screen
+              name="VideoSwiper"
+              component={VideoSlider}
+              options={{ headerShown: false, animation:'slide_from_bottom' }}              
+            />  
         </Stack.Navigator>
     </>
 }

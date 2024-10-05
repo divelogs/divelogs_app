@@ -103,9 +103,15 @@ const getWhere = (searchPhrase:string) : string => {
 export const getDives = async (db: SQLiteDatabase, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
     const where = (searchPhrase.length > 0 ? "WHERE " + getWhere(searchPhrase) : "");
-    const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
+    const query = "SELECT dives.*, GROUP_CONCAT(DISTINCT pictureurl) as pictures_string, '[' || GROUP_CONCAT(DISTINCT '{\"videoid\":\"' || videoid || '\",\"type\":\"' || type || '\",\"thumbnail\":\"' || thumbnail || '\"}') || ']' as videos_string FROM dives LEFT JOIN pictures ON dives.id = pictures.diveid LEFT JOIN videos ON videos.diveid = dives.id "+where+" GROUP BY dives.id ORDER BY divedate " + dir + ", divetime " + dir + ' ';
 
-    return readResultSet<Dive>(results)
+    const results = await db.executeSql(query);
+
+    //return readResultSet<Dive>(results)
+    let foo = readResultSet<Dive>(results).map(c => ({...c, pictures: (c.pictures_string ? c.pictures_string.split(",") : []) })).map(c => ({...c, videos: (c.videos_string ? JSON.parse(c.videos_string) : []) }));
+
+    //console.log(foo);
+    return  foo;
 
   } catch (error) {
     console.error(error);
@@ -280,6 +286,12 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
 
   const deleteQuery2 = `DELETE from tanks`;
   await db.executeSql(deleteQuery2);
+
+  const deleteQuery3 = `DELETE from pictures`;
+  await db.executeSql(deleteQuery3);
+
+  const deleteQuery4 = `DELETE from videos`;
+  await db.executeSql(deleteQuery4);
  
   try {
     //Object.keys(data).forEach(function(key) {
@@ -365,17 +377,27 @@ export const saveDives = async (db: SQLiteDatabase, data:APIDive[]): Promise<boo
       ]
 
       try {
-        db.executeSql(insertQuery, values);
-
-        /* tanks are now JSON Object in table dives
+        //db.executeSql(insertQuery, values);
         const newdiveid = await writeDataAndReturnId(db, insertQuery, values);
-        // write the tanks
-        for( let tank of divedata.tanks) {
-          let tankquery = "INSERT INTO tanks (dive_id, tank, tankname, vol, wp, start_pressure, end_pressure, o2, he, dbltank) VALUES (?,?,?,?,?,?,?,?,?,?)";
-          let tankvals = [newdiveid, tank.tank, tank.tankname, tank.vol, tank.wp, tank.start_pressure, tank.end_pressure, tank.o2, tank.he, tank.dbltank];
-          db.executeSql(tankquery, tankvals);
+        // write the pictures (if any)
+        if (divedata.pictures != null) {
+          for( let picture of divedata.pictures) {            
+            let picturequery = "INSERT INTO pictures (diveid, pictureurl) VALUES (?,?)";
+            let picturevals = [newdiveid, picture.path];
+            db.executeSql(picturequery, picturevals);
+          }
         }
-        */
+
+        // write the videos (if any)
+        if (divedata.videos != null) {
+          for( let video of divedata.videos) {            
+            let videoquery = "INSERT INTO videos (diveid, videoid, type, thumbnail) VALUES (?,?,?,?)";
+            let videovals = [newdiveid, video.videoid, video.type, video.thumbnail];
+            db.executeSql(videoquery, videovals);
+          }
+        }
+        
+
         
       } catch (error) {
         console.error(error)

@@ -7,7 +7,7 @@ import { renderdepth } from '../functions.ts'
 export const DiveListItem: React.FC<{
   Dive: Dive,
   imperial: boolean
-}> = ({ Dive: {id, divesite, divedate, divenumber, divetime, maxdepth, location, sampledata, samplerate, duration} , imperial } ) => {
+}> = ({ Dive: {id, divesite, divedate, divenumber, divetime, maxdepth, location, sampledata, samplerate, duration, pictures, videos} , imperial } ) => {
   var dd = new Date(Date.parse(divedate));
 
   const colorScheme = useColorScheme();

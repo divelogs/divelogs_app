@@ -37,6 +37,11 @@ export type Dive = {
   tanks: string | JSON;
   lat: number;
   lng: number;
+  pictures_string: string;
+  pictures: string[];
+  videos_string: string;
+  videos_stringarray: string[];
+  videos: Video[];
 };
 
 export type AppContext = {
@@ -56,6 +61,16 @@ export type UserProfile = {
   firstname: string;
   lastname: string;
 };
+
+export type Picture = {
+  id: number;
+  path: string;
+}
+export type Video = {
+  videoid: number;
+  type: string;
+  thumbnail: string;
+}
 
 export type APIDive = {
   id: number;
@@ -83,6 +98,8 @@ export type APIDive = {
   tanks: Tank[];
   lat: number;
   lng: number;
+  pictures: Picture[] | null;
+  videos: Video[] | null;
 }
 
 export type Tank = {
