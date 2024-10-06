@@ -13,8 +13,9 @@ import GearView from './gear';
 import Onboarding from './onboarding';
 import AppHeader from './generic/divelogsheader';
 import DiveProfileModal from './divedetail/DiveProfileModal';
-import PictureSlider from './divedetail/PictureSlider'
-import VideoSlider from './divedetail/VideoSlider'
+import PictureSlider from './divedetail/PictureSlider';
+import VideoOverlay from './divedetail/VideoOverlay';
+
 
 const BottomNavigation = ({}:any)=> {
 
@@ -109,9 +110,7 @@ const AppNavigation = () => {
         <Stack.Navigator screenOptions={{
             headerShown: false,
             animation: "none",
- 
-              headerBackTitleVisible: false
-
+            headerBackTitleVisible: false
         }}>
             <Stack.Screen name="Onboarding">
                 {(props) => <Onboarding {...props}/>}
@@ -130,10 +129,11 @@ const AppNavigation = () => {
               options={{ headerShown: false, animation:'slide_from_bottom' }}              
             />  
             <Stack.Screen
-              name="VideoSwiper"
-              component={VideoSlider}
+              name="Video"
+              component={VideoOverlay}
               options={{ headerShown: false, animation:'slide_from_bottom' }}              
-            />  
+            /> 
+             
         </Stack.Navigator>
     </>
 }

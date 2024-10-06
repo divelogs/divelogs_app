@@ -152,7 +152,7 @@ const DiveDetail = ({navigation, dive}:any) => {
   }
 
   const focusVideos = (index:number) => {
-    navigation.push("VideoSwiper", {allvideos: dive.videos, thekey: index});
+    navigation.push("Video", {videoId: dive.videos[index].videoid, type:  dive.videos[index].type});
   }
 
   //console.log(dive);

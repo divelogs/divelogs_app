@@ -1,23 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import WebView from 'react-native-autoheight-webview';
 import { Dimensions } from 'react-native';
-
 
 export const VideoPlayer = ({videoId, type}: any) => {
 
   const win = Dimensions.get('window');
-  const [orientation, setOrientation] = useState('');
-
-  useEffect(() => {
-    Dimensions.addEventListener('change', ({window:{width,height}})=>{
-      if (width<height) {
-      setOrientation("PORTRAIT")
-      } else {
-      setOrientation("LANDSCAPE")    
-      }
-  })
-  }, []);
-
   return (
     (type=="vimeo") ?
     <>    
@@ -27,13 +14,13 @@ export const VideoPlayer = ({videoId, type}: any) => {
       automaticallyAdjustContentInsets
       style={{ width: win.width, height: win.height,  flex: 1 }}
       source={{
-        html: `<iframe title="vimeo-player" src="https://player.vimeo.com/video/${videoId}" width="${win.width}" height="${win.height}" frameborder="0" allowfullscreen></iframe>`
+        html: `<iframe src="https://player.vimeo.com/video/${videoId}" width="${win.width}" height="${win.height}" frameborder="0" allowfullscreen></iframe>`
       }}
     />
     </>
     :
-    <>       
-      <WebView
+    <>     
+    <WebView
       allowsFullscreenVideo
       scrollEnabled={false}
       automaticallyAdjustContentInsets
@@ -44,7 +31,6 @@ export const VideoPlayer = ({videoId, type}: any) => {
     />
     </>
   );
-
 }
 
 export default VideoPlayer

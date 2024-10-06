@@ -5,7 +5,7 @@ import { close } from '../../assets/svgs.js';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import VideoPlayer from './videoplayer'
 
-export const VideoSlider = ({navigation, route}: any) => {
+export const VideoOverlay = ({navigation, route}: any) => {
     
     // Use this const as key of the SwiperFlatList to enforce re-render on orientation-change
     const [orientation, setOrientation] = useState('');
@@ -22,8 +22,8 @@ export const VideoSlider = ({navigation, route}: any) => {
 
    const win = Dimensions.get('window');
 
-   const thekey = route.params.thekey
-   const allvideos = route.params.allvideos
+   const videoId = route.params.videoId
+   const type = route.params.type
 
    const closeView = () => {
      navigation.pop()
@@ -43,16 +43,16 @@ export const VideoSlider = ({navigation, route}: any) => {
     }
    });
 
+   console.log(videoId);
+
    return (
-     <View style={styles.page}>       
-        <SwiperFlatList key={orientation} index={thekey} renderAll={true} data={allvideos} renderItem={({ item }) => (
-           <View style={{ width: win.width, height: win.height }}>
-              <VideoPlayer
-                  videoId={item.videoid}
-                  type={item.type}
-              /> 
-           </View>           
-         )} />
+     <View style={styles.page}>        
+        <View style={{ width: win.width, height: win.height }}>
+          <VideoPlayer
+              videoId={videoId}
+              type={type}
+          /> 
+        </View>
         <TouchableOpacity style={styles.close} onPress={closeView}>
             <SvgXml xml={close} width={30} height={30} />
         </TouchableOpacity>  
@@ -60,4 +60,4 @@ export const VideoSlider = ({navigation, route}: any) => {
    )
 }
 
-export default VideoSlider
+export default VideoOverlay
