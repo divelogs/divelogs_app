@@ -236,7 +236,8 @@ const DiveDetail = ({navigation, dive}:any) => {
         <TouchableOpacity onPress={() => focusDiveProfile()}>
           <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} formodal={false}/>
         </TouchableOpacity>
-        <Text style={[divepagestyles.desc, divepagestyles.margintop]}>Pictures: </Text>
+        
+        <Text style={[divepagestyles.desc, divepagestyles.margintop]}>{dive.pictures.length > 0 ? t("pictures") : null}</Text>
         <FlatList style={{display: 'flex', flexDirection: "row", flexWrap: 'wrap'}}
             horizontal
             showsHorizontalScrollIndicator={false} 
@@ -254,7 +255,7 @@ const DiveDetail = ({navigation, dive}:any) => {
             )}
           />
       
-      <Text style={[divepagestyles.desc, divepagestyles.margintop]}>Videos: </Text>
+        <Text style={[divepagestyles.desc, divepagestyles.margintop]}>{dive.videos.length > 0 ? t("videos") : null}</Text>
         <FlatList style={{display: 'flex', flexDirection: "row", flexWrap: 'wrap'}}
             horizontal
             showsHorizontalScrollIndicator={false} 

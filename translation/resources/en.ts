@@ -103,4 +103,7 @@ export default {
 
     noaccount: "No divelogs.de/.org account?",
     getone: "Get one for free",
+
+    pictures: "Pictures:",
+    videos: "Videos:"
 };

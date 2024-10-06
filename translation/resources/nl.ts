@@ -93,5 +93,8 @@ export default {
   coldest: "Koudste duik",
   warmest: "Warmste duik",
   noaccount: "Geen divelogs.de/.org account?",
-  getone: "Krijg er één gratis"
+  getone: "Krijg er één gratis",
+
+  pictures: "Foto's:",
+  videos: "Videos:"
 };

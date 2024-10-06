@@ -103,4 +103,7 @@ export default {
 
     noaccount: "Pas de compte divelogs.de/.org ?",
     getone: "Créer un compte gratuitement",
+
+    pictures: "Images:",
+    videos: "Videos:"
 };
