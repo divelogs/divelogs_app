@@ -218,8 +218,8 @@ const DiveDetail = ({navigation, dive}:any) => {
           <Text style={[{position: 'absolute', top:80, left:18}, divepagestyles.text]}>{renderdepth(dive.maxdepth, imperial)} </Text>
           <Text style={[{position: 'absolute', top:104, left:18}, divepagestyles.text]}>{renderdepth(dive.meandepth, imperial)}</Text>
           <Text style={[{position: 'absolute', top:6, left:140}, divepagestyles.text]}>{rendertemp(dive.airtemp, imperial)}</Text>
-          <Text style={[{position: 'absolute', top:51, left:140}]}>{rendertemp(dive.surfacetemp, imperial)}</Text>
-          <Text style={[{position: 'absolute', top:150, left:140}]}>{rendertemp(dive.depthtemp, imperial)}</Text>
+          <Text style={[{position: 'absolute', top:51, left:140, color: '#000000'}]}>{rendertemp(dive.surfacetemp, imperial)}</Text>
+          <Text style={[{position: 'absolute', top:150, left:140, color: '#000000'}]}>{rendertemp(dive.depthtemp, imperial)}</Text>
           <Text style={[{position: 'absolute', top:176, left:115}, divepagestyles.text]}>{secondstotime(dive.duration)}</Text>
 
         </View>
