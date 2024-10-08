@@ -94,7 +94,8 @@ export const writeStatement = async (db: SQLiteDatabase, query:string,): Promise
 };
 
 const getWhere = (searchPhrase:string) : string => {
-  if (searchPhrase?.length == 0) return "" 
+  if (searchPhrase?.length == 0) return "";
+  if (searchPhrase == null)  return "";
   
   searchPhrase = searchPhrase.replace(/'/g, "''");
   return " (location LIKE '%"+searchPhrase+"%' OR divesite LIKE '%"+searchPhrase+"%' OR boat LIKE '%"+searchPhrase+"%'  OR notes LIKE '%"+searchPhrase+"%'  OR buddy LIKE '%"+searchPhrase+"%')"
@@ -149,14 +150,15 @@ export const getCoordinates = async (db: SQLiteDatabase): Promise<MapMarker[]> =
 
 export const getFilteredDives = async (db: SQLiteDatabase, column: string, filter:string, dir:string, searchPhrase:string): Promise<Dive[]> => {
   try {
-    const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
-    const where = "WHERE "+column.replace(/'/g, "''")+" LIKE '"+filter.replace(/'/g, "''")+"'" + search
+    const search = (searchPhrase != null && searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
+    if (filter == null) filter = "";
+    const where = "WHERE COALESCE("+column.replace(/'/g, "''")+",'') LIKE '"+filter.replace(/'/g, "''")+"'" + search
     const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
 
     return readResultSet<Dive>(results)
   } catch (error) {
     console.error(error);
-    throw Error('Failed to get Dives');
+    throw Error('Failed to get Filtered Dives');
   }
 };
 

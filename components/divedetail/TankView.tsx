@@ -54,7 +54,7 @@ export const TankView: React.FC<{
         <SvgXml style={styles.tankicon} xml={(dbltank ? doubletank : singletank)} width="50" height="75"/>
         <View style={styles.texts}>
             <View style={styles.textblock}>
-                <Text style={styles.desc}>{t('tank')}: </Text><Text style={styles.text}>{tank}  </Text>
+                <Text style={styles.desc}>{t('tank')}: </Text><Text style={styles.text}>{tank || '-'}  </Text>
                 <Text style={styles.desc}>{t('vol')}: </Text><Text style={styles.text}>{(dbltank ? "2x" : "")}{rendervolume(vol, wp, imperial)}  </Text>
                 {wp > 0 && <><Text style={styles.desc}>{t('wp')}: </Text><Text style={styles.text}>{renderpressure(wp, imperial)}  </Text></>}
             </View>

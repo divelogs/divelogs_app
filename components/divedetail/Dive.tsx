@@ -237,15 +237,15 @@ const DiveDetail = ({navigation, dive}:any) => {
           <DiveProfile SampleData={{sampledata: dive.sampledata, samplerate: dive.samplerate, duration: dive.duration, height: width*0.7, width: width*0.98, lines: true, forlist: false }} imperial={imperial} formodal={false}/>
         </TouchableOpacity>
         
-        <Text style={[divepagestyles.desc, divepagestyles.margintop]}>{dive.pictures.length > 0 ? t("pictures") : null}</Text>
+        <Text style={[divepagestyles.desc, divepagestyles.margintop]}>{dive.pictures != undefined && dive.pictures != null && dive.pictures.length > 0 ? t("pictures") : null}</Text>
         <FlatList style={{display: 'flex', flexDirection: "row", flexWrap: 'wrap'}}
             horizontal
             showsHorizontalScrollIndicator={false} 
             data={dive.pictures}
             renderItem={ ({ item, index }) => ( 
               <View key={index}>
-                <TouchableOpacity onPress={() => focusPictures(index)}>                     
-                  <Image source={{
+                <TouchableOpacity accessibilityLabel={t("pictures")} onPress={() => focusPictures(index)}>                     
+                  <Image accessibilityLabel={t("pictures")} source={{
                       uri: item
                     }}                
                     style={divepagestyles.smallimage}
@@ -255,15 +255,15 @@ const DiveDetail = ({navigation, dive}:any) => {
             )}
           />
       
-        <Text style={[divepagestyles.desc, divepagestyles.margintop]}>{dive.videos.length > 0 ? t("videos") : null}</Text>
+        <Text style={[divepagestyles.desc, divepagestyles.margintop]}>{dive.videos != undefined && dive.videos != null && dive.videos.length > 0 ? t("videos") : null}</Text>
         <FlatList style={{display: 'flex', flexDirection: "row", flexWrap: 'wrap'}}
             horizontal
             showsHorizontalScrollIndicator={false} 
             data={dive.videos}
             renderItem={ ({ item, index }) => ( 
               <View key={index}>
-                <TouchableOpacity onPress={() => focusVideos(index)}>                     
-                  <Image source={{
+                <TouchableOpacity accessibilityLabel={t("videos")} onPress={() => focusVideos(index)}>                     
+                  <Image accessibilityLabel={t("videos")} source={{
                       uri: item.thumbnail
                     }}                
                     style={divepagestyles.smallimage}

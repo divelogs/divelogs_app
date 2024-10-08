@@ -113,7 +113,11 @@ export const getBragFacts = async (db: SQLiteDatabase): Promise<any> => {
 
 export const getSingleColumnStats = async (db: SQLiteDatabase, column: string, sort: string = 'ASC'): Promise<StatVal[]> => {
   try {
-    const results = await db.executeSql(`SELECT count(1) as val , TRIM(`+column+`) as bez FROM dives
+    const results = await db.executeSql(`SELECT count(1) as val , COALESCE(TRIM(`+column+`),'') as bez FROM dives
+    GROUP BY COALESCE(TRIM(`+column+`),'')
+    ORDER BY COALESCE(TRIM(`+column+`),'') `+sort);
+
+    console.log(`SELECT count(1) as val , TRIM(`+column+`) as bez FROM dives
     GROUP BY TRIM(`+column+`)
     ORDER BY TRIM(`+column+`) `+sort);
     

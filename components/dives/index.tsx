@@ -71,16 +71,28 @@ const DivesNavigation = ({navigation}:any) => {
       flex: 1
     },
     button: {
-      backgroundColor: '#3fb9f2' 
+      backgroundColor: '#3fb9f2',
+      height: 48,
+      width: 48,
+      textAlignVertical: 'top'
     },
     text: {
       fontSize: (Platform.OS === 'ios' ? 20 : 26),
       color: '#FFFFFF',
-      fontWeight: (Platform.OS === 'ios' ? '400' : '900'),
+      fontWeight: (Platform.OS === 'ios' ? '400' : '900')
     },
     backbutton: {
       fontSize: (Platform.OS === 'ios' ? 16 : 26),
       color: '#FFFFFF',
+    },
+    buttons: {
+      fontSize: (Platform.OS === 'ios' ? 26 : 36),
+      fontWeight: (Platform.OS === 'ios' ? '400' : '500'),
+      color: '#FFFFFF',
+      width: 48,
+      textAlign: 'right',
+      textAlignVertical: 'top',
+      lineHeight: 44    
     }
   });
 
@@ -119,14 +131,14 @@ const DivesNavigation = ({navigation}:any) => {
             headerBackTitle: ' ',
             headerRight: () => (
               <>
-              <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
-                <Text style={styles.text}>↺</Text>
+              <Pressable accessibilityLabel="Sync dives" style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+                <Text style={styles.buttons}>↺</Text>
               </Pressable>             
                 
-              <View style={{width: 20}}></View>
+              
   
-              <Pressable style={styles.button} onPress={toggleSort}>
-                <Text style={styles.text}>{sortindicator}</Text>
+              <Pressable accessibilityLabel="Sort list" style={styles.button} onPress={toggleSort}>
+                <Text style={styles.buttons}>{sortindicator}</Text>
               </Pressable>          
               </>
             ),       

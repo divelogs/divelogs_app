@@ -53,8 +53,8 @@ export const VideoOverlay = ({navigation, route}: any) => {
               type={type}
           /> 
         </View>
-        <TouchableOpacity style={styles.close} onPress={closeView}>
-            <SvgXml xml={close} width={30} height={30} />
+        <TouchableOpacity accessibilityLabel='close' style={styles.close} onPress={closeView}>
+            <View style={{width: 48, height: 48}}><SvgXml xml={close} width={30} height={30} /></View>
         </TouchableOpacity>  
      </View>
    )

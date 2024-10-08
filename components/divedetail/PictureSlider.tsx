@@ -56,12 +56,12 @@ export const PictureSlider = ({navigation, route}: any) => {
    return (
      <View style={styles.page}>       
         <SwiperFlatList key={orientation} index={thekey} renderAll={true} data={allPictures} renderItem={({ item }) => (
-           <View style={{ justifyContent: 'center'}}>
-             <Image style={sliderstyles.image} resizeMode={'contain'} source = {{uri: item}}/>
+           <View accessibilityLabel='picture' style={{ justifyContent: 'center'}}>
+             <Image accessibilityLabel='picture' style={sliderstyles.image} resizeMode={'contain'} source = {{uri: item}}/>
            </View>
          )} />
-        <TouchableOpacity style={styles.close} onPress={closeView}>
-            <SvgXml xml={close} width={30} height={30} />
+        <TouchableOpacity accessibilityLabel='close' style={styles.close} onPress={closeView}>
+          <View style={{width: 48, height: 48}}><SvgXml xml={close} width={30} height={30} /></View>
         </TouchableOpacity>  
      </View>
    )

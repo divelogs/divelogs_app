@@ -46,8 +46,8 @@ export const Scanslider = ({navigation, route}: any) => {
    return (
      <View style={styles.page}>       
        <SwiperFlatList key={orientation} index={thekey} renderAll={true} data={allScans} renderItem={({ item }) => (
-           <View style={{ justifyContent: 'center'}}>
-             <Image style={sliderstyles.image} resizeMode={'contain'} source = {{uri: "file://" + PictureDir + item}}/>
+           <View accessibilityLabel='certification' style={{ justifyContent: 'center'}}>
+             <Image accessibilityLabel='certification' style={sliderstyles.image} resizeMode={'contain'} source = {{uri: "file://" + PictureDir + item}}/>
            </View>
          )} />
      </View>

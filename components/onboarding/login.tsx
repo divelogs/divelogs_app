@@ -71,6 +71,7 @@ const Login = ({navigation}:any) => {
             color: '#a0a0a0',
             borderColor: '#0598DF',
             marginBottom:5,
+            height: 48,
             padding: 10,
             paddingVertical: 8,
             backgroundColor: (theme == "light" ? '#FFFFFF' : '#121212'),
@@ -78,7 +79,9 @@ const Login = ({navigation}:any) => {
         login: {
             borderRadius: 5,
             backgroundColor: 'none',
-            padding: 10,
+            padding: 20,
+            paddingVertical: 14,
+            height: 48,
             elevation: 2,
         },
         account: {
@@ -104,15 +107,14 @@ const Login = ({navigation}:any) => {
             <TextInput placeholder="username" style={style.logininputs} onChangeText={newText => change(setUsername, newText)} autoCapitalize="none"/>
             <TextInput placeholder="password" secureTextEntry={true} style={style.logininputs} onSubmitEditing={() => doLogin()} onChangeText={newText => change(setPassword,newText)}/>
             <Pressable
+              accessibilityLabel='login'
               style={style.login}
               onPress={() => doLogin()}>
               <Text style={[divelogsStyle.textStyle, {fontSize: 16}]}>Login</Text>
             </Pressable>
-
                 <Text style={style.error}>
                     {errorMessage.length == 0 ? null : `⚠ ${errorMessage}`}
                 </Text>
-
             <Text style={style.account}>
                 {t('noaccount')}
                 <TouchableOpacity style={{marginTop: -3}} onPress={() => Linking.openURL("https://divelogs.de/register.php")}>

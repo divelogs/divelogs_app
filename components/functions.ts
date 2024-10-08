@@ -15,9 +15,9 @@ export const rendertemp = (temp:number, imp:boolean) => {
 export const renderpressure = (pressure:number, imp:boolean) => {
   if (imp) {
     if (pressure != 0) return ( Math.round( pressure/0.0689 ) ) + ' PSI'; 
-    else return ""; 
+    else return "-"; 
   } else {
-    if (pressure==0 || pressure==undefined || pressure==null) return '';
+    if (pressure==0 || pressure==undefined || pressure==null) return '-';
     else return  Math.round(pressure)+' Bar'
   } 
 }
