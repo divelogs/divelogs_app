@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Platform, Text,TextInput, Linking, Pressable,StyleSheet, TouchableOpacity, KeyboardAvoidingView, useColorScheme } from 'react-native';
+import {Platform, Text,TextInput, Linking, Pressable,StyleSheet, TouchableOpacity, KeyboardAvoidingView, useColorScheme, View } from 'react-native';
 import { getDBConnection, writeBearerToken } from '../../services/db-service';
 import { Api } from '../../services/api-service'
 import AppHeader from '../generic/divelogsheader'
@@ -87,17 +87,20 @@ const Login = ({navigation}:any) => {
         account: {
             fontSize: 14,
             position: 'absolute',
-            bottom: 40, 
+            bottom: 70, 
             color: '#C8ECFD'
         },
         getOne:{
             color: '#fff', 
-            fontWeight: '600'
+            fontWeight: '600',
+            lineHeight: 50,
+            position: 'absolute',
+            bottom: 20
         },
         error:{
             fontWeight: '600',
             color: '#fff',
-            height: 20,
+            height: 20
         }
     })
 
@@ -117,8 +120,10 @@ const Login = ({navigation}:any) => {
                 </Text>
             <Text style={style.account}>
                 {t('noaccount')}
-                <TouchableOpacity style={{marginTop: -3}} onPress={() => Linking.openURL("https://divelogs.de/register.php")}>
-                    <Text style={style.getOne}> {t('getone')}</Text>            
+            </Text>
+            <Text style={style.getOne}>
+                <TouchableOpacity style={{height: 30}} onPress={() => Linking.openURL("https://divelogs.de/register.php")}>
+                    <Text style={{color: '#FFFFFF', height: 48}}> {t('getone')}</Text>            
                 </TouchableOpacity>
             </Text>
     </KeyboardAvoidingView>)

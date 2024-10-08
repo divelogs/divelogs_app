@@ -100,10 +100,10 @@ export const Overview = ({navigation}:any) => {
                     const thekey = Object.keys(allScans).find(key => allScans[parseInt(key)] === scan);
                     return (      
                       <View key={scan}>
-                        <TouchableOpacity key={item.id} onPress={() =>
+                        <TouchableOpacity accessibilityLabel={scan} key={item.id} onPress={() =>
                             navigation.navigate('CertificationScans', {thekey: thekey, allScans: allScans})
                           } >                     
-                          <Image source = {{uri: "file://" + PictureDir + scan, width: brevetWidth, height: brevetHeight}} style={{marginRight: 5, borderRadius: 6 }}/>
+                          <Image accessibilityLabel={scan} source = {{uri: "file://" + PictureDir + scan, width: brevetWidth, height: brevetHeight}} style={{marginRight: 5, borderRadius: 6 }}/>
                         </TouchableOpacity>
                       </View>
                     );

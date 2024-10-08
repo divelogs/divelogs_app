@@ -79,7 +79,7 @@ android {
         applicationId "de.divelogs"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
+        versionCode 10
         versionName "1.4"
     }
     signingConfigs {
