@@ -153,9 +153,12 @@ export const getFilteredDives = async (db: SQLiteDatabase, column: string, filte
     const search = (searchPhrase != null && searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
     if (filter == null) filter = "";
     const where = "WHERE COALESCE("+column.replace(/'/g, "''")+",'') LIKE '"+filter.replace(/'/g, "''")+"'" + search
-    const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
+    const results = await db.executeSql("SELECT dives.*, GROUP_CONCAT(DISTINCT pictureurl) as pictures_string, '[' || GROUP_CONCAT(DISTINCT '{\"videoid\":\"' || videoid || '\",\"type\":\"' || type || '\",\"thumbnail\":\"' || thumbnail || '\"}') || ']' as videos_string FROM dives LEFT JOIN pictures ON dives.id = pictures.diveid LEFT JOIN videos ON videos.diveid = dives.id "+where+" GROUP BY dives.id ORDER BY divedate " + dir + ", divetime " + dir + ' ');
 
-    return readResultSet<Dive>(results)
+    let foo = readResultSet<Dive>(results).map(c => ({...c, pictures: (c.pictures_string ? c.pictures_string.split(",") : []) })).map(c => ({...c, videos: (c.videos_string ? JSON.parse(c.videos_string) : []) }));
+
+    //console.log(foo);
+    return  foo;
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Filtered Dives');
@@ -167,9 +170,12 @@ export const getDivesByLatLng = async (db: SQLiteDatabase, lat: number, lng:numb
   try {
     const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
     const where = "WHERE lat LIKE '"+lat+"%' AND lng LIKE '"+lng+"%' " + search
-    const results = await db.executeSql("SELECT * FROM dives "+where+" ORDER BY divedate " + dir + ", divetime " + dir + ' ');
+    const results = await db.executeSql("SELECT dives.*, GROUP_CONCAT(DISTINCT pictureurl) as pictures_string, '[' || GROUP_CONCAT(DISTINCT '{\"videoid\":\"' || videoid || '\",\"type\":\"' || type || '\",\"thumbnail\":\"' || thumbnail || '\"}') || ']' as videos_string FROM dives LEFT JOIN pictures ON dives.id = pictures.diveid LEFT JOIN videos ON videos.diveid = dives.id "+where+" GROUP BY dives.id ORDER BY divedate " + dir + ", divetime " + dir + ' ');
 
-    return readResultSet<Dive>(results)
+    let foo = readResultSet<Dive>(results).map(c => ({...c, pictures: (c.pictures_string ? c.pictures_string.split(",") : []) })).map(c => ({...c, videos: (c.videos_string ? JSON.parse(c.videos_string) : []) }));
+
+    //console.log(foo);
+    return  foo;
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Dives by location');
@@ -181,10 +187,13 @@ export const getFilteredDivesByPrecalcedStatistics = async (db: SQLiteDatabase, 
     const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
     const where = "WHERE statistics.value LIKE '"+filter.replace(/'/g, "''")+"'" + search
 
-    const results = await db.executeSql(`SELECT dives.* 
-    FROM dives INNER JOIN statistics ON dives.id = statistics.diveId AND type = '${type.replace(/'/g, "''")}' ${where} ORDER BY divedate ${dir}, divetime ${dir}`);
+    const results = await db.executeSql(`SELECT dives.*, GROUP_CONCAT(DISTINCT pictureurl) as pictures_string, '[' || GROUP_CONCAT(DISTINCT '{\"videoid\":\"' || videoid || '\",\"type\":\"' || videos.type || '\",\"thumbnail\":\"' || thumbnail || '\"}') || ']' as videos_string FROM dives LEFT JOIN pictures ON dives.id = pictures.diveid LEFT JOIN videos ON videos.diveid = dives.id INNER JOIN statistics ON dives.id = statistics.diveId AND statistics.type = '${type.replace(/'/g, "''")}' ${where} ORDER BY divedate ${dir}, divetime ${dir}`);
+    
 
-    return readResultSet<Dive>(results)
+    let foo = readResultSet<Dive>(results).map(c => ({...c, pictures: (c.pictures_string ? c.pictures_string.split(",") : []) })).map(c => ({...c, videos: (c.videos_string ? JSON.parse(c.videos_string) : []) }));
+
+    //console.log(foo);
+    return  foo;
   } catch (error) {
     console.error(error);
     throw Error('Failed to get Dives');
