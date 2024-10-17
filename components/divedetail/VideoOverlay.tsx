@@ -43,8 +43,6 @@ export const VideoOverlay = ({navigation, route}: any) => {
     }
    });
 
-   console.log(videoId);
-
    return (
      <View style={styles.page}>        
         <View style={{ width: win.width, height: win.height }}>

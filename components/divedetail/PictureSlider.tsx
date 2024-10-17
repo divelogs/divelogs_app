@@ -32,10 +32,7 @@ export const PictureSlider = ({navigation, route}: any) => {
    const thekey = route.params.thekey
    const allPictures = route.params.allPictures
 
-   console.log(route.params);
-
    const closeView = () => {
-    console.log('pop!');
     navigation.pop()
 }
 

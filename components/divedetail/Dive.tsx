@@ -155,8 +155,6 @@ const DiveDetail = ({navigation, dive}:any) => {
     navigation.push("Video", {videoId: dive.videos[index].videoid, type:  dive.videos[index].type});
   }
 
-  console.log(dive);
-
   return (<ScrollView style={divepagestyles.bg}>
       <View style={[divepagestyles.bg, divepagestyles.child]}>                
         <View style={divepagestyles.numberdatebox}>
