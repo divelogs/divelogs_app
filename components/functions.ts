@@ -28,7 +28,7 @@ function psi2bar(psi:number)
 }
 
 export const rendervolume = (liter:number, wp:number = 0, imp:boolean) => {
-    if (liter == 0) return '-';
+    if (liter==0 || liter==undefined || liter==null) return '-'; 
     if (imp) {
       if (wp != 0)
       {
@@ -39,8 +39,7 @@ export const rendervolume = (liter:number, wp:number = 0, imp:boolean) => {
       return Math.round(liter*7) + ' cuft';
     } else {
       return liter + ' l'
-    }
-    
+    }    
 }
 
 
@@ -49,7 +48,7 @@ export const renderdepth = (depth:number, imp:boolean) => {
     if (depth != 0) return ( Math.round( depth/0.3048 * 10 ) / 10 ) + ' ft'; 
     else return ""; 
   } else {
-    if (depth==0 ||depth==undefined || depth==null) return '';
+    if (depth==0 || depth==undefined || depth==null) return '';
     else return depth+' m'
   } 
 }
