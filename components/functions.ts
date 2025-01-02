@@ -28,6 +28,7 @@ function psi2bar(psi:number)
 }
 
 export const rendervolume = (liter:number, wp:number = 0, imp:boolean) => {
+    if (liter == 0) return '-';
     if (imp) {
       if (wp != 0)
       {

@@ -68,7 +68,7 @@
                 showsCancelButton={true}
                 autoCapitalize={'none'}
                 text={searchText}
-                style={{backgroundColor: (colorScheme == 'light' ? '#FFFFFF' : '#090909' ), height: 40}}                
+                style={{backgroundColor: (colorScheme == 'light' ? '#FFFFFF' : '#090909' ), height: 48}}                
               /> 
       return null
     }

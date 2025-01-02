@@ -71,10 +71,11 @@ const DivesNavigation = ({navigation}:any) => {
       flex: 1
     },
     button: {
-      backgroundColor: '#3fb9f2',
+      backgroundColor: 'transparent',
       height: 48,
       width: 48,
-      textAlignVertical: 'top'
+      textAlignVertical: 'top',
+      top: -1
     },
     text: {
       fontSize: (Platform.OS === 'ios' ? 20 : 26),
