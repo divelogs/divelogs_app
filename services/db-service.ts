@@ -186,13 +186,14 @@ export const getFilteredDivesByPrecalcedStatistics = async (db: SQLiteDatabase, 
   try {
     const search = (searchPhrase.length > 0 ? " AND " + getWhere(searchPhrase) : "");
     const where = "WHERE statistics.value LIKE '"+filter.replace(/'/g, "''")+"'" + search
+    const completequery = `SELECT dives.*, GROUP_CONCAT(DISTINCT pictureurl) as pictures_string, '[' || GROUP_CONCAT(DISTINCT '{\"videoid\":\"' || videoid || '\",\"type\":\"' || videos.type || '\",\"thumbnail\":\"' || thumbnail || '\"}') || ']' as videos_string FROM dives LEFT JOIN pictures ON dives.id = pictures.diveid LEFT JOIN videos ON videos.diveid = dives.id INNER JOIN statistics ON dives.id = statistics.diveId AND statistics.type = '${type.replace(/'/g, "''")}' ${where} GROUP BY dives.id ORDER BY divedate ${dir}, divetime ${dir}`
+    const results = await db.executeSql(completequery);
 
-    const results = await db.executeSql(`SELECT dives.*, GROUP_CONCAT(DISTINCT pictureurl) as pictures_string, '[' || GROUP_CONCAT(DISTINCT '{\"videoid\":\"' || videoid || '\",\"type\":\"' || videos.type || '\",\"thumbnail\":\"' || thumbnail || '\"}') || ']' as videos_string FROM dives LEFT JOIN pictures ON dives.id = pictures.diveid LEFT JOIN videos ON videos.diveid = dives.id INNER JOIN statistics ON dives.id = statistics.diveId AND statistics.type = '${type.replace(/'/g, "''")}' ${where} ORDER BY divedate ${dir}, divetime ${dir}`);
-    
+    //console.log(completequery);
 
     let foo = readResultSet<Dive>(results).map(c => ({...c, pictures: (c.pictures_string ? c.pictures_string.split(",") : []) })).map(c => ({...c, videos: (c.videos_string ? JSON.parse(c.videos_string) : []) }));
 
-    //console.log(foo);
+
     return  foo;
   } catch (error) {
     console.error(error);

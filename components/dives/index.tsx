@@ -131,18 +131,15 @@ const DivesNavigation = ({navigation}:any) => {
             // ),
             headerBackTitle: ' ',
             headerRight: () => (
-              <>
-              <Pressable accessibilityLabel="Sync dives" style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
-                <Text style={styles.buttons}>↺</Text>
-              </Pressable>             
-                
-              
-  
-              <Pressable accessibilityLabel="Sort list" style={styles.button} onPress={toggleSort}>
-                <Text style={styles.buttons}>{sortindicator}</Text>
-              </Pressable>          
+              <>              
+                <Pressable accessibilityLabel="Sync dives" style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+                  <Text style={styles.buttons}>↺</Text>
+                </Pressable>    
+                <Pressable accessibilityLabel="Sort list" style={styles.button} onPress={toggleSort}>
+                  <Text style={styles.buttons}>{sortindicator}</Text>
+                </Pressable>       
               </>
-            ),       
+            ),        
           }}>
           {(props) => <AllDives {...props} sort={sort}/>}
         </Stack.Screen>
@@ -152,15 +149,12 @@ const DivesNavigation = ({navigation}:any) => {
           headerBackTitleVisible: false,
           headerRight: () => (
             <>              
-              <Pressable style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
-              <Text style={styles.text}>↺</Text>
-            </Pressable>             
-              
-            <View style={{width: 20}}></View>
-
-            <Pressable style={styles.button} onPress={toggleSort}>
-              <Text style={styles.text}>{sortindicator}</Text>
-            </Pressable>             
+              <Pressable accessibilityLabel="Sync dives" style={styles.button} onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
+                <Text style={styles.buttons}>↺</Text>
+              </Pressable>    
+              <Pressable accessibilityLabel="Sort list" style={styles.button} onPress={toggleSort}>
+                <Text style={styles.buttons}>{sortindicator}</Text>
+              </Pressable>       
             </>
           ),    
         }}>
@@ -175,18 +169,9 @@ const DivesNavigation = ({navigation}:any) => {
 
         <Stack.Screen name="AggregatedView" options={{ 
           headerBackTitleVisible: false,
+          // no sort or sync on Aggregation Page
           headerRight: () => (
-            <>              
-              <Pressable style={styles.button}onPress={() => navigation.replace("Onboarding", {screen: "Sync"})}>
-              <Text style={styles.text}>↺</Text>
-            </Pressable>             
-              
-            <View style={{width: 20}}></View>
-
-            <Pressable style={styles.button} onPress={toggleSort}>
-              <Text style={styles.text}>{sortindicator}</Text>
-            </Pressable>              
-            </>
+            <></>
           ),
         }}>
           {(props) => <AggregationView {...props}/>}

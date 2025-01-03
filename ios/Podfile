@@ -39,6 +39,8 @@ target 'divelogs' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  pod 'CocoaAsyncSocket'  # Add this line here is the line you need
+
   target 'divelogsTests' do
     inherit! :complete
     # Pods for testing
