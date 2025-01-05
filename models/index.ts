@@ -60,12 +60,13 @@ export type UserProfile = {
   profilePictureUrl: string;
   firstname: string;
   lastname: string;
-};
+}
 
 export type Picture = {
   id: number;
   path: string;
 }
+
 export type Video = {
   videoid: number;
   type: string;
@@ -123,7 +124,7 @@ export type Certification = {
   org: string;
   scans_string: string;
   scans: string[];
-};
+}
 
 export type StatData = {
   values: StatVal[];
@@ -131,12 +132,12 @@ export type StatData = {
   yname: string;
   width: number;
   height: number
-};
+}
 
 export type StatVal = {
   bez: string;
   val: number
-};
+}
 
 export type BragFacts = {
   totaldives: number;
@@ -164,7 +165,7 @@ export type GearItem = {
   monthsleft: number;
   divesleft: number;
   type: number;
-};
+}
 
 export type MapMarker = {
   latitude: number;
