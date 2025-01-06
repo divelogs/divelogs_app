@@ -6,6 +6,10 @@ This is the [**divelogs companion app**] project, for use with [**divelogs.de**]
 
 ## Step 1: Clone this Repository to some folder on your computer
 
+```bash
+ git clone https://github.com/divelogs/divelogs_app.git
+ ```
+
 ## Step 2: Install all dependencies:
 
 ```bash
