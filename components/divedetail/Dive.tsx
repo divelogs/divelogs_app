@@ -7,6 +7,7 @@ import DiveProfile from './DiveProfile'
 import { TankView } from './TankView'
 import { Tank } from '../../models'
 import { DivelogsContext } from '../../App'; 
+import * as RNLocalize from "react-native-localize";
 
 const DiveDetail = ({navigation, dive}:any) => {
 
@@ -133,11 +134,7 @@ const DiveDetail = ({navigation, dive}:any) => {
   const imperial = context.userProfile?.imperial || false
 
   const { t } = useTranslation(); 
-  const locale =
-    (Platform.OS === 'ios'
-      ? NativeModules.SettingsManager.settings.AppleLocale ||
-        NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
-      : NativeModules.I18nManager.localeIdentifier).replace("_","-");
+  const locale = RNLocalize.getLocales()[0].languageCode;
 
   let tanks = (dive.tanks != null ? JSON.parse(dive.tanks) : []);
 

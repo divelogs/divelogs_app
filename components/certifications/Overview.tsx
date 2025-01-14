@@ -6,6 +6,7 @@ import RNFetchBlob from "rn-fetch-blob";
 import { makeDateObj } from '../functions'
 import '../../translation'
 import { useTranslation } from 'react-i18next';
+import * as RNLocalize from "react-native-localize";
 
 import divelogsStyles from '../../stylesheets/styles'
 
@@ -14,11 +15,7 @@ export const Overview = ({navigation}:any) => {
     const [certifications, setCertifications] = useState<Certification[]>([]);
     const [allScans, setAllScans] = useState<string[]>([]);
   
-    const locale =
-    (Platform.OS === 'ios'
-      ? NativeModules.SettingsManager.settings.AppleLocale ||
-        NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
-      : NativeModules.I18nManager.localeIdentifier).replace("_","-");
+    const locale = RNLocalize.getLocales()[0].languageCode;
   
     const { width, height } = Dimensions.get('window')
 

@@ -2,6 +2,7 @@ import { SQLiteDatabase } from 'react-native-sqlite-storage';
 import {  NativeModules, Platform } from 'react-native';
 import { StatVal } from '../models';
 import { readResultSet,readResultScalar } from './db-service';
+import * as RNLocalize from "react-native-localize";
 
 
 export const getMonthStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
@@ -169,11 +170,7 @@ export const getPrecalcedStats = async (db: SQLiteDatabase, type: string): Promi
 
 export const getYearStats = async (db: SQLiteDatabase): Promise<StatVal[]> => getSingleColumnStats(db, `strftime("%Y",divedate)`, 'ASC')
 
-const locale =
-    (Platform.OS === 'ios'
-      ? NativeModules.SettingsManager.settings.AppleLocale ||
-        NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
-      : NativeModules.I18nManager.localeIdentifier).replace("_","-");
+const locale = RNLocalize.getLocales()[0].languageCode;
 
 export const getWeekdayStats = async (db: SQLiteDatabase): Promise<StatVal[]> => {
   try {

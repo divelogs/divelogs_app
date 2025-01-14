@@ -5,13 +5,10 @@ import GearImages from './GearImages'
 import { SvgXml } from 'react-native-svg';
 import '../../translation';
 import { useTranslation } from 'react-i18next';
-import OneLiner from '../generic/GearLines'
+import OneLiner from '../generic/GearLines';
+import * as RNLocalize from "react-native-localize";
 
-const locale =
-    (Platform.OS === 'ios'
-      ? NativeModules.SettingsManager.settings.AppleLocale ||
-        NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
-      : NativeModules.I18nManager.localeIdentifier).replace("_","-");
+const locale = RNLocalize.getLocales()[0].languageCode;
     
 export const Gear: React.FC<{
   gi: GearItem;
